@@ -69,6 +69,7 @@ export default function Login() {
 
         {/* Welcome */}
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Holla,<br />Welcome Back</h1>
+        <p className="text-gray-500 mb-8">Hey, welcome back to your special place</p>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">

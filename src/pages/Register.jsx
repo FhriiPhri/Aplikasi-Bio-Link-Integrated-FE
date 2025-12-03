@@ -141,6 +141,7 @@ export default function Register() {
           {/* Welcome Text */}
           <div className="mb-8">
             <h2 className={`text-3xl font-bold ${mode === "dark" ? "text-white" : "text-gray-900"} mb-2`}>Create account</h2>
+            <p className={`${mode === "dark" ? "text-gray-400" : "text-gray-600"}`}>Sign up to get started</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
