@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axiosClient from "../utils/axiosClient";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import registerImage from "../assets/img5.png";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -70,48 +71,14 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Visual (tetap sama, tidak perlu diubah) */}
+      {/* Left Side - Visual (Diperbarui dengan Gambar Ilustrasi) */}
       <div className="hidden lg:block lg:w-1/2 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center p-12">
-          <div className="relative w-full h-full max-w-2xl">
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/10 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 flex items-center justify-center">
-              <div className="text-center text-white p-8">
-                <div className="mb-4 flex justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-16 h-16 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13.5 4.5L19 10M19 10L13.5 15.5M19 10H13.5M10.5 19.5L5 14M5 14L10.5 8.5M5 14H10.5"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold mb-2">Start Your Journey</h3>
-                <p className="text-white/80">Create amazing links in minutes</p>
-              </div>
-            </div>
-
-            {/* Floating elements */}
-            <div className="absolute top-24 left-16 w-28 h-28 bg-yellow-300 rounded-2xl shadow-xl flex items-center justify-center transform -rotate-6 hover:rotate-0 transition-transform duration-300">
-              <span className="text-3xl">🎯</span>
-            </div>
-            <div className="absolute bottom-28 right-20 w-24 h-24 bg-blue-400 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-transform duration-300">
-              <span className="text-3xl">🌟</span>
-            </div>
-            <div className="absolute top-1/3 right-16 w-20 h-20 bg-green-300 rounded-xl shadow-xl flex items-center justify-center transform rotate-12 hover:rotate-6 transition-transform duration-300">
-              <span className="text-2xl">🚀</span>
-            </div>
-            <div className="absolute bottom-1/4 left-24 w-16 h-16 bg-orange-400 rounded-lg shadow-xl flex items-center justify-center hover:scale-110 transition-transform duration-300">
-              <span className="text-xl">💫</span>
-            </div>
-          </div>
-        </div>
+          {/* Gambar Ilustrasi */}
+          <img
+            src={registerImage} // Ganti URL ini jika Anda menyimpan gambar di lokasi lain
+            alt="Illustration of a person using a smartphone surrounded by digital interfaces"
+            className="w-full h-full object-cover"
+          />
       </div>
 
       {/* Right Side - Form (Dinamis berdasarkan mode) */}
