@@ -11,6 +11,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const { user, setUser, loading } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -33,8 +34,7 @@ export default function Register() {
         email,
         password,
       });
-      alert("Register berhasil! Silakan login.");
-      navigate("/login", { replace: true });
+      setShowSuccessModal(true);
     } catch (err) {
       console.error(err);
       alert("Register gagal. " + (err.response?.data?.message || "Coba lagi!"));
@@ -81,18 +81,69 @@ export default function Register() {
           from { opacity: 0; transform: translateX(-30px); }
           to { opacity: 1; transform: translateX(0); }
         }
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes checkmark {
+          0% { stroke-dashoffset: 100; }
+          100% { stroke-dashoffset: 0; }
+        }
         .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
         .animate-slideDown { animation: slideDown 0.6s ease-out; }
         .animate-slideUp { animation: slideUp 0.6s ease-out; }
         .animate-slideLeft { animation: slideLeft 0.8s ease-out; }
+        .animate-scaleIn { animation: scaleIn 0.4s ease-out; }
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
-        .input-focus-effect { transition: all 0.3s ease; }
-        .input-focus-effect:focus {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 20px -5px rgba(99, 102, 241, 0.2);
-        }
       `}</style>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 shadow-2xl animate-scaleIn">
+            <div className="flex flex-col items-center text-center">
+              {/* Success Icon */}
+              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  className="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M5 13l4 4L19 7"
+                    style={{
+                      strokeDasharray: 100,
+                      animation: "checkmark 0.6s ease-out forwards",
+                    }}
+                  />
+                </svg>
+              </div>
+
+              {/* Success Message */}
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                Registration Successful!
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Your account has been created successfully. You can now login to
+                your account.
+              </p>
+
+              {/* Button */}
+              <button
+                onClick={() => navigate("/login", { replace: true })}
+                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                Go to Login
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="h-screen w-screen overflow-hidden flex flex-row-reverse bg-white">
         {/* LEFT: FORM */}

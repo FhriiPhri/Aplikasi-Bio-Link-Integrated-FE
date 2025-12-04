@@ -9,6 +9,9 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const { user, setUser, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,14 +28,26 @@ export default function Login() {
     try {
       const { data } = await axiosClient.post("/login", { email, password });
       localStorage.setItem("token", data.token);
+      localStorage.setItem("justLoggedIn", "true");
       setUser(data.user);
       axiosClient.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${data.token}`;
-      navigate("/dashboard", { replace: true });
+
+      // Show success modal first
+      setShowSuccessModal(true);
+
+      // Redirect after 2 seconds
+      setTimeout(() => {
+        navigate("/dashboard", { replace: true });
+      }, 2000);
     } catch (err) {
       console.error(err);
-      alert("Login gagal. Cek email dan password kamu!");
+      setErrorMessage(
+        err.response?.data?.message ||
+          "Login failed. Please check your email and password!"
+      );
+      setShowErrorModal(true);
     } finally {
       setIsLoading(false);
     }
@@ -127,6 +142,17 @@ export default function Login() {
           }
         }
 
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-10px); }
+          75% { transform: translateX(10px); }
+        }
+
         .animate-fadeIn {
           animation: fadeIn 0.8s ease-out;
         }
@@ -149,6 +175,14 @@ export default function Login() {
 
         .animate-pulse-custom {
           animation: pulse 3s ease-in-out infinite;
+        }
+
+        .animate-scaleIn {
+          animation: scaleIn 0.4s ease-out;
+        }
+
+        .animate-shake {
+          animation: shake 0.5s ease-out;
         }
 
         .delay-100 {
@@ -192,6 +226,86 @@ export default function Login() {
           background-position: right center;
         }
       `}</style>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 shadow-2xl animate-scaleIn">
+            <div className="flex flex-col items-center text-center">
+              {/* Success Icon */}
+              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  className="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+
+              {/* Success Message */}
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                Login Successful!
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Welcome back! Redirecting to dashboard...
+              </p>
+
+              {/* Loading Indicator */}
+              <div className="flex items-center gap-2 text-indigo-600">
+                <span className="loading loading-spinner loading-sm"></span>
+                <span className="text-sm font-medium">Redirecting...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 shadow-2xl animate-scaleIn">
+            <div className="flex flex-col items-center text-center">
+              {/* Error Icon */}
+              <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mb-4 animate-shake">
+                <svg
+                  className="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+
+              {/* Error Message */}
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                Login Failed
+              </h3>
+              <p className="text-gray-600 mb-6">{errorMessage}</p>
+
+              {/* Button */}
+              <button
+                onClick={() => setShowErrorModal(false)}
+                className="btn w-full h-12 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="h-screen w-screen overflow-hidden flex flex-col md:flex-row bg-white">
         {/* Decorative Elements */}
