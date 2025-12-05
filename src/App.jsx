@@ -9,7 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import ForgotPassword from "./pages/ForgotPassword";
-
+import Profile from "./pages/Profile"; 
 export default function App() {
   return (
     <AuthProvider>
@@ -19,7 +19,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<LandingPage />} />
 
-          <Route path="/forgot-password" element={<ForgotPassword/>} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Register */}
           <Route path="/register" element={<Register />} />
@@ -33,6 +33,16 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Profile (protected) */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />
