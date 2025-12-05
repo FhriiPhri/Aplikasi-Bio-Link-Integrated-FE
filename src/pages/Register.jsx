@@ -195,6 +195,8 @@ export default function Register() {
                   </div>
                   <input
                     type="text"
+                    name="name"
+                    autoComplete="name"
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -227,6 +229,8 @@ export default function Register() {
                   </div>
                   <input
                     type="text"
+                    name="username"
+                    autoComplete="username"
                     placeholder="johndoe"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -259,6 +263,8 @@ export default function Register() {
                   </div>
                   <input
                     type="email"
+                    name="email"
+                    autoComplete="email"
                     placeholder="yourname@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

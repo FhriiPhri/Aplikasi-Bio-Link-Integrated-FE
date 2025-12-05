@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import {
@@ -19,6 +19,7 @@ export default function ForgotPasswordFlow() {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [showMessage, setShowMessage] = useState(false); // kontrol fade
 
   const calculatePasswordStrength = (pass) => {
     let strength = 0;
@@ -100,6 +101,25 @@ export default function ForgotPasswordFlow() {
       { number: 3, label: "Password", icon: Lock },
       { number: 4, label: "Selesai", icon: CheckCircle },
     ];
+
+    useEffect(() => {
+      if (!message) return;
+      setShowMessage(true);
+
+      const timer = setTimeout(() => {
+        setShowMessage(false); // mulai fade out
+      }, 5000); // 5 detik sebelum fade
+
+      return () => clearTimeout(timer);
+    }, [message]);
+
+    // Hapus message setelah fade selesai
+    useEffect(() => {
+      if (!showMessage && message) {
+        const timer = setTimeout(() => setMessage(""), 500); // 1 detik fade
+        return () => clearTimeout(timer);
+      }
+    }, [showMessage, message]);
 
     return (
       <div className="flex items-center justify-between mb-8 relative">
@@ -398,13 +418,13 @@ export default function ForgotPasswordFlow() {
             {/* Message Display */}
             {message && step !== 4 && (
               <div
-                className={`mt-6 p-4 rounded-lg text-sm ${
+                className={`mt-6 p-4 rounded-lg text-sm transition-opacity duration-1000 ${
                   message.includes("berhasil") ||
                   message.includes("OTP valid") ||
                   message.includes("dikirim")
                     ? "bg-green-50 text-green-700 border border-green-200"
                     : "bg-red-50 text-red-700 border border-red-200"
-                }`}
+                } ${showMessage ? "opacity-100" : "opacity-0"}`}
               >
                 {message}
               </div>
