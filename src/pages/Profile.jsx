@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, useCallback, useRef } from "react";
 import axiosClient from "../utils/axiosClient";
-import { Camera, User, Phone, MessageCircle, ArrowLeft, X, Check, ZoomIn, ZoomOut, CheckCircle, XCircle } from "lucide-react";
+import { Camera, User, Phone, MessageCircle, ArrowLeft, X, Check, ZoomIn, ZoomOut, CheckCircle, XCircle, Eye, EyeOff, Lock, KeyRound, ShieldCheck } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function Profile() {
@@ -21,6 +21,7 @@ export default function Profile() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState(null);
+  const [hasPassword, setHasPassword] = useState(false);
 
   useEffect(() => {
     loadProfile();
@@ -44,6 +45,7 @@ export default function Profile() {
       });
 
       setAvatarPreview(user.avatar_url || "https://i.pravatar.cc/150");
+      setHasPassword(user.has_password || false);
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -241,123 +243,126 @@ export default function Profile() {
           <p className="text-gray-600">Manage your account information</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
-                <div className="relative inline-block">
-                  <img
-                    src={avatarPreview}
-                    alt="Profile"
-                    className="w-32 h-32 rounded-full object-cover ring-4 ring-white shadow-md mx-auto"
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Left Column - Profile Card */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
+              <div className="relative inline-block">
+                <img
+                  src={avatarPreview}
+                  alt="Profile"
+                  className="w-32 h-32 rounded-full object-cover ring-4 ring-white shadow-md mx-auto"
+                />
+                <label className="absolute bottom-0 right-0 bg-indigo-600 p-2.5 rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 transition-colors">
+                  <Camera size={18} className="text-white" />
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileSelect}
                   />
-                  <label className="absolute bottom-0 right-0 bg-indigo-600 p-2.5 rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 transition-colors">
-                    <Camera size={18} className="text-white" />
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={handleFileSelect}
-                    />
-                  </label>
-                </div>
+                </label>
               </div>
+            </div>
 
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-1 text-center">
-                  {form.name || "Your Name"}
-                </h2>
-                <p className="text-indigo-600 text-center mb-6">@{form.username || "username"}</p>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 text-gray-600 text-sm">
-                    <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-                      <Phone size={16} className="text-indigo-600" />
-                    </div>
-                    <span>{form.phone_number || "No phone number"}</span>
+            <div className="p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-1 text-center">
+                {form.name || "Your Name"}
+              </h2>
+              <p className="text-indigo-600 text-center mb-6">@{form.username || "username"}</p>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 text-gray-600 text-sm">
+                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Phone size={16} className="text-indigo-600" />
                   </div>
-                  <div className="flex items-start gap-3 text-gray-600 text-sm">
-                    <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MessageCircle size={16} className="text-purple-600" />
-                    </div>
-                    <span className="flex-1">{form.bio || "No bio yet"}</span>
+                  <span>{form.phone_number || "No phone number"}</span>
+                </div>
+                <div className="flex items-start gap-3 text-gray-600 text-sm">
+                  <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <MessageCircle size={16} className="text-purple-600" />
                   </div>
+                  <span className="flex-1 leading-relaxed">{form.bio || "No bio yet"}</span>
                 </div>
               </div>
             </div>
+
+            {/* Password Settings - Moved Here */}
+            <div className="border-t border-gray-200">
+              <PasswordSettings hasPassword={hasPassword} showToast={showToast} />
+            </div>
           </div>
 
-          <div className="md:col-span-2">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="px-6 py-5 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">Edit Profile</h3>
-                <p className="text-sm text-gray-500 mt-1">Update your personal information</p>
-              </div>
+          {/* Right Column - Edit Profile Form */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Edit Profile</h3>
+              <p className="text-sm text-gray-500 mt-1">Update your personal information</p>
+            </div>
 
-              <div className="p-6">
-                <div className="space-y-5">
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
-                      <User size={16} className="text-gray-400" />
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder="Enter your full name"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
-                      <User size={16} className="text-gray-400" />
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                      value={form.username}
-                      onChange={(e) => setForm({ ...form, username: e.target.value })}
-                      placeholder="@username"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
-                      <Phone size={16} className="text-gray-400" />
-                      Phone Number
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                      value={form.phone_number}
-                      onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
-                      placeholder="+62 xxx xxxx xxxx"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
-                      <MessageCircle size={16} className="text-gray-400" />
-                      Bio
-                    </label>
-                    <textarea
-                      className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition min-h-[100px] text-gray-900 placeholder-gray-400 resize-none"
-                      value={form.bio}
-                      onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                      placeholder="Tell us about yourself..."
-                    />
-                  </div>
-
-                  <button
-                    onClick={handleSubmit}
-                    className="w-full py-2.5 px-6 bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    Save Changes
-                  </button>
+            <div className="p-6">
+              <div className="space-y-5">
+                <div>
+                  <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
+                    <User size={16} className="text-gray-400" />
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    placeholder="Enter your full name"
+                  />
                 </div>
+
+                <div>
+                  <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
+                    <User size={16} className="text-gray-400" />
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                    value={form.username}
+                    onChange={(e) => setForm({ ...form, username: e.target.value })}
+                    placeholder="@username"
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
+                    <Phone size={16} className="text-gray-400" />
+                    Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                    value={form.phone_number}
+                    onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
+                    placeholder="+62 xxx xxxx xxxx"
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
+                    <MessageCircle size={16} className="text-gray-400" />
+                    Bio
+                  </label>
+                  <textarea
+                    className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition min-h-[100px] text-gray-900 placeholder-gray-400 resize-none"
+                    value={form.bio}
+                    onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                    placeholder="Tell us about yourself..."
+                  />
+                </div>
+
+                <button
+                  onClick={handleSubmit}
+                  className="w-full py-2.5 px-6 bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Save Changes
+                </button>
               </div>
             </div>
           </div>
@@ -380,7 +385,6 @@ export default function Profile() {
             </div>
 
             <div className="p-6">
-              {/* Crop Area */}
               <div className="relative w-full h-96 bg-gray-900 rounded-lg overflow-hidden mb-6">
                 <SimpleCropper
                   image={imageSrc}
@@ -392,7 +396,6 @@ export default function Profile() {
                 />
               </div>
 
-              {/* Zoom Control */}
               <div className="mb-6">
                 <div className="flex items-center gap-3">
                   <ZoomOut size={20} className="text-gray-400" />
@@ -412,7 +415,6 @@ export default function Profile() {
                 </p>
               </div>
 
-              {/* Buttons */}
               <div className="flex gap-3">
                 <button
                   onClick={handleCancelUpload}
@@ -464,7 +466,278 @@ export default function Profile() {
   );
 }
 
-// Improved Simple Cropper Component with better drag handling
+// Password Settings Component (Compact Version)
+function PasswordSettings({ hasPassword, showToast }) {
+  const [showPasswords, setShowPasswords] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const [setPasswordForm, setSetPasswordForm] = useState({
+    password: '',
+    password_confirmation: ''
+  });
+
+  const [changePasswordForm, setChangePasswordForm] = useState({
+    current_password: '',
+    password: '',
+    password_confirmation: ''
+  });
+
+  const togglePasswordVisibility = (field) => {
+    setShowPasswords(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
+
+  const handleSetPassword = async () => {
+    if (setPasswordForm.password !== setPasswordForm.password_confirmation) {
+      showToast('error', 'Passwords do not match!');
+      return;
+    }
+
+    if (setPasswordForm.password.length < 8) {
+      showToast('error', 'Password must be at least 8 characters!');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axiosClient.post('/user/password/set', {
+        password: setPasswordForm.password,
+        password_confirmation: setPasswordForm.password_confirmation
+      });
+
+      showToast('success', 'Password has been set successfully!');
+      setSetPasswordForm({ password: '', password_confirmation: '' });
+      
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || 'Failed to set password';
+      showToast('error', errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (changePasswordForm.password !== changePasswordForm.password_confirmation) {
+      showToast('error', 'New passwords do not match!');
+      return;
+    }
+
+    if (changePasswordForm.password.length < 8) {
+      showToast('error', 'New password must be at least 8 characters!');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axiosClient.post('/user/password/change', {
+        current_password: changePasswordForm.current_password,
+        password: changePasswordForm.password,
+        password_confirmation: changePasswordForm.password_confirmation
+      });
+
+      showToast('success', 'Password changed successfully!');
+      setChangePasswordForm({
+        current_password: '',
+        password: '',
+        password_confirmation: ''
+      });
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || 'Failed to change password';
+      showToast('error', errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Lock size={20} className="text-indigo-600" />
+        </div>
+        <div>
+          <h3 className="text-base font-semibold text-gray-900">
+            {hasPassword ? 'Change Password' : 'Set Password'}
+          </h3>
+          <p className="text-xs text-gray-500">
+            {hasPassword ? 'Update your password' : 'Create a password'}
+          </p>
+        </div>
+      </div>
+
+      {!hasPassword ? (
+        <div className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div className="flex gap-2">
+              <ShieldCheck size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-blue-700">
+                Set a password to enable email login
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
+              <KeyRound size={14} className="text-gray-400" />
+              New Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPasswords.newPassword ? 'text' : 'password'}
+                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                value={setPasswordForm.password}
+                onChange={(e) => setSetPasswordForm({ ...setPasswordForm, password: e.target.value })}
+                placeholder="Min. 8 characters"
+              />
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility('newPassword')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showPasswords.newPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
+              <KeyRound size={14} className="text-gray-400" />
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPasswords.confirmPassword ? 'text' : 'password'}
+                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                value={setPasswordForm.password_confirmation}
+                onChange={(e) => setSetPasswordForm({ ...setPasswordForm, password_confirmation: e.target.value })}
+                placeholder="Re-enter password"
+              />
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility('confirmPassword')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showPasswords.confirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          <button
+            onClick={handleSetPassword}
+            disabled={loading}
+            className="w-full py-2 px-4 text-sm bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                <span>Setting...</span>
+              </>
+            ) : (
+              <>
+                <Lock size={16} />
+                <span>Set Password</span>
+              </>
+            )}
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
+              <Lock size={14} className="text-gray-400" />
+              Current Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPasswords.currentPassword ? 'text' : 'password'}
+                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                value={changePasswordForm.current_password}
+                onChange={(e) => setChangePasswordForm({ ...changePasswordForm, current_password: e.target.value })}
+                placeholder="Current password"
+              />
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility('currentPassword')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showPasswords.currentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
+              <KeyRound size={14} className="text-gray-400" />
+              New Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPasswords.newPassword ? 'text' : 'password'}
+                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                value={changePasswordForm.password}
+                onChange={(e) => setChangePasswordForm({ ...changePasswordForm, password: e.target.value })}
+                placeholder="Min. 8 characters"
+              />
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility('newPassword')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showPasswords.newPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
+              <KeyRound size={14} className="text-gray-400" />
+              Confirm New Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPasswords.confirmNewPassword ? 'text' : 'password'}
+                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                value={changePasswordForm.password_confirmation}
+                onChange={(e) => setChangePasswordForm({ ...changePasswordForm, password_confirmation: e.target.value })}
+                placeholder="Re-enter new password"
+              />
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility('confirmNewPassword')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                {showPasswords.confirmNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          <button
+            onClick={handleChangePassword}
+            disabled={loading}
+            className="w-full py-2 px-4 text-sm bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                <span>Changing...</span>
+              </>
+            ) : (
+              <>
+                <ShieldCheck size={16} />
+                <span>Change Password</span>
+              </>
+            )}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Simple Cropper Component
 function SimpleCropper({ image, crop, zoom, onCropChange, onZoomChange, onCropComplete }) {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0, naturalWidth: 0, naturalHeight: 0 });
   const isDraggingRef = useRef(false);
@@ -549,7 +822,6 @@ function SimpleCropper({ image, crop, zoom, onCropChange, onZoomChange, onCropCo
         />
       </div>
       
-      {/* Crop Circle Overlay */}
       <div className="absolute inset-0 pointer-events-none">
         <svg className="w-full h-full">
           <defs>
