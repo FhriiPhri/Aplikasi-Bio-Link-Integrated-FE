@@ -267,7 +267,6 @@ export default function Login() {
         </div>
       )}
 
-      {/* Error Modal */}
       {showErrorModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 shadow-2xl animate-scaleIn">
@@ -293,7 +292,20 @@ export default function Login() {
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
                 Login Failed
               </h3>
-              <p className="text-gray-600 mb-6">{errorMessage}</p>
+              <p className="text-gray-600 mb-4">{errorMessage}</p>
+
+              {/* Kontak Admin jika akun non-aktif */}
+              {errorMessage.includes("Pelanggaran") && (
+                <p className="text-sm text-gray-500 mb-4">
+                  Silahkan hubungi admin:{" "}
+                  <a
+                    href="mailto:synapsebioapp@gmail.com"
+                    className="text-red-600 underline"
+                  >
+                    synapsebioapp@gmail.com
+                  </a>
+                </p>
+              )}
 
               {/* Button */}
               <button
