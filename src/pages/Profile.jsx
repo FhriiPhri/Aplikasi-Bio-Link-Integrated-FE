@@ -23,6 +23,7 @@ export default function Profile() {
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState(null);
   const [hasPassword, setHasPassword] = useState(false);
+  const [isBioExpanded, setIsBioExpanded] = useState(false);
 
   useEffect(() => {
     loadProfile();
@@ -181,9 +182,7 @@ export default function Profile() {
     handleUpdate(e);
   };
 
-  const goToDashboard = () => {
-    window.location.href = "/dashboard";
-  };
+
 
   if (loading)
     return (
@@ -233,21 +232,13 @@ export default function Profile() {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto">
-        <button
-          onClick={goToDashboard}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          <span className="font-medium">Back to Dashboard</span>
-        </button>
-
+      <div className="w-full">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile Settings</h1>
           <p className="text-gray-600">Manage your account information</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Left Column - Profile Card */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
@@ -255,9 +246,9 @@ export default function Profile() {
                 <img
                   src={avatarPreview}
                   alt="Profile"
-                  className="w-32 h-32 rounded-full object-cover ring-4 ring-white shadow-md mx-auto"
+                  className="w-40 h-40 rounded-full object-cover ring-4 ring-white shadow-md mx-auto"
                 />
-                <label className="absolute bottom-0 right-0 bg-indigo-600 p-2.5 rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 transition-colors">
+                <label className="absolute bottom-0 right-0 bg-indigo-600 p-3 rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 transition-colors">
                   <Camera size={18} className="text-white" />
                   <input
                     type="file"
@@ -274,28 +265,23 @@ export default function Profile() {
                 {form.name || "Your Name"}
               </h2>
               <p className="text-indigo-600 text-center mb-6">@{form.username || "username"}</p>
-              
+
               <div className="space-y-4">
-                <div className="flex items-center gap-3 text-gray-600 text-sm">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Phone size={16} className="text-indigo-600" />
+                <div className="flex items-center gap-3 text-gray-600 text-lg">
+                  <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Phone size={18} className="text-indigo-600" />
                   </div>
                   <span>{form.phone_number || "No phone number"}</span>
                 </div>
-                <div className="flex items-center gap-3 text-gray-600 text-sm">
-                  <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <MessageCircle size={16} className="text-purple-600" />
+                <div className="flex items-center gap-3 text-gray-600 text-lg">
+                  <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MessageCircle size={18} className="text-purple-600" />
                   </div>
-                  <span className="flex-1 leading-relaxed line-clamp-3 max-w-[240px]">
+                  <span className="flex-1 leading-relaxed line-clamp-3 max-w-[300px]">
                     {form.bio || "No bio yet"}
                   </span>
                 </div>
               </div>
-            </div>
-
-            {/* Password Settings - Moved Here */}
-            <div className="border-t border-gray-200">
-              <PasswordSettings hasPassword={hasPassword} showToast={showToast} />
             </div>
           </div>
 
@@ -371,6 +357,10 @@ export default function Profile() {
                 </button>
               </div>
             </div>
+          </div>
+          {/* Password Settings - Moved Here */}
+          <div className="border-t border-gray-200">
+            <PasswordSettings hasPassword={hasPassword} showToast={showToast} />
           </div>
         </div>
       </div>
