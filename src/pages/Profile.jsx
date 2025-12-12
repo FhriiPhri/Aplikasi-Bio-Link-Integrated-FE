@@ -552,7 +552,7 @@ export default function Profile() {
                             onChange={(e) =>
                               setForm({ ...form, phone_number: e.target.value })
                             }
-                            placeholder="+1 234 567 8900"
+                            placeholder="+62 8"
                           />
                         </div>
 
@@ -569,7 +569,7 @@ export default function Profile() {
                             onChange={(e) =>
                               setForm({ ...form, bio: e.target.value })
                             }
-                            placeholder="Tell your story..."
+                            placeholder="Tell about yourself..."
                           />
                           <div className="flex items-center justify-between mt-2">
                             <p className="text-xs text-gray-500">
@@ -637,37 +637,6 @@ export default function Profile() {
                         </div>
 
                         <div className="space-y-4">
-                          {/* Logout All Devices */}
-                          <div className="bg-red-50 border border-red-100 rounded-xl p-5">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                                  <LogOut size={20} className="text-red-600" />
-                                </div>
-                                <div>
-                                  <h4 className="font-semibold text-gray-900">
-                                    Logout from All Devices
-                                  </h4>
-                                  <p className="text-sm text-gray-600 mt-1">
-                                    Sign out from all other devices except this
-                                    one
-                                  </p>
-                                </div>
-                              </div>
-                              <button
-                                onClick={() =>
-                                  showToast(
-                                    "info",
-                                    "This feature will be implemented soon"
-                                  )
-                                }
-                                className="px-6 py-2.5 border border-red-300 text-red-600 font-medium rounded-lg hover:bg-white transition-colors"
-                              >
-                                Logout All
-                              </button>
-                            </div>
-                          </div>
-
                           {/* Delete Account */}
                           <div className="bg-red-50 border border-red-100 rounded-xl p-5">
                             <div className="flex items-center justify-between">
