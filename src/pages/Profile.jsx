@@ -40,6 +40,7 @@ export default function Profile() {
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState(null);
   const [hasPassword, setHasPassword] = useState(false);
+  const [isBioExpanded, setIsBioExpanded] = useState(false);
 
   useEffect(() => {
     loadProfile();
@@ -256,7 +257,7 @@ export default function Profile() {
           </div>
         )}
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto space-y-6">
           <button
             onClick={goToDashboard}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
@@ -272,7 +273,7 @@ export default function Profile() {
             <p className="text-gray-600">Manage your account information</p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6">
+           <div className="grid lg:grid-cols-3 gap-6">
             {/* Left Column - Profile Card */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
@@ -302,32 +303,61 @@ export default function Profile() {
                   @{form.username || "username"}
                 </p>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 text-gray-600 text-sm">
-                    <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Phone size={16} className="text-indigo-600" />
-                    </div>
-                    <span>{form.phone_number || "No phone number"}</span>
+              <div className="space-y-4">
+                {/* Phone Number — tetap seperti semula */}
+                <div className="flex items-center gap-3 text-gray-600 text-sm">
+                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Phone size={16} className="text-indigo-600" />
                   </div>
-                  <div className="flex items-center gap-3 text-gray-600 text-sm">
-                    <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <MessageCircle size={16} className="text-purple-600" />
-                    </div>
-                    <span className="flex-1 leading-relaxed line-clamp-3 max-w-[240px]">
+                  <span>{form.phone_number || "No phone number"}</span>
+                </div>
+                    
+
+                {/* Bio — dengan View All (versi scrollable saat expanded) */}
+                <div
+                  className={`text-gray-600 text-sm ${
+                    isBioExpanded 
+                      ? 'flex flex-col gap-2' 
+                      : 'flex flex-row gap-3'
+                  }`}
+                >
+                  <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MessageCircle size={16} className="text-purple-600" />
+                  </div>
+                
+                  <div className={isBioExpanded ? "w-full" : "max-w-[240px] flex-1"}>
+                    {/* Container scrollable untuk bio */}
+                    <div
+                      className={`leading-relaxed overflow-hidden ${
+                        !isBioExpanded 
+                          ? 'line-clamp-3' 
+                          : 'max-h-32 overflow-y-auto pr-1' // scrollable vertikal saat expanded
+                      }`}
+                      style={{ 
+                        whiteSpace: isBioExpanded ? 'normal' : 'pre-line' 
+                      }}
+                    >
                       {form.bio || "No bio yet"}
-                    </span>
+                    </div>
+                    
+                    {/* Tombol View all / Show less */}
+                    {form.bio && form.bio.length > 120 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setIsBioExpanded(!isBioExpanded);
+                        }}
+                        className="mt-1 text-indigo-600 hover:text-indigo-800 text-xs font-medium"
+                      >
+                        {isBioExpanded ? 'Show less' : 'View all'}
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
-
-              {/* Password Settings - Moved Here */}
-              <div className="border-t border-gray-200">
-                <PasswordSettings
-                  hasPassword={hasPassword}
-                  showToast={showToast}
-                />
-              </div>
             </div>
+          </div>
 
             {/* Right Column - Edit Profile Form */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -414,6 +444,10 @@ export default function Profile() {
                 </div>
               </div>
             </div>
+                 {/* Password Settings - Moved Here */}
+              <div className="border-t border-gray-200">
+                <PasswordSettings hasPassword={hasPassword} showToast={showToast}/>
+              </div>
           </div>
         </div>
 
@@ -521,6 +555,7 @@ export default function Profile() {
 function PasswordSettings({ hasPassword, showToast }) {
   const [showPasswords, setShowPasswords] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // 🔹 State untuk modal
 
   const [setPasswordForm, setSetPasswordForm] = useState({
     password: "",
@@ -538,6 +573,51 @@ function PasswordSettings({ hasPassword, showToast }) {
       ...prev,
       [field]: !prev[field],
     }));
+  };
+
+  // 🔹 Hanya tampilkan modal
+  const handleChangePassword = () => {
+    setShowConfirmModal(true);
+  };
+
+  // 🔹 Fungsi sebenarnya untuk mengganti password
+  const confirmChangePassword = async () => {
+    if (
+      changePasswordForm.password !== changePasswordForm.password_confirmation
+    ) {
+      showToast("error", "New passwords do not match!");
+      setShowConfirmModal(false);
+      return;
+    }
+
+    if (changePasswordForm.password.length < 8) {
+      showToast("error", "New password must be at least 8 characters!");
+      setShowConfirmModal(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axiosClient.post("/user/password/change", {
+        current_password: changePasswordForm.current_password,
+        password: changePasswordForm.password,
+        password_confirmation: changePasswordForm.password_confirmation,
+      });
+
+      showToast("success", "Password changed successfully!");
+      setChangePasswordForm({
+        current_password: "",
+        password: "",
+        password_confirmation: "",
+      });
+      setShowConfirmModal(false);
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.message || "Failed to change password";
+      showToast("error", errorMsg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSetPassword = async () => {
@@ -570,48 +650,8 @@ function PasswordSettings({ hasPassword, showToast }) {
     }
   };
 
-  const handleChangePassword = async () => {
-    if (
-      changePasswordForm.password !== changePasswordForm.password_confirmation
-    ) {
-      showToast("error", "New passwords do not match!");
-      return;
-    }
-
-    if (changePasswordForm.password.length < 8) {
-      showToast("error", "New password must be at least 8 characters!");
-      return;
-    }
-
-    if (!window.confirm("Are you sure you want to change your password?")) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await axiosClient.post("/user/password/change", {
-        current_password: changePasswordForm.current_password,
-        password: changePasswordForm.password,
-        password_confirmation: changePasswordForm.password_confirmation,
-      });
-
-      showToast("success", "Password changed successfully!");
-      setChangePasswordForm({
-        current_password: "",
-        password: "",
-        password_confirmation: "",
-      });
-    } catch (err) {
-      const errorMsg =
-        err.response?.data?.message || "Failed to change password";
-      showToast("error", errorMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="p-6">
+    <div className="p-6 relative">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
           <Lock size={20} className="text-indigo-600" />
@@ -630,10 +670,7 @@ function PasswordSettings({ hasPassword, showToast }) {
         <div className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <div className="flex gap-2">
-              <ShieldCheck
-                size={18}
-                className="text-blue-600 flex-shrink-0 mt-0.5"
-              />
+              <ShieldCheck size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
               <p className="text-xs text-blue-700">
                 Set a password to enable email login
               </p>
@@ -651,10 +688,7 @@ function PasswordSettings({ hasPassword, showToast }) {
                 className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
                 value={setPasswordForm.password}
                 onChange={(e) =>
-                  setSetPasswordForm({
-                    ...setPasswordForm,
-                    password: e.target.value,
-                  })
+                  setSetPasswordForm({ ...setPasswordForm, password: e.target.value })
                 }
                 placeholder="Min. 8 characters"
               />
@@ -663,11 +697,7 @@ function PasswordSettings({ hasPassword, showToast }) {
                 onClick={() => togglePasswordVisibility("newPassword")}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {showPasswords.newPassword ? (
-                  <EyeOff size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
+                {showPasswords.newPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -683,10 +713,7 @@ function PasswordSettings({ hasPassword, showToast }) {
                 className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
                 value={setPasswordForm.password_confirmation}
                 onChange={(e) =>
-                  setSetPasswordForm({
-                    ...setPasswordForm,
-                    password_confirmation: e.target.value,
-                  })
+                  setSetPasswordForm({ ...setPasswordForm, password_confirmation: e.target.value })
                 }
                 placeholder="Re-enter password"
               />
@@ -695,11 +722,7 @@ function PasswordSettings({ hasPassword, showToast }) {
                 onClick={() => togglePasswordVisibility("confirmPassword")}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {showPasswords.confirmPassword ? (
-                  <EyeOff size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
+                {showPasswords.confirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -735,10 +758,7 @@ function PasswordSettings({ hasPassword, showToast }) {
                 className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
                 value={changePasswordForm.current_password}
                 onChange={(e) =>
-                  setChangePasswordForm({
-                    ...changePasswordForm,
-                    current_password: e.target.value,
-                  })
+                  setChangePasswordForm({ ...changePasswordForm, current_password: e.target.value })
                 }
                 placeholder="Current password"
               />
@@ -747,11 +767,7 @@ function PasswordSettings({ hasPassword, showToast }) {
                 onClick={() => togglePasswordVisibility("currentPassword")}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {showPasswords.currentPassword ? (
-                  <EyeOff size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
+                {showPasswords.currentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -767,10 +783,7 @@ function PasswordSettings({ hasPassword, showToast }) {
                 className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
                 value={changePasswordForm.password}
                 onChange={(e) =>
-                  setChangePasswordForm({
-                    ...changePasswordForm,
-                    password: e.target.value,
-                  })
+                  setChangePasswordForm({ ...changePasswordForm, password: e.target.value })
                 }
                 placeholder="Min. 8 characters"
               />
@@ -779,11 +792,7 @@ function PasswordSettings({ hasPassword, showToast }) {
                 onClick={() => togglePasswordVisibility("newPassword")}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {showPasswords.newPassword ? (
-                  <EyeOff size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
+                {showPasswords.newPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -799,10 +808,7 @@ function PasswordSettings({ hasPassword, showToast }) {
                 className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
                 value={changePasswordForm.password_confirmation}
                 onChange={(e) =>
-                  setChangePasswordForm({
-                    ...changePasswordForm,
-                    password_confirmation: e.target.value,
-                  })
+                  setChangePasswordForm({ ...changePasswordForm, password_confirmation: e.target.value })
                 }
                 placeholder="Re-enter new password"
               />
@@ -811,17 +817,13 @@ function PasswordSettings({ hasPassword, showToast }) {
                 onClick={() => togglePasswordVisibility("confirmNewPassword")}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {showPasswords.confirmNewPassword ? (
-                  <EyeOff size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
+                {showPasswords.confirmNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
           <button
-            onClick={handleChangePassword}
+            onClick={handleChangePassword} // 🔹 Panggil fungsi yang hanya tampilkan modal
             disabled={loading}
             className="w-full py-2 px-4 text-sm bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
@@ -839,9 +841,36 @@ function PasswordSettings({ hasPassword, showToast }) {
           </button>
         </div>
       )}
+
+      {/* 🔹 MODAL KONFIRMASI - DITEMPATKAN DI AKHIR, DI DALAM return() */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg max-w-sm w-full">
+            <p className="text-gray-800 mb-3">
+              Are you sure you want to change your password?
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={confirmChangePassword} // 🔹 Panggil fungsi proses sebenarnya
+                className="flex-1 text-sm bg-indigo-600 text-white px-3 py-1.5 rounded"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+
+                className="flex-1 text-sm bg-gray-200 text-gray-800 px-3 py-1.5 rounded"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
 
 // Simple Cropper Component
 function SimpleCropper({
