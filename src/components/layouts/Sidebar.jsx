@@ -14,7 +14,17 @@ import {
   LogOut,
   ChevronRight,
   ChevronLeft,
-  Menu,
+  MessageSquare,
+  Target,
+  Briefcase,
+  Calendar,
+  CheckSquare,
+  FolderKanban,
+  FileCheck,
+  BookOpen,
+  LifeBuoy,
+  Shield,
+  Database,
 } from "lucide-react";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -99,7 +109,7 @@ export default function Sidebar({
     >
       {/* Mobile Header dengan close button */}
       {isMobile && mobileMenuOpen && (
-        <div className="sticky top-0 z-50 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <div className="sticky top-0 z-50 bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
               src={icon2}
@@ -110,20 +120,26 @@ export default function Sidebar({
           </div>
           <button
             onClick={onCloseMobileMenu}
-            className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             aria-label="Close menu"
           >
-            <X size={20} className="text-gray-700" />
+            <X size={20} className="text-gray-600" />
           </button>
         </div>
       )}
 
       {/* Desktop Header dengan toggle button */}
       {!isMobile && (
-        <div className="sticky top-0 z-50 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <div
+          className={`sticky top-0 z-50 bg-white border-b border-gray-200 px-${
+            internalCollapsed ? "4" : "5"
+          } py-4 flex items-center ${
+            internalCollapsed ? "justify-center" : "justify-between"
+          }`}
+        >
           <div
             className={`flex items-center gap-3 ${
-              internalCollapsed ? "justify-center w-full" : ""
+              internalCollapsed ? "justify-center" : ""
             }`}
           >
             <img
@@ -135,27 +151,27 @@ export default function Sidebar({
               <span className="text-lg font-bold text-gray-800">Synapse</span>
             )}
           </div>
-          <button
-            onClick={toggleCollapse}
-            className={`p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors ${
-              internalCollapsed ? "hidden" : ""
-            }`}
-            aria-label="Collapse sidebar"
-          >
-            <ChevronLeft size={20} className="text-gray-700" />
-          </button>
+          {!internalCollapsed && (
+            <button
+              onClick={toggleCollapse}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Collapse sidebar"
+            >
+              <ChevronLeft size={20} className="text-gray-600" />
+            </button>
+          )}
         </div>
       )}
 
       {/* TOP SECTION */}
       <div
-        className={`flex-1 overflow-y-auto px-4 pb-4 ${
-          isMobile && mobileMenuOpen ? "pt-4" : "pt-4"
-        }`}
+        className={`flex-1 overflow-y-auto px-${
+          internalCollapsed ? "3" : "4"
+        } pb-4 ${isMobile && mobileMenuOpen ? "pt-4" : "pt-6"}`}
       >
         {/* Menu untuk desktop collapsed */}
         {!isMobile && internalCollapsed ? (
-          <nav className="flex flex-col gap-1 pt-4">
+          <nav className="flex flex-col gap-2 pt-4">
             <SidebarItemCollapsed
               icon={<Home size={22} />}
               label="Dashboard"
@@ -169,18 +185,24 @@ export default function Sidebar({
               onClick={() => handleMenuItemClick("/search")}
             />
             <SidebarItemCollapsed
+              icon={<ClipboardList size={22} />}
+              label="Check-ins"
+              to="/checkins"
+              onClick={() => handleMenuItemClick("/checkins")}
+            />
+            <SidebarItemCollapsed
+              icon={<Bell size={22} />}
+              label="Notifications"
+              to="/notifications"
+              onClick={() => handleMenuItemClick("/notifications")}
+            />
+            <SidebarItemCollapsed
               icon={<UserCircle size={22} />}
               label="Profile"
               to="/profile"
               onClick={() => handleMenuItemClick("/profile")}
             />
-            <SidebarItemCollapsed
-              icon={<Settings size={22} />}
-              label="Settings"
-              to="/settings"
-              onClick={() => handleMenuItemClick("/settings")}
-            />
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-gray-200">
               <SidebarItemCollapsed
                 icon={<ChevronRight size={22} />}
                 label="Expand"
@@ -190,7 +212,7 @@ export default function Sidebar({
           </nav>
         ) : (
           /* Menu lengkap untuk desktop expanded atau mobile */
-          <nav className="flex flex-col gap-1 text-gray-700">
+          <nav className="flex flex-col gap-1.5 text-gray-700">
             {/* Main Navigation */}
             <SidebarItem
               icon={<Home size={20} />}
@@ -218,13 +240,13 @@ export default function Sidebar({
               onClick={() => handleMenuItemClick("/checkins")}
             />
             <SidebarItem
-              icon={<ClipboardList size={20} />}
+              icon={<Target size={20} />}
               label="Objectives"
               to="/objectives"
               onClick={() => handleMenuItemClick("/objectives")}
             />
             <SidebarItem
-              icon={<ClipboardList size={20} />}
+              icon={<Briefcase size={20} />}
               label="Career Hub"
               to="/career"
               onClick={() => handleMenuItemClick("/career")}
@@ -254,6 +276,12 @@ export default function Sidebar({
               to="/inbox"
               onClick={() => handleMenuItemClick("/inbox")}
             />
+            <SidebarItem
+              icon={<MessageSquare size={20} />}
+              label="Messages"
+              to="/messages"
+              onClick={() => handleMenuItemClick("/messages")}
+            />
 
             {/* Productivity */}
             <div className="mt-6 mb-2">
@@ -262,16 +290,53 @@ export default function Sidebar({
               </p>
             </div>
             <SidebarItem
-              icon={<ClipboardList size={20} />}
+              icon={<FolderKanban size={20} />}
               label="Kanban"
               to="/kanban"
               onClick={() => handleMenuItemClick("/kanban")}
             />
             <SidebarItem
-              icon={<ClipboardList size={20} />}
+              icon={<CheckSquare size={20} />}
               label="Tasks"
               to="/tasks"
               onClick={() => handleMenuItemClick("/tasks")}
+            />
+            <SidebarItem
+              icon={<Calendar size={20} />}
+              label="Calendar"
+              to="/calendar"
+              onClick={() => handleMenuItemClick("/calendar")}
+            />
+            <SidebarItem
+              icon={<FileCheck size={20} />}
+              label="Projects"
+              to="/projects"
+              onClick={() => handleMenuItemClick("/projects")}
+            />
+
+            {/* Team & Organization */}
+            <div className="mt-6 mb-2">
+              <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Organization
+              </p>
+            </div>
+            <SidebarItem
+              icon={<Users size={20} />}
+              label="Team"
+              to="/team"
+              onClick={() => handleMenuItemClick("/team")}
+            />
+            <SidebarItem
+              icon={<Database size={20} />}
+              label="Resources"
+              to="/resources"
+              onClick={() => handleMenuItemClick("/resources")}
+            />
+            <SidebarItem
+              icon={<Shield size={20} />}
+              label="Admin"
+              to="/admin"
+              onClick={() => handleMenuItemClick("/admin")}
             />
 
             {/* Help & Settings */}
@@ -287,7 +352,13 @@ export default function Sidebar({
               onClick={() => handleMenuItemClick("/docs")}
             />
             <SidebarItem
-              icon={<HelpCircle size={20} />}
+              icon={<BookOpen size={20} />}
+              label="Knowledge Base"
+              to="/knowledge"
+              onClick={() => handleMenuItemClick("/knowledge")}
+            />
+            <SidebarItem
+              icon={<LifeBuoy size={20} />}
               label="Support"
               to="/support"
               onClick={() => handleMenuItemClick("/support")}
@@ -311,15 +382,18 @@ export default function Sidebar({
       {/* USER PROFILE SECTION - Hanya untuk desktop expanded atau mobile */}
       {(!isMobile && !internalCollapsed) || (isMobile && mobileMenuOpen) ? (
         <div
-          className="border-t border-gray-200 p-4 flex items-center gap-3 sticky bottom-0 bg-white cursor-pointer hover:bg-gray-50 transition-colors"
+          className="border-t border-gray-200 px-4 py-4 flex items-center gap-3 sticky bottom-0 bg-white cursor-pointer hover:bg-gray-50 transition-colors group"
           onClick={() => setOpen(!open)}
           ref={dropdownRef}
         >
-          <img
-            src={avatarUrl}
-            className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
-            alt="User avatar"
-          />
+          <div className="relative">
+            <img
+              src={avatarUrl}
+              className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 group-hover:border-gray-300 transition-colors"
+              alt="User avatar"
+            />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+          </div>
 
           <div className="flex flex-col overflow-hidden flex-1 min-w-0">
             <p className="font-semibold text-sm text-gray-900 truncate">
@@ -335,54 +409,16 @@ export default function Sidebar({
             <div
               className="
               absolute left-4 right-4
-              bottom-16 bg-white border border-gray-300 shadow-xl rounded-xl p-2 z-50
+              bottom-16 bg-white border border-gray-200 shadow-xl rounded-lg p-2 z-50
               animate-scaleIn
             "
             >
-              {/* Profile Link */}
-              <Link
-                to="/profile"
-                className="w-full flex items-center gap-3 px-3 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                onClick={() => {
-                  setOpen(false);
-                  if (isMobile && onCloseMobileMenu) onCloseMobileMenu();
-                }}
-              >
-                <UserCircle size={18} className="text-gray-500" />
-                <div className="flex-1">
-                  <p className="font-medium">My Profile</p>
-                  <p className="text-xs text-gray-500">
-                    View and edit your profile
-                  </p>
-                </div>
-              </Link>
-
-              {/* Settings Link */}
-              <Link
-                to="/settings"
-                className="w-full flex items-center gap-3 px-3 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                onClick={() => {
-                  setOpen(false);
-                  if (isMobile && onCloseMobileMenu) onCloseMobileMenu();
-                }}
-              >
-                <Settings size={18} className="text-gray-500" />
-                <div className="flex-1">
-                  <p className="font-medium">Settings</p>
-                  <p className="text-xs text-gray-500">
-                    Customize your preferences
-                  </p>
-                </div>
-              </Link>
-
-              <div className="border-t border-gray-200 my-2"></div>
-
               {/* LOGOUT */}
               <button
-                className="w-full flex items-center gap-3 px-3 py-3 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-red-500 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 text-red transition-colors"
                 onClick={handleLogout}
               >
-                <LogOut size={18} />
+                <LogOut size={18} className="text-red-500" />
                 <div className="flex-1 text-left">
                   <p>Logout</p>
                   <p className="text-xs text-red-500">
@@ -395,13 +431,16 @@ export default function Sidebar({
         </div>
       ) : !isMobile && internalCollapsed ? (
         /* User avatar mini untuk desktop collapsed */
-        <div className="border-t border-gray-200 p-4 flex items-center justify-center">
-          <img
-            src={avatarUrl}
-            className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 cursor-pointer"
-            alt="User avatar"
-            onClick={() => setOpen(!open)}
-          />
+        <div className="border-t border-gray-200 p-4 flex items-center justify-center group">
+          <div className="relative">
+            <img
+              src={avatarUrl}
+              className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 group-hover:border-gray-300 transition-colors cursor-pointer"
+              alt="User avatar"
+              onClick={() => setOpen(!open)}
+            />
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+          </div>
         </div>
       ) : null}
     </div>
@@ -424,27 +463,23 @@ function SidebarItem({ icon, label, to, onClick }) {
     <Link
       to={to}
       className={`
-        flex items-center gap-3 px-3 py-3 rounded-xl transition-all cursor-pointer
+        flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all cursor-pointer
         ${
           isActive
-            ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-sm"
-            : "text-gray-700 hover:bg-gray-100"
+            ? "bg-indigo-50 text-indigo-700 border-l-4 border-indigo-500"
+            : "text-gray-700 hover:bg-gray-100 border-l-4 border-transparent"
         }
       `}
       onClick={handleClick}
     >
       <div
         className={`
-        ${isActive ? "text-white" : "text-gray-500"}
+        ${isActive ? "text-indigo-600" : "text-gray-500"}
       `}
       >
         {icon}
       </div>
       <span className="text-sm font-medium">{label}</span>
-
-      {isActive && (
-        <div className="ml-auto w-2 h-2 bg-white rounded-full"></div>
-      )}
     </Link>
   );
 }
@@ -466,11 +501,11 @@ function SidebarItemCollapsed({ icon, label, to, onClick }) {
   return (
     <div
       className={`
-        flex items-center justify-center p-3 rounded-xl transition-all cursor-pointer
+        flex items-center justify-center p-2.5 rounded-lg transition-all cursor-pointer
         ${
           isActive && to
-            ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-sm"
-            : "text-gray-700 hover:bg-gray-100"
+            ? "bg-indigo-50 text-indigo-600"
+            : "text-gray-600 hover:bg-gray-100"
         }
       `}
       onClick={handleClick}
@@ -478,7 +513,7 @@ function SidebarItemCollapsed({ icon, label, to, onClick }) {
     >
       <div
         className={`
-        ${isActive && to ? "text-white" : "text-gray-500"}
+        ${isActive && to ? "text-indigo-600" : "text-gray-500"}
       `}
       >
         {icon}
