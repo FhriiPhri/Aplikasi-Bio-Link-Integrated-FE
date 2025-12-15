@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [theme, setTheme] = useState("light");
   const [hoveredFeature, setHoveredFeature] = useState(null);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     username: "yourname",
@@ -181,7 +183,10 @@ const LandingPage = () => {
                   ></span>
                 </a>
               ))}
-              <button className="group relative px-6 py-2.5 rounded-lg font-medium overflow-hidden transition-all duration-300 hover:scale-105">
+              <button
+                onClick={() => navigate("/login")}
+                className="group relative px-6 py-2.5 rounded-lg font-medium overflow-hidden transition-all duration-300 hover:scale-105"
+              >
                 <div
                   className={`absolute inset-0 bg-gradient-to-r ${gradients.primary}`}
                 ></div>
@@ -632,4 +637,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage
+export default LandingPage;
