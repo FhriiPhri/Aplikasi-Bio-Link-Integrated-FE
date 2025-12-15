@@ -308,16 +308,6 @@ export default function Profile() {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <button
-              onClick={goToDashboard}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors group mb-6"
-            >
-              <ArrowLeft
-                size={20}
-                className="group-hover:-translate-x-1 transition-transform"
-              />
-              <span className="font-medium">Back to Dashboard</span>
-            </button>
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Profile Settings
