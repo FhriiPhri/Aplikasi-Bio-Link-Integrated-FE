@@ -25,6 +25,8 @@ import {
   LifeBuoy,
   Shield,
   Database,
+  Star,
+  BarChart2
 } from "lucide-react";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -230,24 +232,24 @@ export default function Sidebar({
             {/* Reporting Section */}
             <div className="mt-6 mb-2">
               <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Reporting
+                Main Menu
               </p>
             </div>
             <SidebarItem
-              icon={<ClipboardList size={20} />}
-              label="Check-ins"
+              icon={<Home size={20} />}
+              label="My Page"
               to="/checkins"
               onClick={() => handleMenuItemClick("/checkins")}
             />
             <SidebarItem
-              icon={<Target size={20} />}
-              label="Objectives"
+              icon={<Star size={20} />}
+              label="Premium Pack"
               to="/objectives"
               onClick={() => handleMenuItemClick("/objectives")}
             />
             <SidebarItem
-              icon={<Briefcase size={20} />}
-              label="Career Hub"
+              icon={<BarChart2 size={20} />}
+              label="Analystic History"
               to="/career"
               onClick={() => handleMenuItemClick("/career")}
             />
