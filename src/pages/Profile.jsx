@@ -595,6 +595,8 @@ export default function Profile() {
 
                               <input
                                 type="text"
+                                name="name"
+                                autoComplete="name"
                                 className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl
                    focus:outline-none focus:ring-2 focus:ring-indigo-500
                    focus:border-transparent transition text-gray-900 placeholder-gray-400 text-sm sm:text-base"
@@ -626,6 +628,8 @@ export default function Profile() {
 
                               <input
                                 type="text"
+                                name="username"
+                                autoComplete="username"
                                 className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl
                    focus:outline-none focus:ring-2 focus:ring-indigo-500
                    focus:border-transparent transition text-gray-900 placeholder-gray-400 text-sm sm:text-base"
