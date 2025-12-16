@@ -12,6 +12,7 @@ export default function Login() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [rememberMe, setRememberMe] = useState(false); // State untuk remember me
   const { user, setUser, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,6 +34,13 @@ export default function Login() {
       axiosClient.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${data.token}`;
+
+      // Simpan email ke localStorage jika remember me dicentang
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
 
       // Show success modal first
       setShowSuccessModal(true);
@@ -60,6 +68,15 @@ export default function Login() {
   const goToLandingPage = () => {
     navigate("/");
   };
+
+  // Load remembered email on component mount
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -224,6 +241,39 @@ export default function Login() {
 
         .btn-gradient-animated:hover {
           background-position: right center;
+        }
+
+        /* Custom checkbox styling */
+        .custom-checkbox {
+          appearance: none;
+          -webkit-appearance: none;
+          width: 18px;
+          height: 18px;
+          border: 2px solid #d1d5db;
+          border-radius: 4px;
+          cursor: pointer;
+          position: relative;
+          transition: all 0.2s ease;
+        }
+
+        .custom-checkbox:checked {
+          background-color: #4f46e5;
+          border-color: #4f46e5;
+        }
+
+        .custom-checkbox:checked::after {
+          content: "✓";
+          position: absolute;
+          color: white;
+          font-size: 14px;
+          font-weight: bold;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        .custom-checkbox:hover {
+          border-color: #4f46e5;
         }
       `}</style>
 
@@ -432,7 +482,9 @@ export default function Login() {
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <input
                     type="checkbox"
-                    className="checkbox checkbox-sm border-2 border-gray-300 checked:border-indigo-600 [--chkbg:theme(colors.indigo.600)] [--chkfg:white]"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="custom-checkbox"
                   />
                   <span className="text-sm text-gray-700 group-hover:text-gray-900 font-medium">
                     Remember me
