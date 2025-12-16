@@ -185,33 +185,32 @@ const DocumentationModal = ({ isOpen, onClose }) => {
 
   return (
     <div 
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
       onClick={(e) => {
-        // Klik backdrop untuk close modal
         if (e.target === e.currentTarget) {
           onClose();
         }
       }}
     >
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
         
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 text-white flex items-center justify-between flex-shrink-0">
+        <div className="bg-white border-b border-gray-200 p-5 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-lg">
-              <Book className="w-6 h-6" />
+            <div className="bg-blue-500 p-2.5 rounded-lg">
+              <Book className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold">Documentation</h2>
-              <p className="text-white/90 text-sm hidden sm:block">Complete guide to Synapse features</p>
+              <h2 className="text-xl font-bold text-gray-900">Documentation</h2>
+              <p className="text-gray-500 text-sm hidden sm:block">Complete guide to Synapse features</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="hover:bg-white/20 p-2 rounded-full transition-colors"
+            className="hover:bg-gray-100 p-2 rounded-lg transition-colors text-gray-500 hover:text-gray-700"
             aria-label="Close"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -244,7 +243,7 @@ const DocumentationModal = ({ isOpen, onClose }) => {
                     onClick={() => handleTabChange(tab)}
                     className={`w-full px-4 py-3 flex items-center gap-3 text-left transition-colors ${
                       activeTab === tab
-                        ? 'bg-purple-50 text-purple-600 border-l-4 border-purple-600'
+                        ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-500'
                         : 'hover:bg-gray-50 text-gray-700'
                     }`}
                   >
@@ -261,17 +260,17 @@ const DocumentationModal = ({ isOpen, onClose }) => {
         <div className="flex flex-1 overflow-hidden">
           
           {/* Desktop Sidebar */}
-          <div className="hidden lg:block w-64 bg-gray-50 border-r border-gray-200 overflow-y-auto flex-shrink-0">
-            <div className="p-4 space-y-2">
+          <div className="hidden lg:block w-56 bg-gray-50 border-r border-gray-200 overflow-y-auto flex-shrink-0">
+            <div className="p-3 space-y-1">
               {tabs.map((tab) => {
                 const section = documentationSections[tab];
                 return (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all ${
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all ${
                       activeTab === tab
-                        ? 'bg-purple-600 text-white shadow-lg'
+                        ? 'bg-blue-500 text-white'
                         : 'hover:bg-gray-200 text-gray-700'
                     }`}
                   >
@@ -284,23 +283,23 @@ const DocumentationModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 overflow-y-auto p-4 lg:p-6">
-            <div className="max-w-4xl mx-auto">
+          <div className="flex-1 overflow-y-auto p-6 bg-white">
+            <div className="max-w-2xl">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 {documentationSections[activeTab].title}
               </h3>
 
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {documentationSections[activeTab].content.map((item, index) => (
-                  <div key={index} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                  <div key={index} className="bg-white border border-gray-200 rounded-lg p-5 hover:border-blue-300 transition-colors">
                     <h4 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h4>
                     <p className="text-gray-600 mb-4 text-sm">{item.description}</p>
                     
-                    <div className="space-y-3">
-                      <p className="text-sm font-semibold text-purple-600">Steps:</p>
+                    <div className="space-y-2.5">
+                      <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">Steps:</p>
                       {item.steps.map((step, stepIndex) => (
                         <div key={stepIndex} className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">
+                          <div className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">
                             {stepIndex + 1}
                           </div>
                           <p className="text-gray-700 text-sm pt-0.5">{step}</p>
@@ -312,12 +311,12 @@ const DocumentationModal = ({ isOpen, onClose }) => {
               </div>
 
               {/* Pro Tip */}
-              <div className="mt-6 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+              <div className="mt-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">💡</span>
                   <div>
-                    <p className="font-semibold text-yellow-800">Pro Tip:</p>
-                    <p className="text-yellow-700 text-sm mt-1">
+                    <p className="font-semibold text-blue-900">Pro Tip</p>
+                    <p className="text-blue-800 text-sm mt-1">
                       Bookmark this documentation for quick access. You can also search for specific topics using Ctrl+F (Cmd+F on Mac).
                     </p>
                   </div>
@@ -331,20 +330,23 @@ const DocumentationModal = ({ isOpen, onClose }) => {
         <div className="border-t border-gray-200 p-4 bg-gray-50 flex-shrink-0">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-600 text-center sm:text-left">
-              Need more help? Contact our{' '}
-              <a href="#" className="text-purple-600 hover:underline font-semibold">
-                support team
+              Need more help? mailto:{" "}
+              <a
+                href="mailto:synapsebioapp@gmail.com"
+                className="text-blue-600 hover:text-blue-700 font-medium underline"
+              >
+                synapsebioapp@gmail.com
               </a>
             </p>
+
             <button
               onClick={onClose}
-              className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+              className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium transition-colors"
             >
               Close Documentation
             </button>
           </div>
         </div>
-
       </div>
     </div>
   );

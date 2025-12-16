@@ -109,12 +109,12 @@ const QuickStartModal = ({ isOpen, onClose }) => {
             >
                 <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-slideUp">
                     {/* Modal Header */}
-                    <div className="bg-gradient-to-r from-purple-600 to-purple-400 px-6 py-5 flex items-center justify-between">
+                    <div className="bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-5 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <span className="text-3xl">🎯</span>
                             <div>
                                 <h2 className="text-2xl font-bold text-white">Quick Start Guide</h2>
-                                <p className="text-purple-100 text-sm">Learn Synapse in 5 minutes</p>
+                                <p className="text-blue-100 text-sm">Learn Synapse in 5 minutes</p>
                             </div>
                         </div>
                         <button 
@@ -131,13 +131,13 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                             <span className="text-sm font-medium text-gray-600">
                                 Step {currentStep} of {totalSteps}
                             </span>
-                            <span className="text-sm font-medium text-purple-600">
+                            <span className="text-sm font-medium text-blue-600">
                                 {Math.round((currentStep / totalSteps) * 100)}% Complete
                             </span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2.5">
                             <div 
-                                className="bg-gradient-to-r from-purple-600 to-purple-400 h-2.5 rounded-full transition-all duration-500"
+                                className="bg-gradient-to-r from-blue-600 to-blue-400 h-2.5 rounded-full transition-all duration-500"
                                 style={{ width: `${(currentStep / totalSteps) * 100}%` }}
                             ></div>
                         </div>
@@ -159,7 +159,7 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                         {/* Step Details */}
                         <div className="space-y-4 mb-6">
                             <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                                <span className="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm">
+                                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm">
                                     ✓
                                 </span>
                                 Steps:
@@ -167,7 +167,7 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                             <ul className="space-y-3">
                                 {currentStepData.details.map((detail, index) => (
                                     <li key={index} className="flex items-start gap-3">
-                                        <span className="w-6 h-6 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">
+                                        <span className="w-6 h-6 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5">
                                             {index + 1}
                                         </span>
                                         <span className="text-gray-700">{detail}</span>
@@ -177,12 +177,12 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                         </div>
 
                         {/* Tips Section */}
-                        <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg">
+                        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
                             <div className="flex items-start gap-2">
                                 <span className="text-xl">💡</span>
                                 <div>
-                                    <h5 className="font-semibold text-purple-900 mb-1">Pro Tip:</h5>
-                                    <p className="text-purple-800 text-sm">{currentStepData.tips}</p>
+                                    <h5 className="font-semibold text-blue-900 mb-1">Pro Tip:</h5>
+                                    <p className="text-blue-800 text-sm">{currentStepData.tips}</p>
                                 </div>
                             </div>
                         </div>
@@ -211,7 +211,7 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                             className={`px-6 py-3 font-semibold rounded-xl transition-all ${
                                 currentStep === 1
                                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                    : 'bg-white text-purple-600 border-2 border-purple-600 hover:bg-purple-50'
+                                    : 'bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-50'
                             }`}
                         >
                             ← Previous
@@ -224,7 +224,7 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                                     onClick={() => setCurrentStep(index + 1)}
                                     className={`w-2.5 h-2.5 rounded-full transition-all ${
                                         currentStep === index + 1
-                                            ? 'bg-purple-600 w-8'
+                                            ? 'bg-blue-600 w-8'
                                             : 'bg-gray-300 hover:bg-gray-400'
                                     }`}
                                 />
@@ -234,7 +234,7 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                         {currentStep < totalSteps ? (
                             <button 
                                 onClick={handleNext}
-                                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-400 text-white font-semibold rounded-xl hover:opacity-90 transition-all"
+                                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold rounded-xl hover:opacity-90 transition-all"
                             >
                                 Next →
                             </button>

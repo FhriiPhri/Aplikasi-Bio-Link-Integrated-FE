@@ -122,7 +122,7 @@ const SupportPage = () => {
         <div className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-purple-400 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg">
                 <QuestionMarkCircleIcon className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -288,7 +288,7 @@ const SupportPage = () => {
           </div>
 
           {/* Contact Support CTA */}
-          <div className="bg-gradient-to-br from-purple-600 to-purple-400 rounded-2xl p-8 shadow-xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl p-8 shadow-xl relative overflow-hidden">
             {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-24 -translate-x-24"></div>
@@ -334,7 +334,7 @@ const SupportPage = () => {
                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                       />
                     </svg>
-                    support@synapse.link
+                    synapsebioapp@gmail.com
                   </div>
                   <div className="flex items-center gap-2">
                     <svg

@@ -401,7 +401,7 @@ export default function Profile() {
             {(activeTab === "profile" || window.innerWidth >= 1024) && (
               <div className="lg:col-span-1">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden lg:sticky lg:top-6">
-                  <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-24 sm:h-32"></div>
+                  <div className="bg-gradient-to-r from-indigo-500 via-blue-500 to-blue-400 h-24 sm:h-32"></div>
 
                   <div className="relative px-4 sm:px-6 pb-6 sm:pb-8">
                     <div className="absolute -top-10 sm:-top-16 left-1/2 transform -translate-x-1/2">
@@ -737,7 +737,7 @@ export default function Profile() {
                         <div className="pt-3 sm:pt-4 border-t border-gray-200">
                           <button
                             type="submit"
-                            className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 text-sm sm:text-base"
+                            className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 text-sm sm:text-base"
                           >
                             <Save size={16} className="sm:size-[18px]" />
                             Save Changes

@@ -17,7 +17,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
             >
                 <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-hidden animate-slideUp">
                     {/* Modal Header */}
-                    <div className="bg-gradient-to-r from-purple-600 to-purple-400 px-6 py-5 flex items-center justify-between">
+                    <div className="bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-5 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <ShieldCheckIcon className="w-8 h-8 text-white" />
                             <h2 className="text-2xl font-bold text-white">Security & Privacy</h2>
@@ -170,7 +170,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </p>
                                 <div className="mt-3 bg-purple-50 p-4 rounded-lg">
                                     <p className="text-gray-700">
-                                        <strong>Email:</strong> synapse@gmail.com<br />
+                                        <strong>Email:</strong> synapsebioapp@gmail.com <br />
                                         <strong>Address:</strong> Jakarta, Indonesia
                                     </p>
                                 </div>
