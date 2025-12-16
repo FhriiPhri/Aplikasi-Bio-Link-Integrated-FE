@@ -391,7 +391,10 @@ const LandingPage = () => {
                   </div>
                 </div>
 
-                <button onClick={() => navigate("/login")} className="group relative w-full py-4 rounded-xl font-semibold overflow-hidden transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl">
+                <button
+                  onClick={() => navigate("/login")}
+                  className="group relative w-full py-4 rounded-xl font-semibold overflow-hidden transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                >
                   <div
                     className={`absolute inset-0 bg-gradient-to-r ${gradients.primary}`}
                   ></div>
@@ -669,7 +672,7 @@ const LandingPage = () => {
             className={`pt-8 border-t ${themeColors.border} flex flex-col md:flex-row justify-between items-center gap-4`}
           >
             <p className={`text-sm ${themeColors.textMuted}`}>
-              © 2024 Synapse. All rights reserved.
+              © 2026 Synapse. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <a
