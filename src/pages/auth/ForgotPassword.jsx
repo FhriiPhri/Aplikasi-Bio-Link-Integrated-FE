@@ -529,6 +529,7 @@ export default function ForgotPasswordFlow() {
                     </div>
                     <input
                       type="email"
+                      name="email"
                       placeholder="name@company.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -878,7 +879,7 @@ export default function ForgotPasswordFlow() {
           <p className="text-sm text-gray-500">
             Need assistance?{" "}
             <a
-              href="mailto:support@synapse.com"
+              href="mailto:synapsebioapp@gmail.com"
               className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
             >
               Contact our support team
