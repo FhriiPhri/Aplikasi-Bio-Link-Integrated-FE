@@ -12,7 +12,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                     <div className="bg-gradient-to-r from-purple-600 to-purple-400 px-6 py-5 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <ShieldCheckIcon className="w-8 h-8 text-white" />
-                            <h2 className="text-2xl font-bold text-white">Keamanan & Privasi</h2>
+                            <h2 className="text-2xl font-bold text-white">Security & Privacy</h2>
                         </div>
                         <button 
                             onClick={onClose}
@@ -27,8 +27,8 @@ const SecurityModal = ({ isOpen, onClose }) => {
                         {/* Introduction */}
                         <div className="mb-6">
                             <p className="text-gray-600 leading-relaxed">
-                                Di Synapse, kami sangat serius dalam melindungi privasi dan keamanan data Anda. 
-                                Berikut adalah komitmen kami untuk menjaga informasi Anda tetap aman.
+                                At Synapse, we take the protection of your privacy and data security very seriously. 
+                                Here is our commitment to keeping your information safe.
                             </p>
                         </div>
 
@@ -37,39 +37,39 @@ const SecurityModal = ({ isOpen, onClose }) => {
                             {/* Section 1 */}
                             <div className="border-l-4 border-purple-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    1. Pengumpulan Data
+                                    1. Data Collection
                                 </h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Kami hanya mengumpulkan data yang diperlukan untuk memberikan layanan terbaik kepada Anda. 
-                                    Data yang dikumpulkan meliputi informasi profil (nama, email, username), data Bundle yang Anda buat, 
-                                    dan analytics untuk membantu Anda memahami performa konten Anda.
+                                    We only collect data necessary to provide you with the best service. 
+                                    The data collected includes profile information (name, email, username), Bundle data you create, 
+                                    and analytics to help you understand your content performance.
                                 </p>
                             </div>
 
                             {/* Section 2 */}
                             <div className="border-l-4 border-purple-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    2. Penggunaan Data
+                                    2. Data Usage
                                 </h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Data Anda digunakan untuk:
+                                    Your data is used to:
                                 </p>
                                 <ul className="mt-2 space-y-2 text-gray-600">
                                     <li className="flex items-start gap-2">
                                         <span className="text-purple-600 mt-1">•</span>
-                                        <span>Menyediakan dan meningkatkan layanan Synapse</span>
+                                        <span>Provide and improve Synapse services</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <span className="text-purple-600 mt-1">•</span>
-                                        <span>Memberikan analytics dan insight tentang performa Bundle Anda</span>
+                                        <span>Deliver analytics and insights about your Bundle performance</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <span className="text-purple-600 mt-1">•</span>
-                                        <span>Mengirimkan update dan notifikasi penting</span>
+                                        <span>Send important updates and notifications</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <span className="text-purple-600 mt-1">•</span>
-                                        <span>Mencegah penyalahgunaan dan aktivitas fraud</span>
+                                        <span>Prevent abuse and fraudulent activity</span>
                                     </li>
                                 </ul>
                             </div>
@@ -77,51 +77,51 @@ const SecurityModal = ({ isOpen, onClose }) => {
                             {/* Section 3 */}
                             <div className="border-l-4 border-purple-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    3. Keamanan Data
+                                    3. Data Security
                                 </h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Kami menggunakan enkripsi tingkat industri (SSL/TLS) untuk melindungi data Anda saat transit. 
-                                    Password Anda di-hash menggunakan algoritma bcrypt yang aman. Server kami dilindungi dengan 
-                                    firewall dan sistem keamanan berlapis untuk mencegah akses tidak sah.
+                                    We use industry-standard encryption (SSL/TLS) to protect your data in transit. 
+                                    Your passwords are hashed using secure bcrypt algorithms. Our servers are protected with 
+                                    firewalls and layered security systems to prevent unauthorized access.
                                 </p>
                             </div>
 
                             {/* Section 4 */}
                             <div className="border-l-4 border-purple-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    4. Berbagi Data dengan Pihak Ketiga
+                                    4. Sharing Data with Third Parties
                                 </h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Kami <strong>tidak akan pernah</strong> menjual data pribadi Anda kepada pihak ketiga. 
-                                    Data Anda hanya dibagikan dengan service provider tepercaya yang membantu kami mengoperasikan 
-                                    platform (seperti hosting, email service), dan mereka terikat kontrak untuk menjaga kerahasiaan data Anda.
+                                    We will <strong>never</strong> sell your personal data to third parties. 
+                                    Your data is only shared with trusted service providers who help us operate 
+                                    the platform (such as hosting, email services), and they are contractually bound to maintain the confidentiality of your data.
                                 </p>
                             </div>
 
                             {/* Section 5 */}
                             <div className="border-l-4 border-purple-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    5. Hak Pengguna
+                                    5. User Rights
                                 </h3>
                                 <p className="text-gray-600 leading-relaxed mb-2">
-                                    Anda memiliki hak penuh atas data Anda:
+                                    You have full rights over your data:
                                 </p>
                                 <ul className="space-y-2 text-gray-600">
                                     <li className="flex items-start gap-2">
                                         <span className="text-purple-600 mt-1">•</span>
-                                        <span><strong>Akses:</strong> Anda dapat mengakses semua data pribadi Anda kapan saja</span>
+                                        <span><strong>Access:</strong> You can access all your personal data at any time</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <span className="text-purple-600 mt-1">•</span>
-                                        <span><strong>Edit:</strong> Anda dapat mengubah informasi profil Anda sewaktu-waktu</span>
+                                        <span><strong>Edit:</strong> You can modify your profile information at any time</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <span className="text-purple-600 mt-1">•</span>
-                                        <span><strong>Hapus:</strong> Anda dapat menghapus akun dan semua data Anda secara permanen</span>
+                                        <span><strong>Delete:</strong> You can permanently delete your account and all your data</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <span className="text-purple-600 mt-1">•</span>
-                                        <span><strong>Export:</strong> Anda dapat mengekspor semua data Anda dalam format yang dapat dibaca</span>
+                                        <span><strong>Export:</strong> You can export all your data in a readable format</span>
                                     </li>
                                 </ul>
                             </div>
@@ -129,41 +129,41 @@ const SecurityModal = ({ isOpen, onClose }) => {
                             {/* Section 6 */}
                             <div className="border-l-4 border-purple-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    6. Cookies dan Tracking
+                                    6. Cookies and Tracking
                                 </h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Kami menggunakan cookies untuk menjaga sesi login Anda dan memberikan pengalaman yang dipersonalisasi. 
-                                    Anda dapat mengatur preferensi cookies di browser Anda. Kami juga menggunakan analytics untuk 
-                                    memahami bagaimana pengguna berinteraksi dengan platform kami, tetapi data ini diagregasi dan tidak 
-                                    mengidentifikasi individu tertentu.
+                                    We use cookies to maintain your login session and provide a personalized experience. 
+                                    You can set cookie preferences in your browser. We also use analytics to 
+                                    understand how users interact with our platform, but this data is aggregated and does not 
+                                    identify specific individuals.
                                 </p>
                             </div>
 
                             {/* Section 7 */}
                             <div className="border-l-4 border-purple-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    7. Perubahan Kebijakan
+                                    7. Policy Changes
                                 </h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Kami dapat memperbarui kebijakan privasi ini dari waktu ke waktu. Jika ada perubahan signifikan, 
-                                    kami akan memberi tahu Anda melalui email atau notifikasi di platform. Kami mendorong Anda untuk 
-                                    meninjau kebijakan ini secara berkala.
+                                    We may update this privacy policy from time to time. If there are significant changes, 
+                                    we will notify you via email or platform notification. We encourage you to 
+                                    review this policy periodically.
                                 </p>
                             </div>
 
                             {/* Section 8 */}
                             <div className="border-l-4 border-purple-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                    8. Hubungi Kami
+                                    8. Contact Us
                                 </h3>
                                 <p className="text-gray-600 leading-relaxed">
-                                    Jika Anda memiliki pertanyaan tentang kebijakan privasi kami atau ingin menggunakan hak Anda 
-                                    terkait data pribadi, silakan hubungi kami di:
+                                    If you have questions about our privacy policy or want to exercise your rights 
+                                    regarding personal data, please contact us at:
                                 </p>
                                 <div className="mt-3 bg-purple-50 p-4 rounded-lg">
                                     <p className="text-gray-700">
                                         <strong>Email:</strong> synapse@gmail.com<br />
-                                        <strong>Alamat:</strong> Jakarta, Indonesia
+                                        <strong>Address:</strong> Jakarta, Indonesia
                                     </p>
                                 </div>
                             </div>
@@ -172,7 +172,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                         {/* Last Updated */}
                         <div className="mt-8 pt-6 border-t border-gray-200">
                             <p className="text-sm text-gray-500 text-center">
-                                Terakhir diperbarui: 15 Desember 2024
+                                Last updated: December 15, 2024
                             </p>
                         </div>
                     </div>
@@ -183,7 +183,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                             onClick={onClose}
                             className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-400 text-white font-semibold rounded-xl hover:opacity-90 transition-all"
                         >
-                            Saya Mengerti
+                            I Understand
                         </button>
                     </div>
                 </div>

@@ -14,6 +14,7 @@ import LandingPage from "./pages/LandingPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Profile from "./pages/Profile";
 import SupportPage from "./pages/users/SupportPage";
+import PremiumPackPage from "./pages/users/PremiumPackPage";
 
 // Route 
 export default function App() {
@@ -42,6 +43,14 @@ export default function App() {
           element={
           <UserRoute>
           <SupportPage />
+          </UserRoute>
+          }
+          />
+          <Route
+          path="/premium-pack"
+          element={
+          <UserRoute>
+          <PremiumPackPage />
           </UserRoute>
           }
           />

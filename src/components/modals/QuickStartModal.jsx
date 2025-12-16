@@ -10,70 +10,70 @@ const QuickStartModal = ({ isOpen, onClose }) => {
     const steps = [
         {
             step: 1,
-            title: 'Buat Akun Synapse',
+            title: 'Create Synapse Account',
             icon: '👤',
-            description: 'Daftar dengan email atau gunakan Google Sign-In untuk memulai perjalanan Anda.',
+            description: 'Sign up with email or use Google Sign-In to start your journey.',
             details: [
-                'Klik tombol "Sign Up" di halaman utama',
-                'Isi informasi dasar: Nama, Email, dan Password',
-                'Atau gunakan Google Sign-In untuk proses lebih cepat',
-                'Verifikasi email Anda jika diperlukan'
+                'Click the "Sign Up" button on the main page',
+                'Fill in basic information: Name, Email, and Password',
+                'Or use Google Sign-In for a faster process',
+                'Verify your email if required'
             ],
-            tips: 'Gunakan password yang kuat dengan kombinasi huruf, angka, dan simbol untuk keamanan maksimal.'
+            tips: 'Use a strong password with a combination of letters, numbers, and symbols for maximum security.'
         },
         {
             step: 2,
-            title: 'Setup Profil Anda',
+            title: 'Setup Your Profile',
             icon: '⚙️',
-            description: 'Lengkapi profil Anda dengan informasi yang menarik untuk audience.',
+            description: 'Complete your profile with interesting information for your audience.',
             details: [
-                'Upload foto profil yang profesional',
-                'Isi username unik yang mudah diingat',
-                'Tambahkan bio yang menjelaskan siapa Anda',
-                'Atur informasi kontak yang relevan'
+                'Upload a professional profile photo',
+                'Enter a unique username that is easy to remember',
+                'Add a bio that explains who you are',
+                'Set up relevant contact information'
             ],
-            tips: 'Username yang baik adalah yang pendek, mudah diingat, dan merepresentasikan brand Anda.'
+            tips: 'A good username is short, memorable, and represents your brand.'
         },
         {
             step: 3,
-            title: 'Buat Bundle Pertama',
+            title: 'Create Your First Bundle',
             icon: '🎨',
-            description: 'Buat halaman Link-in-Bio pertama Anda dengan tema yang Anda sukai.',
+            description: 'Create your first Link-in-Bio page with a theme you like.',
             details: [
-                'Klik "My Page" atau "Create Bundle" di dashboard',
-                'Pilih tema yang sesuai dengan brand Anda',
-                'Tambahkan link media sosial (Instagram, Twitter, TikTok, dll)',
-                'Customize tampilan dengan warna dan layout favorit'
+                'Click "My Page" or "Create Bundle" on the dashboard',
+                'Choose a theme that matches your brand',
+                'Add social media links (Instagram, Twitter, TikTok, etc.)',
+                'Customize the appearance with your favorite colors and layout'
             ],
-            tips: 'Pilih tema yang konsisten dengan brand identity Anda untuk kesan profesional.'
+            tips: 'Choose a theme consistent with your brand identity for a professional look.'
         },
         {
             step: 4,
-            title: 'Tambahkan Custom Links',
+            title: 'Add Custom Links',
             icon: '🔗',
-            description: 'Tambahkan link ke produk, artikel, atau konten penting lainnya.',
+            description: 'Add links to products, articles, or other important content.',
             details: [
-                'Klik tombol "Add Link" di Bundle editor',
-                'Masukkan judul yang menarik dan deskriptif',
-                'Paste URL tujuan link Anda',
-                'Pilih icon atau emoji untuk membuat link lebih menarik',
-                'Atur urutan link dengan drag & drop'
+                'Click the "Add Link" button in the Bundle editor',
+                'Enter an attractive and descriptive title',
+                'Paste your destination URL',
+                'Choose an icon or emoji to make the link more appealing',
+                'Arrange link order with drag & drop'
             ],
-            tips: 'Gunakan judul yang action-oriented seperti "Beli Sekarang" atau "Download Gratis" untuk meningkatkan clicks.'
+            tips: 'Use action-oriented titles like "Buy Now" or "Free Download" to increase clicks.'
         },
         {
             step: 5,
             title: 'Share & Monitor',
             icon: '📊',
-            description: 'Bagikan Bundle Anda dan pantau performanya dengan analytics.',
+            description: 'Share your Bundle and monitor its performance with analytics.',
             details: [
-                'Copy link Bundle Anda (synapse.link/username)',
-                'Tambahkan link ke bio Instagram, TikTok, atau Twitter Anda',
-                'Bagikan di Stories atau feed untuk awareness',
-                'Pantau analytics di dashboard untuk melihat views & clicks',
-                'Optimize berdasarkan data yang Anda dapatkan'
+                'Copy your Bundle link (synapse.link/username)',
+                'Add the link to your Instagram, TikTok, or Twitter bio',
+                'Share in Stories or feed for awareness',
+                'Monitor analytics on the dashboard to see views & clicks',
+                'Optimize based on the data you get'
             ],
-            tips: 'Monitor analytics secara berkala untuk memahami konten mana yang paling diminati audience Anda.'
+            tips: 'Monitor analytics regularly to understand which content is most popular with your audience.'
         }
     ];
 
@@ -106,7 +106,7 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                             <span className="text-3xl">🎯</span>
                             <div>
                                 <h2 className="text-2xl font-bold text-white">Quick Start Guide</h2>
-                                <p className="text-purple-100 text-sm">Pelajari Synapse dalam 5 menit</p>
+                                <p className="text-purple-100 text-sm">Learn Synapse in 5 minutes</p>
                             </div>
                         </div>
                         <button 
@@ -154,7 +154,7 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                                 <span className="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm">
                                     ✓
                                 </span>
-                                Langkah-langkah:
+                                Steps:
                             </h4>
                             <ul className="space-y-3">
                                 {currentStepData.details.map((detail, index) => (
@@ -185,9 +185,9 @@ const QuickStartModal = ({ isOpen, onClose }) => {
                                 <div className="flex items-center gap-3">
                                     <CheckCircleIcon className="w-8 h-8 text-green-600" />
                                     <div>
-                                        <h5 className="font-semibold text-green-900">Selamat! 🎉</h5>
+                                        <h5 className="font-semibold text-green-900">Congratulations! 🎉</h5>
                                         <p className="text-green-700 text-sm">
-                                            Anda sudah siap untuk memaksimalkan Synapse. Mulai buat Bundle Anda sekarang!
+                                            You are ready to maximize Synapse. Start creating your Bundle now!
                                         </p>
                                     </div>
                                 </div>

@@ -12,53 +12,54 @@ import {
 // Import Modal Components (Modular & Easy Maintenance)
 import SecurityModal from "../../components/modals/SecurityModal";
 import QuickStartModal from "../../components/modals/QuickStartModal";
+import DocumentationModal from "../../components/modals/DocumentationModal";
 
-// --- Data FAQ (FINAL Disesuaikan dengan Klarifikasi Terbaru) ---
+// --- FAQ Data (FINAL - Adjusted with Latest Clarifications) ---
 const faqsData = [
   {
     id: 1,
     icon: "🎨",
-    category: "Kustomisasi",
+    category: "Customization",
     question:
-      "Apakah saya bisa menyesuaikan warna atau font di luar tema yang sudah disediakan?",
+      "Can I customize colors or fonts outside of the provided themes?",
     answer:
-      "Saat ini, kustomisasi tampilan Bundle hanya tersedia melalui tema-tema siap pakai yang kami sediakan. Fitur penyesuaian warna (color palette) atau font kustom belum tersedia.",
+      "Currently, Bundle appearance customization is only available through our ready-made themes. Custom color palette or font customization features are not yet available.",
   },
   {
     id: 2,
     icon: "💎",
     category: "Premium",
     question:
-      "Apakah Synapse memiliki rencana untuk menawarkan fitur Premium atau berbayar di masa depan?",
+      "Does Synapse plan to offer Premium or paid features in the future?",
     answer:
-      "Ya. Aplikasi ini saat ini masih dalam tahap pengembangan. Kami berencana untuk menawarkan fitur-fitur tambahan yang lebih canggih (Premium) di masa mendatang untuk pengguna yang membutuhkan analitik mendalam atau integrasi bisnis.",
+      "Yes. This application is currently still in development. We plan to offer more advanced Premium features in the future for users who need in-depth analytics or business integrations.",
   },
   {
     id: 3,
     icon: "📊",
     category: "Analytics",
     question:
-      "Bagaimana cara mengetahui berapa kali Bundle saya dilihat dan diakses oleh orang lain?",
+      "How can I find out how many times my Bundle has been viewed and accessed by others?",
     answer:
-      "Anda dapat memantau performa Bundle Anda di dashboard utama. Sistem kami mencatat semua interaksi ke dalam logs_bundle dan logs_links, sehingga Anda dapat melihat secara detail jumlah views (dilihat) dan clicks (diklik) dari setiap tautan.",
+      "You can monitor your Bundle's performance on the main dashboard. Our system records all interactions in logs_bundle and logs_links, so you can see in detail the number of views and clicks for each link.",
   },
   {
     id: 4,
     icon: "🚀",
     category: "Getting Started",
     question:
-      "Bagaimana langkah-langkah untuk membuat Bundle (halaman Link-in-Bio) baru?",
+      "What are the steps to create a new Bundle (Link-in-Bio page)?",
     answer:
-      'Prosesnya mudah! Anda hanya perlu klik menu "My Page" atau "Bundles". Dari sana, Anda akan diarahkan untuk memilih tema yang diinginkan, dan setelah itu, Anda dapat mulai mengisi tautan media sosial dan custom link Anda sendiri.',
+      'The process is easy! You just need to click the "My Page" or "Bundles" menu. From there, you will be directed to choose your desired theme, and after that, you can start adding your social media links and custom links.',
   },
   {
     id: 5,
     icon: "🔒",
     category: "Privacy",
     question:
-      "Apakah saya bisa mengatur Bundle saya agar bersifat Pribadi (Private) atau dilindungi kata sandi?",
+      "Can I set my Bundle to be Private or password-protected?",
     answer:
-      "Saat ini, semua Bundle yang Anda buat di Synapse dirancang untuk akses Publik (Public) agar dapat diakses oleh semua followers Anda. Kami belum menyediakan fitur untuk mengatur Bundle menjadi Pribadi atau dilindungi kata sandi.",
+      "Currently, all Bundles you create in Synapse are designed for Public access so they can be accessed by all your followers. We do not yet provide a feature to set Bundles to Private or password-protected.",
   },
 ];
 
@@ -68,28 +69,28 @@ const quickHelpCards = [
     id: 1,
     icon: "🎯",
     title: "Quick Start Guide",
-    description: "Pelajari dasar-dasar Synapse dalam 5 menit",
+    description: "Learn Synapse basics in 5 minutes",
     link: "/guides/quickstart",
   },
   {
     id: 2,
     icon: "📖",
     title: "Documentation",
-    description: "Dokumentasi lengkap fitur-fitur Synapse",
+    description: "Complete documentation of Synapse features",
     link: "/docs",
   },
   {
     id: 3,
     icon: "🎥",
     title: "Video Tutorials",
-    description: "Tutorial video step-by-step",
+    description: "Step-by-step video tutorials",
     link: "/tutorials",
   },
   {
     id: 4,
     icon: "💬",
     title: "Community",
-    description: "Bergabung dengan komunitas Synapse",
+    description: "Join the Synapse community",
     link: "/community",
   },
 ];
@@ -99,6 +100,7 @@ const SupportPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
   const [isQuickStartModalOpen, setIsQuickStartModalOpen] = useState(false);
+  const [isDocumentationModalOpen, setIsDocumentationModalOpen] = useState(false);
 
   const toggleOpen = (id) => {
     setOpenId(openId === id ? null : id);
@@ -125,10 +127,10 @@ const SupportPage = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">
-                  Pusat Bantuan
+                  Help Center
                 </h1>
                 <p className="text-gray-500 text-sm mt-1">
-                  Hi, Rafa! Ada yang bisa kami bantu? 👋
+                  Hi, Rafa! How can we help you? 👋
                 </p>
               </div>
             </div>
@@ -138,7 +140,7 @@ const SupportPage = () => {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Cari bantuan, panduan, atau FAQ..."
+                  placeholder="Search for help, guides, or FAQ..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full px-5 py-3.5 pl-12 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-gray-900 placeholder:text-gray-400"
@@ -182,6 +184,23 @@ const SupportPage = () => {
                 );
               }
 
+              // Documentation opens modal instead of navigation
+              if (card.id === 2) {
+                return (
+                  <button
+                    key={card.id}
+                    onClick={() => setIsDocumentationModalOpen(true)}
+                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-purple-200 text-left"
+                  >
+                    <div className="text-3xl mb-3">{card.icon}</div>
+                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors">
+                      {card.title}
+                    </h3>
+                    <p className="text-sm text-gray-500">{card.description}</p>
+                  </button>
+                );
+              }
+
               return (
                 <a
                   key={card.id}
@@ -201,10 +220,10 @@ const SupportPage = () => {
           {/* FAQ Section Header */}
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Pertanyaan yang Sering Diajukan
+              Frequently Asked Questions
             </h2>
             <p className="text-gray-500">
-              Temukan jawaban untuk pertanyaan umum tentang Synapse
+              Find answers to common questions about Synapse
             </p>
           </div>
 
@@ -259,10 +278,10 @@ const SupportPage = () => {
               <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-100">
                 <div className="text-5xl mb-4">🔍</div>
                 <h3 className="font-semibold text-gray-900 mb-2">
-                  Tidak ada hasil ditemukan
+                  No results found
                 </h3>
                 <p className="text-gray-500">
-                  Coba kata kunci lain atau hubungi tim support kami
+                  Try another keyword or contact our support team
                 </p>
               </div>
             )}
@@ -277,24 +296,24 @@ const SupportPage = () => {
             <div className="relative z-10 max-w-3xl mx-auto text-center">
               <ChatBubbleLeftRightIcon className="w-12 h-12 text-white mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-white mb-3">
-                Masih Butuh Bantuan?
+                Still Need Help?
               </h2>
               <p className="text-purple-100 mb-6 text-lg">
-                Tim support Synapse siap membantu Anda 24/7. Hubungi kami untuk
-                pertanyaan lebih lanjut atau bantuan teknis.
+                The Synapse support team is ready to help you 24/7. Contact us for
+                further questions or technical assistance.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <button className="px-8 py-3.5 bg-white text-purple-600 font-semibold rounded-xl hover:bg-purple-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2">
                   <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                  Hubungi Support
+                  Contact Support
                 </button>
                 <a
                   href="/status"
                   className="px-8 py-3.5 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 backdrop-blur-sm border border-white/20 flex items-center gap-2"
                 >
                   <CheckCircleIcon className="w-5 h-5" />
-                  Cek Status Layanan
+                  Check Service Status
                 </a>
               </div>
 
@@ -346,13 +365,13 @@ const SupportPage = () => {
                 Tips & Tricks
               </h3>
               <p className="text-sm text-gray-500 mb-4">
-                Maksimalkan penggunaan Synapse dengan tips dari expert
+                Maximize your Synapse usage with tips from experts
               </p>
               <a
                 href="/tips"
                 className="text-purple-600 text-sm font-medium hover:text-purple-700 flex items-center gap-1"
               >
-                Pelajari lebih lanjut
+                Learn more
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -375,14 +394,14 @@ const SupportPage = () => {
                 Security & Privacy
               </h3>
               <p className="text-sm text-gray-500 mb-4">
-                Pelajari bagaimana kami menjaga keamanan data Anda
+                Learn how we protect your data security
               </p>
-              {/* Click handler untuk buka modal */}
+              {/* Click handler to open modal */}
               <button
                 onClick={() => setIsSecurityModalOpen(true)}
                 className="text-purple-600 text-sm font-medium hover:text-purple-700 flex items-center gap-1"
               >
-                Baca kebijakan
+                Read policy
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -415,13 +434,13 @@ const SupportPage = () => {
               </svg>
               <h3 className="font-semibold text-gray-900 mb-2">Changelog</h3>
               <p className="text-sm text-gray-500 mb-4">
-                Update terbaru dan fitur baru yang kami rilis
+                Latest updates and new features we've released
               </p>
               <a
                 href="/changelog"
                 className="text-purple-600 text-sm font-medium hover:text-purple-700 flex items-center gap-1"
               >
-                Lihat update
+                View updates
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -451,6 +470,12 @@ const SupportPage = () => {
       <QuickStartModal
         isOpen={isQuickStartModalOpen}
         onClose={() => setIsQuickStartModalOpen(false)}
+      />
+
+      {/* Documentation Modal - Imported from separate file for easy maintenance */}
+      <DocumentationModal
+        isOpen={isDocumentationModalOpen}
+        onClose={() => setIsDocumentationModalOpen(false)}
       />
     </Layout>
   );

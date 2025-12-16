@@ -238,8 +238,8 @@ export default function Sidebar({
             <SidebarItem
               icon={<Star size={20} />}
               label="Premium Pack"
-              to="/objectives"
-              onClick={() => handleMenuItemClick("/objectives")}
+              to="/premium-pack"
+              onClick={() => handleMenuItemClick("/premium-pack")}
             />
             <SidebarItem
               icon={<BarChart2 size={20} />}
