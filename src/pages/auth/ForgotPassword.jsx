@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import {
   Mail,
@@ -27,6 +26,9 @@ export default function ForgotPasswordFlow() {
   const [countdown, setCountdown] = useState(0);
   const [showPasteNotification, setShowPasteNotification] = useState(false);
 
+  // Backend API base URL - sesuaikan dengan URL backend Laravel
+  const API_BASE_URL = "http://localhost:8000/api";
+
   // Create refs for OTP inputs
   const otpRefs = [
     useRef(null),
@@ -44,7 +46,7 @@ export default function ForgotPasswordFlow() {
     (e) => {
       e.preventDefault();
       const pastedData = e.clipboardData.getData("text/plain");
-      const numbersOnly = pastedData.replace(/\D/g, ""); // Remove non-digits
+      const numbersOnly = pastedData.replace(/\D/g, "");
 
       if (numbersOnly.length >= 6) {
         const digits = numbersOnly.slice(0, 6).split("");
@@ -56,11 +58,9 @@ export default function ForgotPasswordFlow() {
 
         setOtp(newOtp);
 
-        // Show paste success notification
         setShowPasteNotification(true);
         setTimeout(() => setShowPasteNotification(false), 2000);
 
-        // Auto focus on submit button
         setTimeout(() => {
           const verifyButton = document.querySelector('button[type="submit"]');
           if (verifyButton) verifyButton.focus();
@@ -106,14 +106,12 @@ export default function ForgotPasswordFlow() {
 
   // Handle OTP input - Auto-focus next
   const handleOtpChange = (index, value) => {
-    // Only allow digits
     if (!/^\d?$/.test(value)) return;
 
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Auto-focus next input
     if (value && index < 5 && otpRefs[index + 1]?.current) {
       setTimeout(() => otpRefs[index + 1].current.focus(), 10);
     }
@@ -123,26 +121,21 @@ export default function ForgotPasswordFlow() {
   const handleOtpKeyDown = (index, e) => {
     if (e.key === "Backspace") {
       if (!otp[index] && index > 0) {
-        // If current is empty, focus previous and clear it
         const newOtp = [...otp];
         newOtp[index - 1] = "";
         setOtp(newOtp);
         setTimeout(() => otpRefs[index - 1].current.focus(), 10);
       } else if (otp[index]) {
-        // If current has value, clear it but stay focused
         const newOtp = [...otp];
         newOtp[index] = "";
         setOtp(newOtp);
       }
     }
 
-    // Handle paste with Ctrl+V
     if (e.ctrlKey && e.key === "v") {
-      // Let the paste event handler handle it
       return;
     }
 
-    // Handle arrow keys
     if (e.key === "ArrowLeft" && index > 0) {
       setTimeout(() => otpRefs[index - 1].current.focus(), 10);
     }
@@ -153,7 +146,7 @@ export default function ForgotPasswordFlow() {
 
   const getOtpString = () => otp.join("");
 
-  // Step 1: Send OTP
+  // Step 1: Send OTP - BACKEND INTEGRATION
   const handleSendOtp = async (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
@@ -167,24 +160,36 @@ export default function ForgotPasswordFlow() {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`${API_BASE_URL}/send-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
 
-      // Mock successful response
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send OTP");
+      }
+
       setMessage({
-        text: "Verification code has been sent to your email. Check your inbox.",
+        text:
+          data.message ||
+          "Verification code has been sent to your email. Check your inbox.",
         type: "success",
       });
       setStep(2);
       startCountdown();
 
-      // Auto focus first OTP input
       setTimeout(() => {
         if (otpRefs[0]?.current) otpRefs[0].current.focus();
       }, 100);
     } catch (err) {
       setMessage({
-        text: "An error occurred. Please try again.",
+        text: err.message || "An error occurred. Please try again.",
         type: "error",
       });
     } finally {
@@ -192,22 +197,35 @@ export default function ForgotPasswordFlow() {
     }
   };
 
-  // Resend OTP
+  // Resend OTP - BACKEND INTEGRATION
   const handleResendOtp = async () => {
     if (countdown > 0) return;
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const response = await fetch(`${API_BASE_URL}/send-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to resend OTP");
+      }
+
       setMessage({
-        text: "New verification code sent to your email.",
+        text: data.message || "New verification code sent to your email.",
         type: "success",
       });
       startCountdown();
     } catch (err) {
       setMessage({
-        text: "Failed to resend code.",
+        text: err.message || "Failed to resend code.",
         type: "error",
       });
     } finally {
@@ -215,7 +233,7 @@ export default function ForgotPasswordFlow() {
     }
   };
 
-  // Step 2: Verify OTP
+  // Step 2: Verify OTP - BACKEND INTEGRATION
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     const otpString = getOtpString();
@@ -229,33 +247,39 @@ export default function ForgotPasswordFlow() {
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`${API_BASE_URL}/verify-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          otp: otpString,
+        }),
+      });
 
-      // Accept any 6-digit code for testing
-      if (otpString.length === 6 && /^\d{6}$/.test(otpString)) {
-        setMessage({
-          text: "Verification successful. You can now set your new password.",
-          type: "success",
-        });
-        setStep(3);
+      const data = await response.json();
 
-        // Auto focus password input
-        setTimeout(() => {
-          const passwordInput = document.querySelector(
-            'input[type="password"]'
-          );
-          if (passwordInput) passwordInput.focus();
-        }, 100);
-      } else {
-        setMessage({
-          text: "Invalid verification code. Please try again.",
-          type: "error",
-        });
+      if (!response.ok) {
+        throw new Error(data.error || "Invalid verification code");
       }
+
+      setMessage({
+        text:
+          data.message ||
+          "Verification successful. You can now set your new password.",
+        type: "success",
+      });
+      setStep(3);
+
+      setTimeout(() => {
+        const passwordInput = document.querySelector('input[type="password"]');
+        if (passwordInput) passwordInput.focus();
+      }, 100);
     } catch (err) {
       setMessage({
-        text: "Verification failed. Please try again.",
+        text: err.message || "Verification failed. Please try again.",
         type: "error",
       });
     } finally {
@@ -263,11 +287,10 @@ export default function ForgotPasswordFlow() {
     }
   };
 
-  // Step 3: Reset Password
+  // Step 3: Reset Password - BACKEND INTEGRATION
   const handleResetPassword = async (e) => {
     e.preventDefault();
 
-    // Validation
     if (password !== passwordConfirm) {
       setMessage({
         text: "Passwords do not match.",
@@ -285,17 +308,35 @@ export default function ForgotPasswordFlow() {
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await fetch(`${API_BASE_URL}/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          password_confirmation: passwordConfirm,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to reset password");
+      }
 
       setMessage({
-        text: "Password successfully reset! You can now log in with your new password.",
+        text:
+          data.message ||
+          "Password successfully reset! You can now log in with your new password.",
         type: "success",
       });
       setStep(4);
     } catch (err) {
       setMessage({
-        text: "Failed to reset password. Please try again.",
+        text: err.message || "Failed to reset password. Please try again.",
         type: "error",
       });
     } finally {
@@ -535,18 +576,6 @@ export default function ForgotPasswordFlow() {
                   <p className="text-xs text-gray-500 mb-4">
                     You can paste the entire code to auto-fill all fields
                   </p>
-
-                  {/* Test OTP button for development */}
-                  <div className="mb-6">
-                    <button
-                      type="button"
-                      onClick={copyTestOtp}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200"
-                    >
-                      <Copy className="w-3 h-3" />
-                      Copy Test OTP (123456)
-                    </button>
-                  </div>
                 </div>
 
                 {/* OTP Inputs Container with paste handler */}
