@@ -6,7 +6,15 @@ const SecurityModal = ({ isOpen, onClose }) => {
 
     return (
         <>
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div 
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+                onClick={(e) => {
+                    // Klik backdrop untuk close modal
+                    if (e.target === e.currentTarget) {
+                        onClose();
+                    }
+                }}
+            >
                 <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-hidden animate-slideUp">
                     {/* Modal Header */}
                     <div className="bg-gradient-to-r from-purple-600 to-purple-400 px-6 py-5 flex items-center justify-between">
