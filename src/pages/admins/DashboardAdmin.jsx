@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, useRef } from "react";
 import {
   Shield,
   Users,
@@ -28,6 +28,7 @@ import {
   Key,
   Smartphone,
   Globe,
+  AlertTriangle,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import Layout from "../../components/layouts/Layout";
@@ -44,6 +45,60 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState({
+    type: "",
+    userId: null,
+    userName: "",
+  });
+
+  // Refs untuk handle click outside
+  const filterRef = useRef(null);
+  const detailModalRef = useRef(null);
+  const confirmModalRef = useRef(null);
+
+  // Handle click outside untuk semua modal
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Close filter menu jika klik di luar
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setShowFilterMenu(false);
+      }
+
+      // Close detail modal jika klik di luar
+      if (
+        showDetailModal &&
+        detailModalRef.current &&
+        !detailModalRef.current.contains(event.target)
+      ) {
+        handleCloseDetailModal();
+      }
+
+      // Close confirm modal jika klik di luar
+      if (
+        showConfirmModal &&
+        confirmModalRef.current &&
+        !confirmModalRef.current.contains(event.target)
+      ) {
+        handleCloseConfirmModal();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDetailModal, showConfirmModal]);
+
+  const handleCloseDetailModal = () => {
+    setSelectedUser(null);
+    setShowDetailModal(false);
+  };
+
+  const handleCloseConfirmModal = () => {
+    setShowConfirmModal(false);
+    setConfirmAction({ type: "", userId: null, userName: "" });
+  };
 
   // Stats data
   const stats = useMemo(() => {
@@ -137,12 +192,14 @@ export default function AdminDashboard() {
     setShowDetailModal(true);
   };
 
+  // Show confirm modal untuk ban/activate
+  const showConfirmActionModal = (type, userId, userName) => {
+    setConfirmAction({ type, userId, userName });
+    setShowConfirmModal(true);
+  };
+
   // Ban user (deactivate)
   const handleBanUser = async (userId) => {
-    if (!confirm("Apakah Anda yakin ingin menonaktifkan user ini?")) {
-      return;
-    }
-
     try {
       setProcessingUserId(userId);
       const token = localStorage.getItem("token");
@@ -160,7 +217,7 @@ export default function AdminDashboard() {
 
       if (response.ok) {
         await fetchUsers();
-        alert("User berhasil dinonaktifkan");
+        handleCloseConfirmModal();
       } else {
         alert("Gagal menonaktifkan user");
       }
@@ -174,10 +231,6 @@ export default function AdminDashboard() {
 
   // Activate user (unban)
   const handleActivateUser = async (userId) => {
-    if (!confirm("Apakah Anda yakin ingin mengaktifkan user ini?")) {
-      return;
-    }
-
     try {
       setProcessingUserId(userId);
       const token = localStorage.getItem("token");
@@ -195,7 +248,7 @@ export default function AdminDashboard() {
 
       if (response.ok) {
         await fetchUsers();
-        alert("User berhasil diaktifkan");
+        handleCloseConfirmModal();
       } else {
         alert("Gagal mengaktifkan user");
       }
@@ -204,6 +257,15 @@ export default function AdminDashboard() {
       alert("Terjadi kesalahan saat mengaktifkan user");
     } finally {
       setProcessingUserId(null);
+    }
+  };
+
+  // Execute action setelah konfirmasi
+  const executeAction = () => {
+    if (confirmAction.type === "ban") {
+      handleBanUser(confirmAction.userId);
+    } else if (confirmAction.type === "activate") {
+      handleActivateUser(confirmAction.userId);
     }
   };
 
@@ -253,10 +315,83 @@ export default function AdminDashboard() {
 
   return (
     <Layout>
+      {/* Confirm Action Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center p-4 animate-fadeIn">
+          <div
+            ref={confirmModalRef}
+            className="bg-white rounded-2xl shadow-2xl max-w-md w-full animate-slideUp"
+          >
+            <div className="p-6">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="p-3 rounded-full bg-red-100">
+                  <AlertTriangle className="w-8 h-8 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {confirmAction.type === "ban"
+                      ? "Nonaktifkan Pengguna"
+                      : "Aktifkan Pengguna"}
+                  </h3>
+                  <p className="text-gray-600">
+                    {confirmAction.type === "ban"
+                      ? `Apakah Anda yakin ingin menonaktifkan akun ${confirmAction.userName}?`
+                      : `Apakah Anda yakin ingin mengaktifkan kembali akun ${confirmAction.userName}?`}
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-xl mb-6">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <AlertCircle className="w-4 h-4" />
+                  <span>
+                    {confirmAction.type === "ban"
+                      ? "Pengguna tidak akan bisa login sampai diaktifkan kembali."
+                      : "Pengguna akan bisa login kembali ke sistem."}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={executeAction}
+                  disabled={processingUserId === confirmAction.userId}
+                  className={`flex-1 py-3 font-medium rounded-xl transition-all ${
+                    confirmAction.type === "ban"
+                      ? "bg-gradient-to-r from-red-500 to-red-600 text-white hover:shadow-lg"
+                      : "bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {processingUserId === confirmAction.userId ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Memproses...
+                    </span>
+                  ) : confirmAction.type === "ban" ? (
+                    "Ya, Nonaktifkan"
+                  ) : (
+                    "Ya, Aktifkan"
+                  )}
+                </button>
+                <button
+                  onClick={handleCloseConfirmModal}
+                  className="flex-1 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                >
+                  Batalkan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* User Detail Modal */}
       {showDetailModal && selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-slideUp">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[90] flex items-center justify-center p-4 animate-fadeIn">
+          <div
+            ref={detailModalRef}
+            className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-slideUp"
+          >
             {/* Modal Header */}
             <div className="sticky top-0 bg-white border-b border-gray-100 p-6">
               <div className="flex items-center justify-between">
@@ -272,8 +407,8 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setShowDetailModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  onClick={handleCloseDetailModal}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors animate-pulse-once"
                 >
                   <X className="w-5 h-5 text-gray-500" />
                 </button>
@@ -283,7 +418,7 @@ export default function AdminDashboard() {
             {/* Modal Content */}
             <div className="p-6">
               {/* User Profile Header */}
-              <div className="flex items-start gap-6 mb-8 p-4 bg-gradient-to-r from-indigo-50 to-white rounded-xl">
+              <div className="flex items-start gap-6 mb-8 p-4 bg-gradient-to-r from-indigo-50 to-white rounded-xl animate-fadeInDelay">
                 <img
                   src={
                     selectedUser.avatar
@@ -302,10 +437,10 @@ export default function AdminDashboard() {
                     </h4>
                     <div className="flex gap-2">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        className={`px-3 py-1 rounded-full text-xs font-semibold animate-pulse-slow ${
                           selectedUser.role === "admin"
-                            ? "bg-purple-100 text-purple-700"
-                            : "bg-blue-100 text-blue-700"
+                            ? "bg-purple-100 text-purple-700 border border-purple-200"
+                            : "bg-blue-100 text-blue-700 border border-blue-200"
                         }`}
                       >
                         {selectedUser.role === "admin"
@@ -313,12 +448,12 @@ export default function AdminDashboard() {
                           : "User"}
                       </span>
                       {selectedUser.is_active ? (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200 animate-pulse-slow">
                           <CheckCircle className="w-3 h-3" />
                           Aktif
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-200 animate-pulse-slow">
                           <Ban className="w-3 h-3" />
                           Dinonaktifkan
                         </span>
@@ -339,7 +474,7 @@ export default function AdminDashboard() {
 
                   {/* Bio */}
                   {selectedUser.bio && (
-                    <div className="mt-4 p-3 bg-white border border-gray-200 rounded-lg">
+                    <div className="mt-4 p-3 bg-white border border-gray-200 rounded-lg animate-slideUpDelay">
                       <p className="text-gray-700">{selectedUser.bio}</p>
                     </div>
                   )}
@@ -348,64 +483,78 @@ export default function AdminDashboard() {
 
               {/* Stats Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-gray-50 p-4 rounded-xl">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Calendar className="w-4 h-4 text-gray-500" />
-                    <p className="text-xs font-medium text-gray-500">
-                      Bergabung
-                    </p>
-                  </div>
-                  <p className="font-semibold text-gray-900">
-                    {formatDateShort(selectedUser.created_at)}
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-xl">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Clock className="w-4 h-4 text-gray-500" />
-                    <p className="text-xs font-medium text-gray-500">
-                      Aktif Terakhir
-                    </p>
-                  </div>
-                  <p className="font-semibold text-gray-900">
-                    {getRelativeTime(selectedUser.last_active)}
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-xl">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Activity className="w-4 h-4 text-gray-500" />
-                    <p className="text-xs font-medium text-gray-500">Status</p>
-                  </div>
-                  <p
-                    className={`font-semibold ${
-                      selectedUser.is_active ? "text-green-600" : "text-red-600"
-                    }`}
+                {[
+                  {
+                    icon: Calendar,
+                    label: "Bergabung",
+                    value: formatDateShort(selectedUser.created_at),
+                    color: "blue",
+                  },
+                  {
+                    icon: Clock,
+                    label: "Aktif Terakhir",
+                    value: getRelativeTime(selectedUser.last_active),
+                    color: "green",
+                  },
+                  {
+                    icon: Activity,
+                    label: "Status",
+                    value: selectedUser.is_active ? "Online" : "Offline",
+                    color: selectedUser.is_active ? "green" : "red",
+                  },
+                  {
+                    icon: Key,
+                    label: "User ID",
+                    value: selectedUser.id,
+                    color: "gray",
+                  },
+                ].map((stat, index) => (
+                  <div
+                    key={index}
+                    className="bg-gray-50 p-4 rounded-xl border border-gray-200 hover:border-indigo-300 transition-all duration-300 animate-fadeInDelay"
+                    style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    {selectedUser.is_active ? "Online" : "Offline"}
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-xl">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Key className="w-4 h-4 text-gray-500" />
-                    <p className="text-xs font-medium text-gray-500">User ID</p>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div
+                        className={`p-2 bg-white rounded-lg border border-${stat.color}-100`}
+                      >
+                        <stat.icon
+                          className={`w-4 h-4 text-${stat.color}-600`}
+                        />
+                      </div>
+                      <p className="text-xs font-medium text-gray-500">
+                        {stat.label}
+                      </p>
+                    </div>
+                    <p
+                      className={`font-semibold ${
+                        stat.color === "green"
+                          ? "text-green-600"
+                          : stat.color === "red"
+                          ? "text-red-600"
+                          : stat.color === "blue"
+                          ? "text-blue-600"
+                          : "text-gray-900"
+                      }`}
+                    >
+                      {stat.value}
+                    </p>
                   </div>
-                  <p className="font-mono text-xs text-gray-900">
-                    {selectedUser.id}
-                  </p>
-                </div>
+                ))}
               </div>
 
               {/* Contact Information */}
-              <div className="mb-8">
+              <div
+                className="mb-8 animate-fadeInDelay"
+                style={{ animationDelay: "400ms" }}
+              >
                 <h5 className="text-lg font-semibold text-gray-900 mb-4">
                   Informasi Kontak
                 </h5>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <div className="p-2 bg-white rounded-lg">
-                      <Phone className="w-5 h-5 text-gray-600" />
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200 hover:border-blue-300 transition-all duration-300">
+                    <div className="p-2 bg-white rounded-lg border border-blue-100">
+                      <Phone className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Nomor Telepon</p>
@@ -415,9 +564,9 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <div className="p-2 bg-white rounded-lg">
-                      <Globe className="w-5 h-5 text-gray-600" />
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200 hover:border-green-300 transition-all duration-300">
+                    <div className="p-2 bg-white rounded-lg border border-green-100">
+                      <Globe className="w-5 h-5 text-green-600" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Lokasi</p>
@@ -430,16 +579,23 @@ export default function AdminDashboard() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-6 border-t border-gray-200">
+              <div
+                className="flex gap-3 pt-6 border-t border-gray-200 animate-fadeInDelay"
+                style={{ animationDelay: "500ms" }}
+              >
                 {selectedUser.role !== "admin" && (
                   <>
                     {selectedUser.is_active ? (
                       <button
                         onClick={() => {
-                          setShowDetailModal(false);
-                          handleBanUser(selectedUser.id);
+                          handleCloseDetailModal();
+                          showConfirmActionModal(
+                            "ban",
+                            selectedUser.id,
+                            selectedUser.name
+                          );
                         }}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
                       >
                         <Ban className="w-4 h-4" />
                         Nonaktifkan Pengguna
@@ -447,10 +603,14 @@ export default function AdminDashboard() {
                     ) : (
                       <button
                         onClick={() => {
-                          setShowDetailModal(false);
-                          handleActivateUser(selectedUser.id);
+                          handleCloseDetailModal();
+                          showConfirmActionModal(
+                            "activate",
+                            selectedUser.id,
+                            selectedUser.name
+                          );
                         }}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
                       >
                         <CheckCircle className="w-4 h-4" />
                         Aktifkan Pengguna
@@ -459,8 +619,8 @@ export default function AdminDashboard() {
                   </>
                 )}
                 <button
-                  onClick={() => setShowDetailModal(false)}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                  onClick={handleCloseDetailModal}
+                  className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors hover:border-gray-400"
                 >
                   Tutup
                 </button>
@@ -477,7 +637,7 @@ export default function AdminDashboard() {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg">
+                <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg animate-bounce-slow">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
                 <div>
@@ -486,7 +646,7 @@ export default function AdminDashboard() {
                   </h1>
                   <p className="text-gray-600 mt-1">
                     Selamat datang kembali,{" "}
-                    <span className="font-semibold text-indigo-600">
+                    <span className="font-semibold text-indigo-600 animate-pulse-slow">
                       {user?.name}
                     </span>{" "}
                     👋
@@ -503,7 +663,7 @@ export default function AdminDashboard() {
               <button
                 onClick={fetchUsers}
                 disabled={loading}
-                className="inline-flex items-center gap-2 px-5 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 hover:shadow-md transition-all duration-200 disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 hover:shadow-md transition-all duration-200 disabled:opacity-50 hover:border-gray-400"
               >
                 <RefreshCw
                   className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
@@ -512,7 +672,7 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={handleExportData}
-                className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-gray-900 to-black text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-gray-900 to-black text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
               >
                 <Download className="w-4 h-4" />
                 Ekspor Data
@@ -523,72 +683,88 @@ export default function AdminDashboard() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-blue-50 rounded-xl">
-                <Users className="w-6 h-6 text-blue-600" />
+          {[
+            {
+              icon: Users,
+              color: "blue",
+              value: stats.totalUsers,
+              label: "Total Pengguna",
+              growth: stats.growthRate,
+              isPositive: stats.growthRate > 0,
+            },
+            {
+              icon: UserCheck,
+              color: "green",
+              value: stats.activeUsers,
+              label: "Pengguna Aktif",
+              percentage: `${stats.userActivity}% aktif`,
+            },
+            {
+              icon: UserX,
+              color: "red",
+              value: stats.bannedUsers,
+              label: "Dinonaktifkan",
+              status: stats.bannedUsers > 0 ? "Perlu perhatian" : "Aman",
+            },
+            {
+              icon: Shield,
+              color: "purple",
+              value: stats.adminUsers,
+              label: "Admin Sistem",
+              role: "Administrator",
+            },
+          ].map((stat, index) => (
+            <div
+              key={index}
+              className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-indigo-300 hover:scale-[1.02] animate-fadeInUp"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div
+                  className={`p-3 bg-${stat.color}-50 rounded-xl border border-${stat.color}-100`}
+                >
+                  <stat.icon className={`w-6 h-6 text-${stat.color}-600`} />
+                </div>
+                {stat.growth !== undefined ? (
+                  <span
+                    className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold border ${
+                      stat.isPositive
+                        ? "bg-green-100 text-green-700 border-green-200"
+                        : "bg-red-100 text-red-700 border-red-200"
+                    } animate-pulse-slow`}
+                  >
+                    {stat.isPositive ? (
+                      <TrendingUp className="w-3 h-3" />
+                    ) : (
+                      <TrendingDown className="w-3 h-3" />
+                    )}
+                    {stat.isPositive ? "+" : ""}
+                    {stat.growth}%
+                  </span>
+                ) : stat.percentage ? (
+                  <span className="text-xs font-semibold text-green-600 border border-green-200 bg-green-50 px-2 py-1 rounded-full">
+                    {stat.percentage}
+                  </span>
+                ) : (
+                  stat.status && (
+                    <span
+                      className={`text-xs font-semibold ${
+                        stat.color === "red"
+                          ? "text-red-700 border-red-200 bg-red-50"
+                          : "text-green-700 border-green-200 bg-green-50"
+                      } px-2 py-1 rounded-full border`}
+                    >
+                      {stat.status}
+                    </span>
+                  )
+                )}
               </div>
-              {stats.growthRate > 0 ? (
-                <span className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-                  <TrendingUp className="w-3 h-3" />+{stats.growthRate}%
-                </span>
-              ) : (
-                <span className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
-                  <TrendingDown className="w-3 h-3" />
-                  {stats.growthRate}%
-                </span>
-              )}
+              <h3 className="text-2xl font-bold text-gray-900 mb-1 animate-countup">
+                {stat.value}
+              </h3>
+              <p className="text-gray-600 text-sm">{stat.label}</p>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-1">
-              {stats.totalUsers}
-            </h3>
-            <p className="text-gray-600 text-sm">Total Pengguna</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-green-50 rounded-xl">
-                <UserCheck className="w-6 h-6 text-green-600" />
-              </div>
-              <span className="text-xs font-semibold text-green-600">
-                {stats.userActivity}% aktif
-              </span>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-1">
-              {stats.activeUsers}
-            </h3>
-            <p className="text-gray-600 text-sm">Pengguna Aktif</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-red-50 rounded-xl">
-                <UserX className="w-6 h-6 text-red-600" />
-              </div>
-              <span className="text-xs font-semibold text-red-600">
-                {stats.bannedUsers > 0 ? "Perlu perhatian" : "Aman"}
-              </span>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-1">
-              {stats.bannedUsers}
-            </h3>
-            <p className="text-gray-600 text-sm">Pengguna Dinonaktifkan</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-purple-50 rounded-xl">
-                <Shield className="w-6 h-6 text-purple-600" />
-              </div>
-              <span className="text-xs font-semibold text-purple-600">
-                Administrator
-              </span>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-1">
-              {stats.adminUsers}
-            </h3>
-            <p className="text-gray-600 text-sm">Admin Sistem</p>
-          </div>
+          ))}
         </div>
 
         {/* Users Management Section */}
@@ -607,75 +783,133 @@ export default function AdminDashboard() {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search */}
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative group">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
                   <input
                     type="text"
                     placeholder="Cari pengguna..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-11 pr-4 py-2.5 w-full sm:w-64 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className="pl-11 pr-4 py-2.5 w-full sm:w-64 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all group-hover:border-gray-400"
                   />
                 </div>
 
                 {/* Filter Menu */}
-                <div className="relative">
+                <div className="relative" ref={filterRef}>
                   <button
                     onClick={() => setShowFilterMenu(!showFilterMenu)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <Filter className="w-4 h-4" />
                     Filter
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        showFilterMenu ? "rotate-180" : ""
+                      }`}
+                    />
                   </button>
 
                   {showFilterMenu && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg z-10">
-                      <div className="p-3">
-                        <p className="text-xs font-semibold text-gray-500 mb-2">
-                          Status
-                        </p>
-                        <div className="space-y-2 text-black mb-4">
-                          {["all", "active", "banned"].map((status) => (
-                            <label
-                              key={status}
-                              className="flex items-center gap-2 cursor-pointer"
-                            >
-                              <input
-                                type="radio"
-                                name="status"
-                                checked={statusFilter === status}
-                                onChange={() => setStatusFilter(status)}
-                                className="text-indigo-600 focus:ring-indigo-500"
-                              />
-                              <span className="text-sm capitalize">
-                                {status === "all" ? "Semua Status" : status}
-                              </span>
-                            </label>
-                          ))}
+                    <div className="absolute right-0 mt-2 w-56 bg-white border border-indigo-200 rounded-xl shadow-xl z-10 animate-slideDown">
+                      <div className="p-4 space-y-4">
+                        <div>
+                          <p className="text-xs font-semibold text-gray-500 mb-2 flex items-center gap-1">
+                            <Filter className="w-3 h-3" />
+                            Filter Status
+                          </p>
+                          <div className="space-y-2 mb-4">
+                            {[
+                              {
+                                value: "all",
+                                label: "Semua Status",
+                                color: "gray",
+                              },
+                              {
+                                value: "active",
+                                label: "Aktif",
+                                color: "green",
+                              },
+                              {
+                                value: "banned",
+                                label: "Dinonaktifkan",
+                                color: "red",
+                              },
+                            ].map((status) => (
+                              <label
+                                key={status.value}
+                                className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                              >
+                                <input
+                                  type="radio"
+                                  name="status"
+                                  checked={statusFilter === status.value}
+                                  onChange={() => {
+                                    setStatusFilter(status.value);
+                                    setShowFilterMenu(false);
+                                  }}
+                                  className="text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <div className="flex items-center gap-2">
+                                  <div
+                                    className={`w-2 h-2 rounded-full bg-${status.color}-500`}
+                                  ></div>
+                                  <span className="text-sm text-gray-700">
+                                    {status.label}
+                                  </span>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
                         </div>
 
-                        <p className="text-xs font-semibold text-gray-500 mb-2">
-                          Peran
-                        </p>
-                        <div className="space-y-2 text-black">
-                          {["all", "admin", "user"].map((role) => (
-                            <label
-                              key={role}
-                              className="flex items-center gap-2 cursor-pointer"
-                            >
-                              <input
-                                type="radio"
-                                name="role"
-                                checked={roleFilter === role}
-                                onChange={() => setRoleFilter(role)}
-                                className="text-indigo-600 focus:ring-indigo-500"
-                              />
-                              <span className="text-sm capitalize">
-                                {role === "all" ? "Semua Peran" : role}
-                              </span>
-                            </label>
-                          ))}
+                        <div className="border-t border-gray-100 pt-4">
+                          <p className="text-xs font-semibold text-gray-500 mb-2 flex items-center gap-1">
+                            <Users className="w-3 h-3" />
+                            Filter Peran
+                          </p>
+                          <div className="space-y-2">
+                            {[
+                              {
+                                value: "all",
+                                label: "Semua Peran",
+                                color: "gray",
+                              },
+                              {
+                                value: "admin",
+                                label: "Administrator",
+                                color: "purple",
+                              },
+                              {
+                                value: "user",
+                                label: "Pengguna",
+                                color: "blue",
+                              },
+                            ].map((role) => (
+                              <label
+                                key={role.value}
+                                className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                              >
+                                <input
+                                  type="radio"
+                                  name="role"
+                                  checked={roleFilter === role.value}
+                                  onChange={() => {
+                                    setRoleFilter(role.value);
+                                    setShowFilterMenu(false);
+                                  }}
+                                  className="text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <div className="flex items-center gap-2">
+                                  <div
+                                    className={`w-2 h-2 rounded-full bg-${role.color}-500`}
+                                  ></div>
+                                  <span className="text-sm text-gray-700">
+                                    {role.label}
+                                  </span>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -683,16 +917,19 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Sort Dropdown */}
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
-                >
-                  <option value="newest">Terbaru</option>
-                  <option value="oldest">Terlama</option>
-                  <option value="name">Nama A-Z</option>
-                  <option value="active">Status Aktif</option>
-                </select>
+                <div className="relative group">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="appearance-none pl-4 pr-10 py-2.5 border border-gray-300 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white cursor-pointer w-full group-hover:border-gray-400 transition-colors"
+                  >
+                    <option value="newest">Terbaru</option>
+                    <option value="oldest">Terlama</option>
+                    <option value="name">Nama A-Z</option>
+                    <option value="active">Status Aktif</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
               </div>
             </div>
           </div>
@@ -706,7 +943,7 @@ export default function AdminDashboard() {
               </div>
             ) : filteredUsers.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="p-4 bg-gray-100 rounded-2xl mb-4">
+                <div className="p-4 bg-gray-100 rounded-2xl mb-4 animate-pulse-slow">
                   <Users className="w-12 h-12 text-gray-400" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -739,10 +976,11 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredUsers.map((u) => (
+                  {filteredUsers.map((u, index) => (
                     <tr
                       key={u.id}
-                      className="hover:bg-gray-50 transition-colors duration-150"
+                      className="hover:bg-gray-50 transition-all duration-150 animate-fadeInRow"
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
@@ -755,7 +993,7 @@ export default function AdminDashboard() {
                                   )}&background=6366f1&color=fff&bold=true`
                             }
                             alt={u.name}
-                            className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm"
+                            className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm hover:scale-105 transition-transform duration-200"
                           />
                           <div>
                             <p className="font-semibold text-gray-900">
@@ -775,10 +1013,10 @@ export default function AdminDashboard() {
                             {u.email}
                           </p>
                           <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
                               u.role === "admin"
-                                ? "bg-purple-100 text-purple-800"
-                                : "bg-blue-100 text-blue-800"
+                                ? "bg-purple-100 text-purple-800 border-purple-200"
+                                : "bg-blue-100 text-blue-800 border-blue-200"
                             }`}
                           >
                             {u.role === "admin" ? "Admin" : "Pengguna"}
@@ -800,7 +1038,7 @@ export default function AdminDashboard() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <div
-                            className={`w-2 h-2 rounded-full ${
+                            className={`w-2 h-2 rounded-full animate-pulse ${
                               u.is_active ? "bg-green-500" : "bg-red-500"
                             }`}
                           ></div>
@@ -818,7 +1056,7 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleViewDetail(u)}
-                            className="p-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200 hover:scale-110"
                             title="Lihat Detail"
                           >
                             <Eye className="w-5 h-5" />
@@ -828,23 +1066,41 @@ export default function AdminDashboard() {
                             <>
                               {u.is_active ? (
                                 <button
-                                  onClick={() => handleBanUser(u.id)}
+                                  onClick={() =>
+                                    showConfirmActionModal("ban", u.id, u.name)
+                                  }
                                   disabled={processingUserId === u.id}
-                                  className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                  {processingUserId === u.id
-                                    ? "Memproses..."
-                                    : "Nonaktifkan"}
+                                  {processingUserId === u.id ? (
+                                    <span className="flex items-center gap-1">
+                                      <RefreshCw className="w-3 h-3 animate-spin" />
+                                      Memproses...
+                                    </span>
+                                  ) : (
+                                    "Nonaktifkan"
+                                  )}
                                 </button>
                               ) : (
                                 <button
-                                  onClick={() => handleActivateUser(u.id)}
+                                  onClick={() =>
+                                    showConfirmActionModal(
+                                      "activate",
+                                      u.id,
+                                      u.name
+                                    )
+                                  }
                                   disabled={processingUserId === u.id}
-                                  className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 hover:bg-green-100 rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                  {processingUserId === u.id
-                                    ? "Memproses..."
-                                    : "Aktifkan"}
+                                  {processingUserId === u.id ? (
+                                    <span className="flex items-center gap-1">
+                                      <RefreshCw className="w-3 h-3 animate-spin" />
+                                      Memproses...
+                                    </span>
+                                  ) : (
+                                    "Aktifkan"
+                                  )}
                                 </button>
                               )}
                             </>
@@ -863,11 +1119,16 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between text-sm text-gray-600">
               <div>
                 Menampilkan{" "}
-                <span className="font-semibold">{filteredUsers.length}</span>{" "}
-                dari <span className="font-semibold">{users.length}</span>{" "}
+                <span className="font-semibold text-indigo-600">
+                  {filteredUsers.length}
+                </span>{" "}
+                dari{" "}
+                <span className="font-semibold text-gray-900">
+                  {users.length}
+                </span>{" "}
                 pengguna
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 animate-pulse-slow">
                 <AlertCircle className="w-4 h-4" />
                 <span>Klik ikon mata untuk melihat detail pengguna</span>
               </div>
@@ -876,7 +1137,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Add custom animations */}
+      {/* Custom Animations */}
       <style jsx>{`
         @keyframes fadeIn {
           from {
@@ -898,12 +1159,135 @@ export default function AdminDashboard() {
           }
         }
 
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInRow {
+          from {
+            opacity: 0;
+            transform: translateX(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes bounceSlow {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-5px);
+          }
+        }
+
+        @keyframes pulseOnce {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.1);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+
+        @keyframes pulseSlow {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.7;
+          }
+        }
+
         .animate-fadeIn {
           animation: fadeIn 0.2s ease-out;
         }
 
         .animate-slideUp {
           animation: slideUp 0.3s ease-out;
+        }
+
+        .animate-slideDown {
+          animation: slideDown 0.2s ease-out;
+        }
+
+        .animate-fadeInUp {
+          animation: fadeInUp 0.4s ease-out;
+        }
+
+        .animate-fadeInDelay {
+          animation: fadeIn 0.5s ease-out;
+          animation-fill-mode: both;
+        }
+
+        .animate-slideUpDelay {
+          animation: slideUp 0.5s ease-out;
+          animation-fill-mode: both;
+        }
+
+        .animate-fadeInRow {
+          animation: fadeInRow 0.3s ease-out;
+          animation-fill-mode: both;
+        }
+
+        .animate-bounce-slow {
+          animation: bounceSlow 2s infinite;
+        }
+
+        .animate-pulse-once {
+          animation: pulseOnce 0.5s ease-out;
+        }
+
+        .animate-pulse-slow {
+          animation: pulseSlow 2s infinite;
+        }
+
+        .animate-countup {
+          animation: countUp 0.8s ease-out;
+        }
+
+        /* Custom scrollbar for modal */
+        .overflow-y-auto::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 3px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: #c1c1c1;
+          border-radius: 3px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+          background: #a1a1a1;
         }
       `}</style>
     </Layout>
