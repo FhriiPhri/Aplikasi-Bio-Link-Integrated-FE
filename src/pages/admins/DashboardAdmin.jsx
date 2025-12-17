@@ -32,6 +32,9 @@ import {
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import Layout from "../../components/layouts/Layout";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import ExcelJS from "exceljs";
 
 export default function AdminDashboard() {
   const { user } = useContext(AuthContext);
@@ -56,6 +59,28 @@ export default function AdminDashboard() {
   const filterRef = useRef(null);
   const detailModalRef = useRef(null);
   const confirmModalRef = useRef(null);
+  const today = new Date();
+  const autoFitColumns = (worksheet) => {
+    worksheet.columns.forEach((column) => {
+      let maxLength = 0;
+
+      column.eachCell({ includeEmpty: true }, (cell) => {
+        let cellValue = cell.value;
+
+        if (cellValue === null || cellValue === undefined) return;
+
+        // Kalau object (date, rich text, etc)
+        if (typeof cellValue === "object") {
+          cellValue = cellValue.text || cellValue.toString();
+        }
+
+        maxLength = Math.max(maxLength, cellValue.toString().length);
+      });
+
+      // Kasih padding biar lega
+      column.width = maxLength + 4;
+    });
+  };
 
   // Handle click outside untuk semua modal
   useEffect(() => {
@@ -309,8 +334,84 @@ export default function AdminDashboard() {
   };
 
   // Export data (simulated)
-  const handleExportData = () => {
-    alert("Fitur ekspor data akan segera hadir!");
+  const handleExportData = async () => {
+    if (filteredUsers.length === 0) {
+      alert("Tidak ada data untuk diekspor");
+      return;
+    }
+
+    // 1️⃣ Buat workbook (file Excel baru)
+    const workbook = new ExcelJS.Workbook();
+
+    // 2️⃣ Buat worksheet (sheet di dalam Excel)
+    const sheet = workbook.addWorksheet("Users");
+
+    // 3️⃣ Definisikan kolom (header + width)
+    sheet.columns = [
+      { header: "No", key: "no", width: 6 },
+      { header: "Nama", key: "name", width: 25 },
+      { header: "Username", key: "username", width: 20 },
+      { header: "Email", key: "email", width: 30 },
+      { header: "Role", key: "role", width: 15 },
+      { header: "Status", key: "status", width: 18 },
+      { header: "Tanggal Daftar", key: "created_at", width: 20 },
+    ];
+
+    // 4️⃣ Styling HEADER (baris 1)
+    sheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+      cell.alignment = { vertical: "middle", horizontal: "center" };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF4F46E5" }, // indigo
+      };
+    });
+
+    // 5️⃣ Masukin data user ke baris
+    filteredUsers.forEach((u, index) => {
+      sheet.addRow({
+        no: index + 1,
+        name: u.name,
+        username: u.username,
+        email: u.email,
+        role: u.role,
+        status: u.is_active ? "Aktif" : "Dinonaktifkan",
+        created_at: formatDateShort(u.created_at),
+      });
+    });
+
+    autoFitColumns(sheet);
+
+    // 6️⃣ Styling kolom STATUS (conditional style)
+    sheet.getColumn("status").eachCell((cell, rowNumber) => {
+      if (rowNumber === 1) return; // skip header
+
+      if (cell.value === "Aktif") {
+        cell.font = { color: { argb: "FF16A34A" } }; // hijau
+      } else {
+        cell.font = { color: { argb: "FFDC2626" } }; // merah
+      }
+    });
+
+    // 7️⃣ Kasih border ke semua cell
+    sheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
+
+    // 8️⃣ Convert workbook → buffer
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    // 9️⃣ Download file
+    const today = new Date().toISOString().split("T")[0];
+    saveAs(new Blob([buffer]), `Users Data ( ${today} ).xlsx`);
   };
 
   return (
