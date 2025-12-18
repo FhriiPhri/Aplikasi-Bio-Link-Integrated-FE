@@ -9,7 +9,7 @@ import AdminDashboard from "./pages/admins/DashboardAdmin";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
-import BannedRoute from "./components/routes/BannedRoute"; 
+import BannedRoute from "./components/routes/BannedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -17,8 +17,9 @@ import Profile from "./pages/Profile";
 import SupportPage from "./pages/users/SupportPage";
 import PremiumPackPage from "./pages/users/PremiumPackPage";
 import BannedPage from "./pages/BannedPage";
+import AdminAppealsPage from "./pages/admins/Banding";
 
-// Route 
+// Route
 export default function App() {
   return (
     <AuthProvider>
@@ -83,6 +84,14 @@ export default function App() {
             element={
               <AdminRoute>
                 <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/banding"
+            element={
+              <AdminRoute>
+                <AdminAppealsPage />
               </AdminRoute>
             }
           />

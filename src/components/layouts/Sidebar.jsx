@@ -200,6 +200,12 @@ export default function Sidebar({
             )}
             <SidebarItemCollapsed
               icon={<UserCircle size={22} />}
+              label="Appeals"
+              to="/banding"
+              onClick={() => handleMenuItemClick("/banding")}
+            />
+            <SidebarItemCollapsed
+              icon={<UserCircle size={22} />}
               label="Profile"
               to="/profile"
               onClick={() => handleMenuItemClick("/profile")}
@@ -297,6 +303,12 @@ export default function Sidebar({
               </>
             )}
 
+            <SidebarItem
+              icon={<UserCircle size={20} />}
+              label="Appeals"
+              to="/banding"
+              onClick={() => handleMenuItemClick("/banding")}
+            />
             <SidebarItem
               icon={<UserCircle size={20} />}
               label="Profile"
