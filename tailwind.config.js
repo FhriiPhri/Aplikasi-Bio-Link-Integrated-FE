@@ -11,12 +11,6 @@ export default {
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ["light"],
-    darkTheme: "light",
-    base: true,
-    styled: true,
-    utils: true,
-    prefix: "",
-    logs: true,
+    themes: true,
   },
-}
+};

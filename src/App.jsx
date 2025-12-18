@@ -18,6 +18,7 @@ import SupportPage from "./pages/users/SupportPage";
 import PremiumPackPage from "./pages/users/PremiumPackPage";
 import BannedPage from "./pages/BannedPage";
 import AdminAppealsPage from "./pages/admins/Banding";
+import ThemeTest from "./pages/ThemeTest";
 
 // Route
 export default function App() {
@@ -68,6 +69,15 @@ export default function App() {
             }
           />
 
+                  <Route
+          path="/theme-test"
+          element={
+            <ProtectedRoute>
+              <ThemeTest />
+            </ProtectedRoute>
+          }
+        />
+
           {/* Shared (user & admin) */}
           <Route
             path="/profile"
@@ -77,6 +87,8 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          
 
           {/* Admin-only */}
           <Route
