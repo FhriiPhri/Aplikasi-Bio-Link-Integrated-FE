@@ -363,7 +363,7 @@ export default function BannedPage() {
 
           {/* Status Summary */}
           {latestAppeal.admin_reply && (
-            <div className="bg-white/60 backdrop-blur-sm p-4 rounded-lg border border-white/80 mb-4">
+            <div className="bg-white/80 backdrop-blur-sm p-4 rounded-lg border border-gray-100 shadow-sm mb-4">
               <div className="flex items-start gap-3">
                 <Shield
                   className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
@@ -450,9 +450,9 @@ export default function BannedPage() {
             </div>
 
             {/* Message Preview */}
-            <div className="bg-white p-4 rounded-lg border border-gray-200">
+            <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full flex items-center justify-center flex-shrink-0 border border-blue-200">
                   <UserIcon className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="flex-1">
@@ -486,9 +486,9 @@ export default function BannedPage() {
         {showTracking && (
           <div className="space-y-4 animate-slideDown">
             {/* Your Appeal */}
-            <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-5 border border-blue-200">
+            <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-white rounded-lg">
+                <div className="p-2 bg-blue-50 rounded-lg border border-blue-100">
                   <MessageSquare className="w-5 h-5 text-blue-600" />
                 </div>
                 <h4 className="text-lg font-semibold text-gray-900">
@@ -501,7 +501,7 @@ export default function BannedPage() {
                   <p className="text-sm font-medium text-gray-700 mb-2">
                     Pesan Banding:
                   </p>
-                  <div className="bg-white p-4 rounded-lg border border-blue-100">
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                     <p className="text-gray-700 whitespace-pre-wrap">
                       {latestAppeal.message}
                     </p>
@@ -536,16 +536,16 @@ export default function BannedPage() {
               <div
                 className={`rounded-xl p-5 border-2 ${
                   latestAppeal.status === "approved"
-                    ? "bg-gradient-to-br from-green-50 via-green-100 to-green-50 border-green-300"
-                    : "bg-gradient-to-br from-red-50 via-red-100 to-red-50 border-red-300"
-                } shadow-md`}
+                    ? "bg-gradient-to-br from-green-50 via-green-100 to-green-50 border-green-200"
+                    : "bg-gradient-to-br from-red-50 via-red-100 to-red-50 border-red-200"
+                } shadow-sm`}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div
                     className={`p-3 rounded-xl ${
                       latestAppeal.status === "approved"
-                        ? "bg-green-200 shadow-sm"
-                        : "bg-red-200 shadow-sm"
+                        ? "bg-green-100 border border-green-200"
+                        : "bg-red-100 border border-red-200"
                     }`}
                   >
                     <Shield
@@ -576,7 +576,7 @@ export default function BannedPage() {
                   </div>
                 </div>
 
-                <div className="bg-white p-4 rounded-lg border-2 border-white shadow-sm">
+                <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
                   <div className="flex items-start gap-3">
                     <Quote
                       className={`w-5 h-5 flex-shrink-0 mt-1 ${
@@ -609,12 +609,12 @@ export default function BannedPage() {
 
             {/* Status Explanation */}
             <div
-              className={`rounded-xl p-4 border-2 ${
+              className={`rounded-xl p-4 border ${
                 latestAppeal.status === "approved"
-                  ? "bg-green-50 border-green-300"
+                  ? "bg-green-50 border-green-200"
                   : latestAppeal.status === "rejected"
-                  ? "bg-red-50 border-red-300"
-                  : "bg-yellow-50 border-yellow-300"
+                  ? "bg-red-50 border-red-200"
+                  : "bg-yellow-50 border-yellow-200"
               }`}
             >
               <div className="flex items-start gap-3">
@@ -739,7 +739,7 @@ export default function BannedPage() {
             <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-100 rounded-lg">
+                  <div className="p-2 bg-indigo-100 rounded-lg border border-indigo-200">
                     <FileText className="w-6 h-6 text-indigo-600" />
                   </div>
                   <h2 className="text-xl font-semibold text-gray-800">
@@ -749,7 +749,7 @@ export default function BannedPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setShowTracking(!showTracking)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-colors border border-indigo-200"
                   >
                     <History className="w-4 h-4" />
                     {showTracking ? "Sembunyikan" : "Tampilkan"} Tracking
@@ -757,7 +757,7 @@ export default function BannedPage() {
                   <button
                     onClick={fetchAppealHistory}
                     disabled={loadingTracking}
-                    className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
+                    className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 border border-gray-300"
                     title="Refresh status"
                   >
                     <RefreshCw
@@ -788,9 +788,9 @@ export default function BannedPage() {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* User Info */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center border border-blue-600">
                       <User className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -819,7 +819,7 @@ export default function BannedPage() {
                     onChange={handleInputChange}
                     rows={5}
                     maxLength={1000}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none shadow-sm"
                     placeholder="Jelaskan secara detail mengapa Anda merasa akun seharusnya diaktifkan kembali. Berikan penjelasan yang jelas dan informatif..."
                     required
                   />
@@ -842,7 +842,7 @@ export default function BannedPage() {
                     value={formData.appeal_evidence}
                     onChange={handleInputChange}
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none shadow-sm"
                     placeholder="Contoh: Link ke screenshot, email, atau dokumen pendukung lainnya..."
                   />
                   <p className="text-xs text-gray-500 mt-2">
@@ -863,7 +863,7 @@ export default function BannedPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting || !formData.appeal_reason.trim()}
-                      className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-lg"
+                      className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-lg shadow-md"
                     >
                       {isSubmitting ? (
                         <>
@@ -890,7 +890,7 @@ export default function BannedPage() {
               <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-100 rounded-lg">
+                    <div className="p-2 bg-indigo-100 rounded-lg border border-indigo-200">
                       <TrendingUp className="w-5 h-5 text-indigo-600" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-800">
@@ -918,9 +918,9 @@ export default function BannedPage() {
             </div>
 
             {/* Information Card */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-blue-100 rounded-lg">
+                <div className="p-2 bg-blue-100 rounded-lg border border-blue-200">
                   <AlertCircle className="w-5 h-5 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800">
@@ -964,12 +964,14 @@ export default function BannedPage() {
               <div className="space-y-3">
                 <button
                   onClick={() => setShowTracking(!showTracking)}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all duration-200 hover:border-gray-400 group"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all duration-200 hover:border-gray-400 group shadow-sm"
                 >
                   <div
-                    className={`p-2 rounded-lg ${
-                      showTracking ? "bg-indigo-100" : "bg-gray-100"
-                    } group-hover:bg-indigo-50 transition-colors`}
+                    className={`p-2 rounded-lg border ${
+                      showTracking
+                        ? "bg-indigo-50 border-indigo-200"
+                        : "bg-gray-50 border-gray-200"
+                    } group-hover:bg-indigo-50 group-hover:border-indigo-200 transition-colors`}
                   >
                     <Eye className="w-4 h-4 text-gray-600" />
                   </div>
@@ -983,9 +985,9 @@ export default function BannedPage() {
 
                 <button
                   onClick={logout}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-medium rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all duration-200 hover:shadow-md group"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-medium rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all duration-200 hover:shadow-md group border border-gray-300"
                 >
-                  <div className="p-2 rounded-lg bg-gray-200 group-hover:bg-gray-300 transition-colors">
+                  <div className="p-2 rounded-lg bg-gray-200 group-hover:bg-gray-300 transition-colors border border-gray-300">
                     <LogOut className="w-4 h-4 text-gray-600" />
                   </div>
                   <span className="flex-1 text-left">Keluar Akun</span>
