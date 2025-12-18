@@ -21,8 +21,7 @@ const faqsData = [
     id: 1,
     icon: "🎨",
     category: "Customization",
-    question:
-      "Can I customize colors or fonts outside of the provided themes?",
+    question: "Can I customize colors or fonts outside of the provided themes?",
     answer:
       "Currently, Bundle appearance customization is only available through our ready-made themes. Custom color palette or font customization features are not yet available.",
   },
@@ -48,8 +47,7 @@ const faqsData = [
     id: 4,
     icon: "🚀",
     category: "Getting Started",
-    question:
-      "What are the steps to create a new Bundle (Link-in-Bio page)?",
+    question: "What are the steps to create a new Bundle (Link-in-Bio page)?",
     answer:
       'The process is easy! You just need to click the "My Page" or "Bundles" menu. From there, you will be directed to choose your desired theme, and after that, you can start adding your social media links and custom links.',
   },
@@ -57,8 +55,7 @@ const faqsData = [
     id: 5,
     icon: "🔒",
     category: "Privacy",
-    question:
-      "Can I set my Bundle to be Private or password-protected?",
+    question: "Can I set my Bundle to be Private or password-protected?",
     answer:
       "Currently, all Bundles you create in Synapse are designed for Public access so they can be accessed by all your followers. We do not yet provide a feature to set Bundles to Private or password-protected.",
   },
@@ -102,7 +99,8 @@ const SupportPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
   const [isQuickStartModalOpen, setIsQuickStartModalOpen] = useState(false);
-  const [isDocumentationModalOpen, setIsDocumentationModalOpen] = useState(false);
+  const [isDocumentationModalOpen, setIsDocumentationModalOpen] =
+    useState(false);
 
   const toggleOpen = (id) => {
     setOpenId(openId === id ? null : id);
@@ -301,8 +299,8 @@ const SupportPage = () => {
                 Still Need Help?
               </h2>
               <p className="text-blue-100 mb-6 text-lg">
-                The Synapse support team is ready to help you 24/7. Contact us for
-                further questions or technical assistance.
+                The Synapse support team is ready to help you 24/7. Contact us
+                for further questions or technical assistance.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
