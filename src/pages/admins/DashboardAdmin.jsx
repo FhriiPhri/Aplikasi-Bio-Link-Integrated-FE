@@ -344,85 +344,311 @@ export default function AdminDashboard() {
     return formatDateShort(dateString);
   };
 
-  // Export data (simulated)
+  // Export data to Excel
   const handleExportData = async () => {
     if (filteredUsers.length === 0) {
       alert("Tidak ada data untuk diekspor");
       return;
     }
 
-    // 1️⃣ Buat workbook (file Excel baru)
-    const workbook = new ExcelJS.Workbook();
+    try {
+      // 1️⃣ Buat workbook & sheet
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet("Data Pengguna");
 
-    // 2️⃣ Buat worksheet (sheet di dalam Excel)
-    const sheet = workbook.addWorksheet("Users");
+      // Metadata
+      sheet.properties.defaultRowHeight = 24;
 
-    // 3️⃣ Definisikan kolom (header + width)
-    sheet.columns = [
-      { header: "No", key: "no", width: 6 },
-      { header: "Nama", key: "name", width: 25 },
-      { header: "Username", key: "username", width: 20 },
-      { header: "Email", key: "email", width: 30 },
-      { header: "Role", key: "role", width: 15 },
-      { header: "Status", key: "status", width: 18 },
-      { header: "Tanggal Daftar", key: "created_at", width: 20 },
-    ];
+      // 2️⃣ Definisikan kolom
+      sheet.columns = [
+        { header: "No", key: "no", width: 8 },
+        { header: "Nama Lengkap", key: "name", width: 30 },
+        { header: "Username", key: "username", width: 20 },
+        { header: "Email", key: "email", width: 35 },
+        { header: "Peran", key: "role", width: 15 },
+        { header: "Status", key: "status", width: 15 },
+        { header: "Tanggal Bergabung", key: "created_at", width: 20 },
+      ];
 
-    // 4️⃣ Styling HEADER (baris 1)
-    sheet.getRow(1).eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-      cell.alignment = { vertical: "middle", horizontal: "center" };
-      cell.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FF4F46E5" }, // indigo
-      };
-    });
+      // 3️⃣ Styling HEADER dengan border lengkap
+      const headerRow = sheet.getRow(1);
+      headerRow.height = 32;
 
-    // 5️⃣ Masukin data user ke baris
-    filteredUsers.forEach((u, index) => {
-      sheet.addRow({
-        no: index + 1,
-        name: u.name,
-        username: u.username,
-        email: u.email,
-        role: u.role,
-        status: u.is_active ? "Aktif" : "Dinonaktifkan",
-        created_at: formatDateShort(u.created_at),
-      });
-    });
+      headerRow.eachCell((cell) => {
+        // Font style
+        cell.font = {
+          bold: true,
+          size: 11,
+          color: { argb: "FFFFFFFF" },
+          name: "Segoe UI",
+        };
 
-    autoFitColumns(sheet);
+        // Alignment
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: "center",
+          wrapText: true,
+        };
 
-    // 6️⃣ Styling kolom STATUS (conditional style)
-    sheet.getColumn("status").eachCell((cell, rowNumber) => {
-      if (rowNumber === 1) return; // skip header
+        // Background color - biru gelap
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF2563EB" }, // Blue-600
+        };
 
-      if (cell.value === "Aktif") {
-        cell.font = { color: { argb: "FF16A34A" } }; // hijau
-      } else {
-        cell.font = { color: { argb: "FFDC2626" } }; // merah
-      }
-    });
-
-    // 7️⃣ Kasih border ke semua cell
-    sheet.eachRow((row) => {
-      row.eachCell((cell) => {
+        // ALL BORDER - border lengkap semua sisi
         cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
+          top: { style: "thin", color: { argb: "FF1D4ED8" } },
+          left: { style: "thin", color: { argb: "FF1D4ED8" } },
+          bottom: { style: "thin", color: { argb: "FF1D4ED8" } },
+          right: { style: "thin", color: { argb: "FF1D4ED8" } },
         };
       });
-    });
 
-    // 8️⃣ Convert workbook → buffer
-    const buffer = await workbook.xlsx.writeBuffer();
+      // 4️⃣ Masukkan data user
+      filteredUsers.forEach((user, index) => {
+        const row = sheet.addRow({
+          no: index + 1,
+          name: user.name || "-",
+          username: user.username || "-",
+          email: user.email || "-",
+          role: user.role || "-",
+          status: user.is_active ? "AKTIF" : "NONAKTIF",
+          created_at: formatDateShort(user.created_at) || "-",
+        });
 
-    // 9️⃣ Download file
-    const today = new Date().toISOString().split("T")[0];
-    saveAs(new Blob([buffer]), `Users Data ( ${today} ).xlsx`);
+        // Set tinggi row
+        row.height = 24;
+      });
+
+      // 5️⃣ Styling untuk SEMUA CELL dengan ALL BORDER
+      sheet.eachRow((row, rowNumber) => {
+        row.eachCell((cell) => {
+          // ALL BORDER untuk setiap cell
+          cell.border = {
+            top: { style: "thin", color: { argb: "FFD1D5DB" } },
+            left: { style: "thin", color: { argb: "FFD1D5DB" } },
+            bottom: { style: "thin", color: { argb: "FFD1D5DB" } },
+            right: { style: "thin", color: { argb: "FFD1D5DB" } },
+          };
+
+          // Background color berdasarkan status (hanya untuk kolom status)
+          if (cell.col === 6 && rowNumber > 1) {
+            // Kolom Status adalah kolom ke-6
+            const isActive = cell.value === "AKTIF";
+
+            // Warna HIJAU untuk AKTIF
+            if (isActive) {
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFDCFCE7" }, // Green-100
+              };
+              cell.font = {
+                bold: true,
+                size: 10,
+                color: { argb: "FF166534" }, // Green-800
+                name: "Segoe UI",
+              };
+            }
+            // Warna MERAH untuk NONAKTIF
+            else {
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFFEE2E2" }, // Red-100
+              };
+              cell.font = {
+                bold: true,
+                size: 10,
+                color: { argb: "FF991B1B" }, // Red-800
+                name: "Segoe UI",
+              };
+            }
+
+            // Center alignment untuk status
+            cell.alignment = {
+              vertical: "middle",
+              horizontal: "center",
+            };
+
+            // Border khusus untuk status (lebih tebal)
+            cell.border = {
+              top: {
+                style: "thin",
+                color: { argb: isActive ? "FF86EFAC" : "FFFCA5A5" },
+              },
+              left: {
+                style: "thin",
+                color: { argb: isActive ? "FF86EFAC" : "FFFCA5A5" },
+              },
+              bottom: {
+                style: "thin",
+                color: { argb: isActive ? "FF86EFAC" : "FFFCA5A5" },
+              },
+              right: {
+                style: "thin",
+                color: { argb: isActive ? "FF86EFAC" : "FFFCA5A5" },
+              },
+            };
+          }
+          // Styling untuk selain kolom status
+          else if (rowNumber > 1) {
+            // Font untuk data
+            cell.font = {
+              size: 10,
+              color: { argb: "FF374151" },
+              name: "Segoe UI",
+            };
+
+            // Alignment berdasarkan tipe kolom
+            if (cell.col === 1) {
+              // Kolom No
+              cell.alignment = {
+                vertical: "middle",
+                horizontal: "center",
+              };
+            } else {
+              // Kolom lainnya
+              cell.alignment = {
+                vertical: "middle",
+                horizontal: "left",
+                wrapText: true,
+              };
+            }
+
+            // Zebra striping untuk baris
+            if (rowNumber % 2 === 0) {
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFF9FAFB" }, // Gray-50
+              };
+            } else {
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFFFFFFF" }, // White
+              };
+            }
+          }
+        });
+      });
+
+      // 6️⃣ Styling khusus untuk kolom No dan Tanggal
+      sheet.getColumn("no").eachCell((cell, rowNumber) => {
+        if (rowNumber > 1) {
+          cell.alignment = {
+            vertical: "middle",
+            horizontal: "center",
+          };
+          cell.font = {
+            size: 10,
+            color: { argb: "FF6B7280" },
+            name: "Segoe UI",
+          };
+        }
+      });
+
+      sheet.getColumn("created_at").eachCell((cell, rowNumber) => {
+        if (rowNumber > 1) {
+          cell.alignment = {
+            vertical: "middle",
+            horizontal: "center",
+          };
+          cell.font = {
+            size: 10,
+            color: { argb: "FF6B7280" },
+            name: "Segoe UI",
+          };
+        }
+      });
+
+      // 7️⃣ Border luar yang lebih tebal untuk seluruh tabel
+      const lastRow = sheet.rowCount;
+      const lastCol = sheet.columnCount;
+
+      // Border luar - semua sisi medium
+      for (let col = 1; col <= lastCol; col++) {
+        // Top border (header)
+        const topCell = sheet.getCell(1, col);
+        topCell.border.top = { style: "medium", color: { argb: "FF1D4ED8" } };
+
+        // Bottom border (last row)
+        const bottomCell = sheet.getCell(lastRow, col);
+        bottomCell.border.bottom = {
+          style: "medium",
+          color: { argb: "FF1D4ED8" },
+        };
+      }
+
+      // Side borders
+      for (let row = 1; row <= lastRow; row++) {
+        // Left border
+        const leftCell = sheet.getCell(row, 1);
+        leftCell.border.left = { style: "medium", color: { argb: "FF1D4ED8" } };
+
+        // Right border
+        const rightCell = sheet.getCell(row, lastCol);
+        rightCell.border.right = {
+          style: "medium",
+          color: { argb: "FF1D4ED8" },
+        };
+      }
+
+      // 8️⃣ Auto fit columns
+      sheet.columns.forEach((column) => {
+        let maxLength = 0;
+        column.eachCell({ includeEmpty: true }, (cell) => {
+          const cellValue = cell.value ? cell.value.toString() : "";
+          const cellLength = cellValue.length;
+
+          // Adjust for font size
+          const adjustedLength = cellLength * 1.2;
+
+          if (adjustedLength > maxLength) {
+            maxLength = adjustedLength;
+          }
+        });
+
+        // Set width with limits
+        column.width = Math.min(Math.max(maxLength + 3, 10), 50);
+      });
+
+      // 9️⃣ Tambahkan filter di header (opsional)
+      sheet.autoFilter = {
+        from: { row: 1, column: 1 },
+        to: { row: 1, column: lastCol },
+      };
+
+      // 🔟 Generate file & download
+      const buffer = await workbook.xlsx.writeBuffer();
+      const today = new Date();
+      const formattedDate = `${today.getDate().toString().padStart(2, "0")}-${(
+        today.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${today.getFullYear()}`;
+
+      // Waktu untuk membuat nama file unik
+      const timeString = `${today.getHours().toString().padStart(2, "0")}${today
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}`;
+
+      saveAs(
+        new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }),
+        `Data_Pengguna_${formattedDate}_${timeString}.xlsx`
+      );
+
+      console.log("✅ Data berhasil diekspor dengan border lengkap!");
+    } catch (error) {
+      console.error("❌ Error exporting data:", error);
+      alert("Terjadi kesalahan saat mengekspor data. Silakan coba lagi.");
+    }
   };
 
   return (
