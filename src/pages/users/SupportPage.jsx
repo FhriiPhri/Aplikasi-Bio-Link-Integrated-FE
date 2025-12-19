@@ -8,18 +8,21 @@ import {
   CheckCircleIcon,
   LightBulbIcon,
   ShieldCheckIcon,
+  DocumentTextIcon,
+  RocketLaunchIcon,
+  PlayCircleIcon,
+  UserGroupIcon,
 } from "@heroicons/react/24/outline";
 
-// Import Modal Components (Modular & Easy Maintenance)
+// Import Modal Components
 import SecurityModal from "../../components/modals/SecurityModal";
 import QuickStartModal from "../../components/modals/QuickStartModal";
 import DocumentationModal from "../../components/modals/DocumentationModal";
 
-// --- FAQ Data (FINAL - Adjusted with Latest Clarifications) ---
+// --- FAQ Data ---
 const faqsData = [
   {
     id: 1,
-    icon: "🎨",
     category: "Customization",
     question: "Can I customize colors or fonts outside of the provided themes?",
     answer:
@@ -27,7 +30,6 @@ const faqsData = [
   },
   {
     id: 2,
-    icon: "💎",
     category: "Premium",
     question:
       "Does Synapse plan to offer Premium or paid features in the future?",
@@ -36,7 +38,6 @@ const faqsData = [
   },
   {
     id: 3,
-    icon: "📊",
     category: "Analytics",
     question:
       "How can I find out how many times my Bundle has been viewed and accessed by others?",
@@ -45,7 +46,6 @@ const faqsData = [
   },
   {
     id: 4,
-    icon: "🚀",
     category: "Getting Started",
     question: "What are the steps to create a new Bundle (Link-in-Bio page)?",
     answer:
@@ -53,7 +53,6 @@ const faqsData = [
   },
   {
     id: 5,
-    icon: "🔒",
     category: "Privacy",
     question: "Can I set my Bundle to be Private or password-protected?",
     answer:
@@ -65,28 +64,28 @@ const faqsData = [
 const quickHelpCards = [
   {
     id: 1,
-    icon: "🎯",
+    icon: RocketLaunchIcon,
     title: "Quick Start Guide",
     description: "Learn Synapse basics in 5 minutes",
     link: "/guides/quickstart",
   },
   {
     id: 2,
-    icon: "📖",
+    icon: DocumentTextIcon,
     title: "Documentation",
     description: "Complete documentation of Synapse features",
     link: "/docs",
   },
   {
     id: 3,
-    icon: "🎥",
+    icon: PlayCircleIcon,
     title: "Video Tutorials",
     description: "Step-by-step video tutorials",
     link: "/tutorials",
   },
   {
     id: 4,
-    icon: "💬",
+    icon: UserGroupIcon,
     title: "Community",
     description: "Join the Synapse community",
     link: "/community",
@@ -116,34 +115,33 @@ const SupportPage = () => {
 
   return (
     <Layout>
-      {/* FIXED: Proper background that covers entire viewport */}
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
+      <div className="min-h-screen bg-gray-50">
         {/* Hero Header Section */}
-        <div className="bg-white border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg">
+        <div className="bg-white border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-500 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
                 <QuestionMarkCircleIcon className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                   Help Center
                 </h1>
-                <p className="text-gray-500 text-sm mt-1">
-                  Hi, {user?.name || "there"}! How can we help you? 👋
+                <p className="text-gray-600 text-sm mt-1">
+                  Hi, {user?.name || "there"}! How can we help you today?
                 </p>
               </div>
             </div>
 
             {/* Search Bar */}
-            <div className="max-w-2xl mt-6">
+            <div className="max-w-2xl">
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Search for help, guides, or FAQ..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-5 py-3.5 pl-12 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder:text-gray-400"
+                  className="w-full px-5 py-3.5 pl-12 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder:text-gray-500"
                 />
                 <svg
                   className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"
@@ -163,40 +161,42 @@ const SupportPage = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           {/* Quick Help Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12 sm:mb-16">
             {quickHelpCards.map((card) => {
-              // Quick Start Guide opens modal instead of navigation
+              const IconComponent = card.icon;
+              
+              // Quick Start Guide opens modal
               if (card.id === 1) {
                 return (
                   <button
                     key={card.id}
                     onClick={() => setIsQuickStartModalOpen(true)}
-                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-blue-200 text-left"
+                    className="bg-white rounded-lg p-5 sm:p-6 border border-gray-200 transition-all duration-300 hover:border-blue-500 hover:shadow-md text-left group"
                   >
-                    <div className="text-3xl mb-3">{card.icon}</div>
-                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                    <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 mb-3 sm:mb-4 group-hover:text-blue-700 transition-colors" />
+                    <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">
                       {card.title}
                     </h3>
-                    <p className="text-sm text-gray-500">{card.description}</p>
+                    <p className="text-xs sm:text-sm text-gray-600">{card.description}</p>
                   </button>
                 );
               }
 
-              // Documentation opens modal instead of navigation
+              // Documentation opens modal
               if (card.id === 2) {
                 return (
                   <button
                     key={card.id}
                     onClick={() => setIsDocumentationModalOpen(true)}
-                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-blue-200 text-left"
+                    className="bg-white rounded-lg p-5 sm:p-6 border border-gray-200 transition-all duration-300 hover:border-blue-500 hover:shadow-md text-left group"
                   >
-                    <div className="text-3xl mb-3">{card.icon}</div>
-                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                    <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 mb-3 sm:mb-4 group-hover:text-blue-700 transition-colors" />
+                    <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">
                       {card.title}
                     </h3>
-                    <p className="text-sm text-gray-500">{card.description}</p>
+                    <p className="text-xs sm:text-sm text-gray-600">{card.description}</p>
                   </button>
                 );
               }
@@ -205,58 +205,53 @@ const SupportPage = () => {
                 <a
                   key={card.id}
                   href={card.link}
-                  className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-blue-200"
+                  className="bg-white rounded-lg p-5 sm:p-6 border border-gray-200 transition-all duration-300 hover:border-blue-500 hover:shadow-md group"
                 >
-                  <div className="text-3xl mb-3">{card.icon}</div>
-                  <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                  <IconComponent className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 mb-3 sm:mb-4 group-hover:text-blue-700 transition-colors" />
+                  <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">
                     {card.title}
                   </h3>
-                  <p className="text-sm text-gray-500">{card.description}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">{card.description}</p>
                 </a>
               );
             })}
           </div>
 
           {/* FAQ Section Header */}
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="mb-6 sm:mb-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
               Frequently Asked Questions
             </h2>
-            <p className="text-gray-500">
+            <p className="text-sm sm:text-base text-gray-600">
               Find answers to common questions about Synapse
             </p>
           </div>
 
           {/* FAQ Accordion */}
-          <div className="space-y-3 mb-12">
+          <div className="space-y-3 mb-12 sm:mb-16">
             {filteredFaqs.length > 0 ? (
               filteredFaqs.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md"
+                  className="bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:border-gray-300"
                 >
                   {/* Question Header */}
                   <button
                     onClick={() => toggleOpen(item.id)}
-                    className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors rounded-xl"
+                    className="w-full flex items-center justify-between p-5 sm:p-6 text-left hover:bg-gray-50 transition-colors rounded-lg"
                   >
-                    <div className="flex items-start gap-4 flex-1">
-                      <span className="text-2xl mt-0.5 flex-shrink-0">
-                        {item.icon}
-                      </span>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
-                            {item.category}
-                          </span>
-                        </div>
-                        <h3 className="font-semibold text-gray-900 text-base">
-                          {item.question}
-                        </h3>
+                    <div className="flex-1 pr-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-medium text-blue-700 bg-blue-50 px-3 py-1 rounded-full">
+                          {item.category}
+                        </span>
                       </div>
+                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+                        {item.question}
+                      </h3>
                     </div>
                     <ChevronDownIcon
-                      className={`w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0 ml-4 ${
+                      className={`w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 ${
                         openId === item.id ? "rotate-180 text-blue-600" : ""
                       }`}
                     />
@@ -264,9 +259,9 @@ const SupportPage = () => {
 
                   {/* Answer Content */}
                   {openId === item.id && (
-                    <div className="px-5 pb-5 pt-0">
-                      <div className="ml-14 pl-4 border-l-2 border-blue-200">
-                        <p className="text-gray-600 leading-relaxed">
+                    <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-0">
+                      <div className="pl-4 border-l-2 border-blue-200">
+                        <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                           {item.answer}
                         </p>
                       </div>
@@ -275,12 +270,24 @@ const SupportPage = () => {
                 </div>
               ))
             ) : (
-              <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-100">
-                <div className="text-5xl mb-4">🔍</div>
+              <div className="bg-white rounded-lg p-12 sm:p-16 text-center border border-gray-200">
+                <svg
+                  className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
                 <h3 className="font-semibold text-gray-900 mb-2">
                   No results found
                 </h3>
-                <p className="text-gray-500">
+                <p className="text-sm sm:text-base text-gray-600">
                   Try another keyword or contact our support team
                 </p>
               </div>
@@ -288,41 +295,37 @@ const SupportPage = () => {
           </div>
 
           {/* Contact Support CTA */}
-          <div className="bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl p-8 shadow-xl relative overflow-hidden">
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-24 -translate-x-24"></div>
-
-            <div className="relative z-10 max-w-3xl mx-auto text-center">
-              <ChatBubbleLeftRightIcon className="w-12 h-12 text-white mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-white mb-3">
+          <div className="bg-gradient-to-br from-blue-600 to-blue-500 rounded-lg p-6 sm:p-8 mb-12 shadow-lg shadow-blue-500/20">
+            <div className="max-w-2xl mx-auto text-center">
+              <ChatBubbleLeftRightIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white mx-auto mb-3" />
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-2">
                 Still Need Help?
               </h2>
-              <p className="text-blue-100 mb-6 text-lg">
+              <p className="text-blue-50 mb-5 text-sm sm:text-base">
                 The Synapse support team is ready to help you 24/7. Contact us
                 for further questions or technical assistance.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-                <button className="px-8 py-3.5 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2">
-                  <ChatBubbleLeftRightIcon className="w-5 h-5" />
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-6">
+                <button className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base">
+                  <ChatBubbleLeftRightIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   Contact Support
                 </button>
                 <a
                   href="/status"
-                  className="px-8 py-3.5 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 backdrop-blur-sm border border-white/20 flex items-center gap-2"
+                  className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all duration-300 border border-white/30 flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
-                  <CheckCircleIcon className="w-5 h-5" />
+                  <CheckCircleIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   Check Service Status
                 </a>
               </div>
 
               {/* Contact Info */}
-              <div className="mt-8 pt-6 border-t border-white/20">
-                <div className="flex flex-col sm:flex-row gap-6 justify-center text-white/90 text-sm">
-                  <div className="flex items-center gap-2">
+              <div className="pt-5 border-t border-white/20">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center text-blue-50 text-xs sm:text-sm">
+                  <div className="flex items-center justify-center gap-2">
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -334,11 +337,11 @@ const SupportPage = () => {
                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                       />
                     </svg>
-                    synapsebioapp@gmail.com
+                    <span className="break-all">synapsebioapp@gmail.com</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center gap-2">
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -358,18 +361,18 @@ const SupportPage = () => {
           </div>
 
           {/* Additional Resources */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 pb-8">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <LightBulbIcon className="w-8 h-8 text-blue-600 mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 pb-8">
+            <div className="bg-white rounded-lg p-5 sm:p-6 border border-gray-200 hover:border-blue-300 transition-colors">
+              <LightBulbIcon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 mb-3 sm:mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">
                 Tips & Tricks
               </h3>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-xs sm:text-sm text-gray-600 mb-4">
                 Maximize your Synapse usage with tips from experts
               </p>
               <a
                 href="/tips"
-                className="text-blue-600 text-sm font-medium hover:text-blue-700 flex items-center gap-1"
+                className="text-blue-600 text-xs sm:text-sm font-medium hover:text-blue-700 flex items-center gap-1 inline-flex"
               >
                 Learn more
                 <svg
@@ -388,18 +391,17 @@ const SupportPage = () => {
               </a>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <ShieldCheckIcon className="w-8 h-8 text-blue-600 mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-2">
+            <div className="bg-white rounded-lg p-5 sm:p-6 border border-gray-200 hover:border-blue-300 transition-colors">
+              <ShieldCheckIcon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 mb-3 sm:mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">
                 Security & Privacy
               </h3>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-xs sm:text-sm text-gray-600 mb-4">
                 Learn how we protect your data security
               </p>
-              {/* Click handler to open modal */}
               <button
                 onClick={() => setIsSecurityModalOpen(true)}
-                className="text-blue-600 text-sm font-medium hover:text-blue-700 flex items-center gap-1"
+                className="text-blue-600 text-xs sm:text-sm font-medium hover:text-blue-700 flex items-center gap-1"
               >
                 Read policy
                 <svg
@@ -418,27 +420,15 @@ const SupportPage = () => {
               </button>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <svg
-                className="w-8 h-8 text-blue-600 mb-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <h3 className="font-semibold text-gray-900 mb-2">Changelog</h3>
-              <p className="text-sm text-gray-500 mb-4">
+            <div className="bg-white rounded-lg p-5 sm:p-6 border border-gray-200 hover:border-blue-300 transition-colors">
+              <DocumentTextIcon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 mb-3 sm:mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Changelog</h3>
+              <p className="text-xs sm:text-sm text-gray-600 mb-4">
                 Latest updates and new features we've released
               </p>
               <a
                 href="/changelog"
-                className="text-blue-600 text-sm font-medium hover:text-blue-700 flex items-center gap-1"
+                className="text-blue-600 text-xs sm:text-sm font-medium hover:text-blue-700 flex items-center gap-1 inline-flex"
               >
                 View updates
                 <svg
@@ -460,19 +450,17 @@ const SupportPage = () => {
         </div>
       </div>
 
-      {/* Security Modal - Imported from separate file for easy maintenance */}
+      {/* Modals */}
       <SecurityModal
         isOpen={isSecurityModalOpen}
         onClose={() => setIsSecurityModalOpen(false)}
       />
 
-      {/* Quick Start Modal - Imported from separate file for easy maintenance */}
       <QuickStartModal
         isOpen={isQuickStartModalOpen}
         onClose={() => setIsQuickStartModalOpen(false)}
       />
 
-      {/* Documentation Modal - Imported from separate file for easy maintenance */}
       <DocumentationModal
         isOpen={isDocumentationModalOpen}
         onClose={() => setIsDocumentationModalOpen(false)}
