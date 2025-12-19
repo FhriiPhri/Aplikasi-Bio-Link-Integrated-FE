@@ -631,17 +631,11 @@ export default function AdminDashboard() {
         .toString()
         .padStart(2, "0")}-${today.getFullYear()}`;
 
-      // Waktu untuk membuat nama file unik
-      const timeString = `${today.getHours().toString().padStart(2, "0")}${today
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}`;
-
       saveAs(
         new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         }),
-        `Data_Pengguna_${formattedDate}_${timeString}.xlsx`
+        `Data Pengguna Synapse Bio-Link ( ${formattedDate} ).xlsx`
       );
 
       console.log("✅ Data berhasil diekspor dengan border lengkap!");
