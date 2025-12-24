@@ -536,7 +536,7 @@ export default function Login() {
             {/* Welcome Text */}
             <div className="mb-6 animate-slideUp">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
-                Holla,
+                Hello,
                 <br />
                 <span className="bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
                   Welcome Back
@@ -646,7 +646,7 @@ export default function Login() {
                 className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01]"
               >
                 {isLoading ? (
-                  <span className="loading loading-spinner loading-sm"></span>
+                  <span className="loading loading-spinner text-white loading-sm"></span>
                 ) : (
                   "Sign In"
                 )}
