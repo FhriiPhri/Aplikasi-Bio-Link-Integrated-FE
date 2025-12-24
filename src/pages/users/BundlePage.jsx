@@ -1,7 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Plus, ExternalLink, Trash2, Edit, Link2 } from 'lucide-react';
-import CreateBundleModal from '../../components/CreateBundleModal';
+import { useState, useEffect } from "react";
+import { Plus, ExternalLink, Trash2, Edit, Link2 } from "lucide-react";
+import CreateBundleModal from "../../components/CreateBundleModal";
 import Layout from "../../components/layouts/Layout";
+import {
+  FaInstagram,
+  FaGithub,
+  FaTiktok,
+  FaYoutube,
+  FaFacebook,
+  FaXTwitter,
+} from "react-icons/fa6";
 
 function BundlesPage() {
   const [bundles, setBundles] = useState([]);
@@ -16,46 +24,46 @@ function BundlesPage() {
   const fetchBundles = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token'); 
-      
-      const response = await fetch('/api/user/bundles', {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("/api/user/bundles", {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-        }
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
       });
 
-      if (!response.ok) throw new Error('Failed to fetch bundles');
+      if (!response.ok) throw new Error("Failed to fetch bundles");
 
       const result = await response.json();
       setBundles(result.data);
     } catch (err) {
       setError(err.message);
-      console.error('Error fetching bundles:', err);
+      console.error("Error fetching bundles:", err);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this bundle?')) return;
+    if (!confirm("Are you sure you want to delete this bundle?")) return;
 
     try {
-      const token = localStorage.getItem('token');
-      
+      const token = localStorage.getItem("token");
+
       const response = await fetch(`/api/user/bundles/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-        }
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
       });
 
-      if (!response.ok) throw new Error('Failed to delete bundle');
+      if (!response.ok) throw new Error("Failed to delete bundle");
 
       fetchBundles();
     } catch (err) {
-      alert('Failed to delete bundle: ' + err.message);
+      alert("Failed to delete bundle: " + err.message);
     }
   };
 
@@ -83,13 +91,25 @@ function BundlesPage() {
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
           <div className="text-center bg-white rounded-xl shadow-sm border border-red-100 p-8 max-w-md">
             <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-6 h-6 text-red-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Error Loading Bundles</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Error Loading Bundles
+            </h3>
             <p className="text-gray-600 mb-6">{error}</p>
-            <button 
+            <button
               onClick={fetchBundles}
               className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
             >
@@ -104,10 +124,10 @@ function BundlesPage() {
   return (
     <Layout>
       <style jsx>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
         .bundles-page {
-          font-family: 'Inter', sans-serif;
+          font-family: "Inter", sans-serif;
           background-color: #f9fafb;
           min-height: 100vh;
         }
@@ -150,12 +170,18 @@ function BundlesPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-1">My Bundles</h1>
-              <p className="text-gray-600">Manage and organize your link collections</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                My Bundles
+              </h1>
+              <p className="text-gray-600">
+                Manage and organize your link collections
+              </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="stats-badge text-white px-4 py-2 rounded-lg shadow-sm">
-                <span className="text-sm font-semibold">{bundles.length} Bundle{bundles.length !== 1 ? 's' : ''}</span>
+                <span className="text-sm font-semibold">
+                  {bundles.length} Bundle{bundles.length !== 1 ? "s" : ""}
+                </span>
               </div>
               <button
                 onClick={() => setShowCreateModal(true)}
@@ -178,7 +204,8 @@ function BundlesPage() {
                   No bundles yet
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Create your first bundle to start organizing and sharing your links
+                  Create your first bundle to start organizing and sharing your
+                  links
                 </p>
                 <button
                   onClick={() => setShowCreateModal(true)}
@@ -204,47 +231,61 @@ function BundlesPage() {
                         {bundle.name}
                       </h3>
                     </div>
-                    
+
                     <div className="inline-flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-2.5 py-1 rounded-md font-medium">
                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                      {bundle.theme?.name || 'Default Theme'}
+                      {bundle.theme?.name || "Default Theme"}
                     </div>
                   </div>
 
                   {/* Card Body */}
                   <div className="p-5 space-y-4">
                     {/* Social Platforms */}
-                    {(bundle.instagram_url || bundle.github_url || bundle.tiktok_url || 
-                      bundle.youtube_url || bundle.facebook_url || bundle.x_url) && (
+                    {(bundle.instagram_url ||
+                      bundle.github_url ||
+                      bundle.tiktok_url ||
+                      bundle.youtube_url ||
+                      bundle.facebook_url ||
+                      bundle.x_url) && (
                       <div className="flex gap-2 flex-wrap">
                         {bundle.instagram_url && (
-                          <span className="social-badge px-2.5 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md">
+                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md">
+                            <FaInstagram size={14} />
                             Instagram
                           </span>
                         )}
+
                         {bundle.github_url && (
-                          <span className="social-badge px-2.5 py-1 bg-gray-800 text-white rounded-md">
+                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-gray-800 text-white rounded-md">
+                            <FaGithub size={14} />
                             GitHub
                           </span>
                         )}
+
                         {bundle.tiktok_url && (
-                          <span className="social-badge px-2.5 py-1 bg-black text-white rounded-md">
+                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-black text-white rounded-md">
+                            <FaTiktok size={14} />
                             TikTok
                           </span>
                         )}
+
                         {bundle.youtube_url && (
-                          <span className="social-badge px-2.5 py-1 bg-red-600 text-white rounded-md">
+                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-red-600 text-white rounded-md">
+                            <FaYoutube size={14} />
                             YouTube
                           </span>
                         )}
+
                         {bundle.facebook_url && (
-                          <span className="social-badge px-2.5 py-1 bg-blue-600 text-white rounded-md">
+                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-blue-600 text-white rounded-md">
+                            <FaFacebook size={14} />
                             Facebook
                           </span>
                         )}
+
                         {bundle.x_url && (
-                          <span className="social-badge px-2.5 py-1 bg-gray-900 text-white rounded-md">
-                            X
+                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-gray-900 text-white rounded-md">
+                            <FaXTwitter size={14} />X
                           </span>
                         )}
                       </div>
@@ -269,7 +310,9 @@ function BundlesPage() {
                       View
                     </a>
                     <button
-                      onClick={() => window.location.href = `/bundles/${bundle.id}/edit`}
+                      onClick={() =>
+                        (window.location.href = `/bundles/${bundle.id}/edit`)
+                      }
                       className="action-button flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-medium text-sm"
                     >
                       <Edit size={16} />
