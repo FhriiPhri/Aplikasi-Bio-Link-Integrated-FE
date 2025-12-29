@@ -36,7 +36,10 @@ function BundleEditorPage() {
   const [loadingThemes, setLoadingThemes] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState("success"); // 'success' or 'error'
+  const [toastType, setToastType] = useState("success");
+
+  // State untuk toggle preview di mobile
+  const [mobileShowPreview, setMobileShowPreview] = useState(false);
 
   // Show toast notification
   const showNotification = (message, type = "success") => {
@@ -549,10 +552,6 @@ function BundleEditorPage() {
 
         /* Mobile optimizations */
         @media (max-width: 768px) {
-          .mobile-hide-preview .iphone-mockup-compact {
-            display: none;
-          }
-
           .top-bar-mobile {
             padding: 12px 16px !important;
           }
@@ -649,6 +648,74 @@ function BundleEditorPage() {
             max-width: none;
           }
         }
+
+        /* Mobile Preview Toggle Styles */
+        .mobile-preview-toggle {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 50;
+          display: none;
+        }
+
+        @media (max-width: 1279px) {
+          .mobile-preview-toggle {
+            display: flex;
+          }
+
+          .preview-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+          }
+
+          .preview-content {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 400px;
+          }
+
+          .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .preview-container {
+            position: static !important;
+            background: transparent !important;
+            padding: 0 !important;
+          }
+
+          .preview-content {
+            background: transparent !important;
+            padding: 0 !important;
+            max-height: none !important;
+            overflow-y: visible !important;
+            max-width: none !important;
+          }
+
+          .preview-header {
+            display: none !important;
+          }
+        }
       `}</style>
 
       {/* Toast Notification */}
@@ -713,7 +780,7 @@ function BundleEditorPage() {
 
       <div className="min-h-screen bg-gray-50">
         {/* Top Bar - Mobile Responsive */}
-        <div className="bg-white border-b sticky top-0 z-10 shadow-sm">
+        <div className="bg-white border-b sticky top-0 z-30 shadow-sm">
           <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 top-bar-mobile">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
@@ -734,15 +801,17 @@ function BundleEditorPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                {/* Tombol preview untuk desktop - tampilkan hanya di LG ke atas */}
                 <button
                   onClick={() => setShowPreview(!showPreview)}
-                  className="hidden sm:flex items-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors text-sm mobile-button"
+                  className="hidden lg:flex items-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors text-sm mobile-button"
                 >
                   {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
-                  <span className="hidden md:inline text-black">
+                  <span className="hidden md:inline">
                     {showPreview ? "Hide" : "Show"} Preview
                   </span>
-                </button>
+                  <span className="md:hidden">Preview</span>
+                </button>{" "}
                 <button
                   onClick={handleBundleUpdate}
                   disabled={saving}
@@ -763,13 +832,18 @@ function BundleEditorPage() {
           </div>
         </div>
 
+        {/* Mobile Preview Toggle Button */}
+        <button
+          onClick={() => setMobileShowPreview(true)}
+          className="mobile-preview-toggle lg:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+          aria-label="Show Preview"
+        >
+          <Eye size={24} />
+        </button>
+
         {/* Main Content */}
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-[1600px]">
-          <div
-            className={`grid grid-cols-1 xl:grid-cols-12 gap-4 sm:gap-6 ${
-              !showPreview ? "mobile-hide-preview" : ""
-            }`}
-          >
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 sm:gap-6">
             {/* Left Sidebar - Theme Selection */}
             <div className="xl:col-span-3 space-y-4 sm:space-y-6">
               {/* Theme Selection */}
@@ -1199,197 +1273,220 @@ function BundleEditorPage() {
             </div>
 
             {/* Right Sidebar - Compact iPhone Preview */}
-            {showPreview && (
-              <div className="xl:col-span-3">
-                <div className="xl:sticky xl:top-24">
-                  <div className="text-center mb-2 sm:mb-3">
-                    <span className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white text-[10px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg">
-                      📱 LIVE PREVIEW
-                    </span>
-                    <p className="text-[10px] sm:text-xs text-gray-500 mt-1.5 sm:mt-2 font-medium">
-                      {getSelectedTheme()?.name ||
-                        bundle?.theme?.name ||
-                        "Default"}
-                    </p>
-                  </div>
+            {(showPreview || mobileShowPreview) && (
+              <div
+                className={`xl:col-span-3 ${
+                  mobileShowPreview ? "block" : "hidden xl:block"
+                }`}
+              >
+                <div
+                  className={`preview-container ${
+                    mobileShowPreview ? "block" : "hidden xl:block"
+                  }`}
+                >
+                  <div className="preview-content">
+                    {/* Mobile Preview Header */}
+                    <div className="preview-header">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        Preview
+                      </h3>
+                      <button
+                        onClick={() => setMobileShowPreview(false)}
+                        className="lg:hidden text-gray-500 hover:text-gray-700"
+                        aria-label="Close Preview"
+                      >
+                        <X size={24} />
+                      </button>
+                    </div>
+                    <div className="text-center mb-2 sm:mb-3">
+                      <span className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white text-[10px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg">
+                        📱 LIVE PREVIEW
+                      </span>
+                      <p className="text-[10px] sm:text-xs text-gray-500 mt-1.5 sm:mt-2 font-medium">
+                        {getSelectedTheme()?.name ||
+                          bundle?.theme?.name ||
+                          "Default"}
+                      </p>
+                    </div>
 
-                  <div className="iphone-mockup-compact">
-                    <div className="iphone-frame-compact">
-                      <div className="iphone-notch-compact">
-                        <div className="iphone-speaker-compact"></div>
-                        <div className="iphone-camera-compact"></div>
-                      </div>
+                    <div className="iphone-mockup-compact">
+                      <div className="iphone-frame-compact">
+                        <div className="iphone-notch-compact">
+                          <div className="iphone-speaker-compact"></div>
+                          <div className="iphone-camera-compact"></div>
+                        </div>
 
-                      <div className="iphone-screen-compact">
-                        <div
-                          data-theme={
-                            getSelectedTheme()?.name ||
-                            bundle?.theme?.name ||
-                            "light"
-                          }
-                          className="iphone-content-compact bg-base-100"
-                        >
-                          <div className="p-4 sm:p-6 text-center min-h-full">
-                            {/* Avatar */}
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 mt-4 sm:mt-6">
-                              {profileImagePreview ? (
-                                <img
-                                  src={profileImagePreview}
-                                  alt="Profile"
-                                  className="w-full h-full rounded-full object-cover border-2 border-base-200 shadow-lg"
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-base-300 rounded-full flex items-center justify-center border-2 border-base-200">
-                                  <ImageIcon
-                                    size={18}
-                                    className="text-base-content/30 sm:w-5 sm:h-5"
+                        <div className="iphone-screen-compact">
+                          <div
+                            data-theme={
+                              getSelectedTheme()?.name ||
+                              bundle?.theme?.name ||
+                              "light"
+                            }
+                            className="iphone-content-compact bg-base-100"
+                          >
+                            <div className="p-4 sm:p-6 text-center min-h-full">
+                              {/* Avatar */}
+                              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 mt-4 sm:mt-6">
+                                {profileImagePreview ? (
+                                  <img
+                                    src={profileImagePreview}
+                                    alt="Profile"
+                                    className="w-full h-full rounded-full object-cover border-2 border-base-200 shadow-lg"
                                   />
-                                </div>
-                              )}
-                            </div>
+                                ) : (
+                                  <div className="w-full h-full bg-base-300 rounded-full flex items-center justify-center border-2 border-base-200">
+                                    <ImageIcon
+                                      size={18}
+                                      className="text-base-content/30 sm:w-5 sm:h-5"
+                                    />
+                                  </div>
+                                )}
+                              </div>
 
-                            {/* Bundle Name */}
-                            <h3 className="text-xs sm:text-sm font-bold mb-1 sm:mb-1.5 text-base-content px-2">
-                              {bundleForm.name || "Your Name"}
-                            </h3>
+                              {/* Bundle Name */}
+                              <h3 className="text-xs sm:text-sm font-bold mb-1 sm:mb-1.5 text-base-content px-2">
+                                {bundleForm.name || "Your Name"}
+                              </h3>
 
-                            {/* Description */}
-                            {bundleForm.description && (
-                              <p className="text-[10px] sm:text-xs text-base-content/70 mb-3 sm:mb-4 px-2 line-clamp-2">
-                                {bundleForm.description}
-                              </p>
-                            )}
-
-                            {/* Social Icons */}
-                            <div className="flex gap-1 sm:gap-1.5 justify-center mb-3 sm:mb-4 flex-wrap px-2">
-                              {bundleForm.instagram_url && (
-                                <a
-                                  href={bundleForm.instagram_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn btn-circle btn-xs bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 border-0 text-white"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-2.5 w-2.5 sm:h-3 sm:w-3"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                                  </svg>
-                                </a>
-                              )}
-                              {bundleForm.github_url && (
-                                <a
-                                  href={bundleForm.github_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn btn-circle btn-xs bg-gray-800 hover:bg-gray-900 border-0 text-white"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-2.5 w-2.5 sm:h-3 sm:w-3"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                                  </svg>
-                                </a>
-                              )}
-                              {bundleForm.tiktok_url && (
-                                <a
-                                  href={bundleForm.tiktok_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn btn-circle btn-xs bg-black hover:bg-gray-900 border-0 text-white"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-2.5 w-2.5 sm:h-3 sm:w-3"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-                                  </svg>
-                                </a>
-                              )}
-                              {bundleForm.youtube_url && (
-                                <a
-                                  href={bundleForm.youtube_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn btn-circle btn-xs bg-red-600 hover:bg-red-700 border-0 text-white"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-2.5 w-2.5 sm:h-3 sm:w-3"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
-                                  </svg>
-                                </a>
-                              )}
-                              {bundleForm.facebook_url && (
-                                <a
-                                  href={bundleForm.facebook_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn btn-circle btn-xs bg-blue-600 hover:bg-blue-700 border-0 text-white"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-2.5 w-2.5 sm:h-3 sm:w-3"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-                                  </svg>
-                                </a>
-                              )}
-                              {bundleForm.x_url && (
-                                <a
-                                  href={bundleForm.x_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn btn-circle btn-xs bg-black hover:bg-gray-900 border-0 text-white"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-2.5 w-2.5 sm:h-3 sm:w-3"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                                  </svg>
-                                </a>
-                              )}
-                            </div>
-
-                            {/* Custom Links */}
-                            <div className="space-y-1.5 sm:space-y-2 px-2">
-                              {links.slice(0, 3).map((link) => (
-                                <a
-                                  key={link.id}
-                                  href={link.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="btn btn-primary btn-sm w-full text-[10px] sm:text-xs font-medium shadow-sm normal-case"
-                                >
-                                  {link.name}
-                                </a>
-                              ))}
-                              {links.length > 3 && (
-                                <p className="text-[10px] sm:text-xs text-base-content/40 italic pt-1">
-                                  +{links.length - 3} more links
+                              {/* Description */}
+                              {bundleForm.description && (
+                                <p className="text-[10px] sm:text-xs text-base-content/70 mb-3 sm:mb-4 px-2 line-clamp-2">
+                                  {bundleForm.description}
                                 </p>
                               )}
-                              {links.length === 0 &&
-                                !bundleForm.description && (
-                                  <p className="text-base-content/40 py-4 sm:py-6 text-[10px] sm:text-xs">
-                                    Your links will appear here
+
+                              {/* Social Icons */}
+                              <div className="flex gap-1 sm:gap-1.5 justify-center mb-3 sm:mb-4 flex-wrap px-2">
+                                {bundleForm.instagram_url && (
+                                  <a
+                                    href={bundleForm.instagram_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-circle btn-xs bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 border-0 text-white"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                                      fill="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                                    </svg>
+                                  </a>
+                                )}
+                                {bundleForm.github_url && (
+                                  <a
+                                    href={bundleForm.github_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-circle btn-xs bg-gray-800 hover:bg-gray-900 border-0 text-white"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                                      fill="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                    </svg>
+                                  </a>
+                                )}
+                                {bundleForm.tiktok_url && (
+                                  <a
+                                    href={bundleForm.tiktok_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-circle btn-xs bg-black hover:bg-gray-900 border-0 text-white"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                                      fill="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+                                    </svg>
+                                  </a>
+                                )}
+                                {bundleForm.youtube_url && (
+                                  <a
+                                    href={bundleForm.youtube_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-circle btn-xs bg-red-600 hover:bg-red-700 border-0 text-white"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                                      fill="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
+                                    </svg>
+                                  </a>
+                                )}
+                                {bundleForm.facebook_url && (
+                                  <a
+                                    href={bundleForm.facebook_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-circle btn-xs bg-blue-600 hover:bg-blue-700 border-0 text-white"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                                      fill="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+                                    </svg>
+                                  </a>
+                                )}
+                                {bundleForm.x_url && (
+                                  <a
+                                    href={bundleForm.x_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-circle btn-xs bg-black hover:bg-gray-900 border-0 text-white"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                                      fill="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                    </svg>
+                                  </a>
+                                )}
+                              </div>
+
+                              {/* Custom Links */}
+                              <div className="space-y-1.5 sm:space-y-2 px-2">
+                                {links.slice(0, 3).map((link) => (
+                                  <a
+                                    key={link.id}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-primary btn-sm w-full text-[10px] sm:text-xs font-medium shadow-sm normal-case"
+                                  >
+                                    {link.name}
+                                  </a>
+                                ))}
+                                {links.length > 3 && (
+                                  <p className="text-[10px] sm:text-xs text-base-content/40 italic pt-1">
+                                    +{links.length - 3} more links
                                   </p>
                                 )}
+                                {links.length === 0 &&
+                                  !bundleForm.description && (
+                                    <p className="text-base-content/40 py-4 sm:py-6 text-[10px] sm:text-xs">
+                                      Your links will appear here
+                                    </p>
+                                  )}
+                              </div>
                             </div>
                           </div>
                         </div>
