@@ -5,6 +5,9 @@ import Register from "./pages/auth/Register";
 import Dashboard from "./pages/users/DashboardUsers";
 import GoogleCallback from "./pages/auth/GoogleCallback";
 import AdminDashboard from "./pages/admins/DashboardAdmin";
+import AdminBundlesPage from "./pages/admins/AdminBundlesPage";
+import BundlePreviewPage from "./pages/admins/PreviewBundlePage";
+
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import UserRoute from "./components/routes/UserRoute";
@@ -70,32 +73,31 @@ export default function App() {
               </UserRoute>
             }
           />
-            <Route
+          <Route
             path="/bundles-page"
             element={
               <UserRoute>
                 <BundlePage />
               </UserRoute>
             }
-            />
-            <Route
+          />
+          <Route
             path="/bundles/:bundleId/edit"
             element={
               <UserRoute>
                 <BundleEditorPage />
               </UserRoute>
             }
-
           />
 
-                  <Route
-          path="/theme-test"
-          element={
-            <ProtectedRoute>
-              <ThemeTest />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/theme-test"
+            element={
+              <ProtectedRoute>
+                <ThemeTest />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Shared (user & admin) */}
           <Route
@@ -107,14 +109,28 @@ export default function App() {
             }
           />
 
-          
-
           {/* Admin-only */}
           <Route
             path="/admin"
             element={
               <AdminRoute>
                 <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/bundles"
+            element={
+              <AdminRoute>
+                <AdminBundlesPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/bundles/:id"
+            element={
+              <AdminRoute>
+                <BundlePreviewPage />
               </AdminRoute>
             }
           />

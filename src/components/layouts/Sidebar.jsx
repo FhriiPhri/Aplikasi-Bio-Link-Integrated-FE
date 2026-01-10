@@ -27,6 +27,7 @@ import {
   Database,
   Star,
   BarChart2,
+  Package,
 } from "lucide-react";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -227,6 +228,12 @@ export default function Sidebar({
               label="Dashboard"
               to="/dashboard"
               onClick={() => handleMenuItemClick("/dashboard")}
+            />
+            <SidebarItem
+              icon={<Package size={20} />}
+              label="Manage Bundles"
+              to="/admin/bundles"
+              onClick={() => handleMenuItemClick("/admin/bundles")}
             />
 
             {/* NON ADMIN ONLY */}
