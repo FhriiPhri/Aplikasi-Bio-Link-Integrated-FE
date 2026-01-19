@@ -49,24 +49,23 @@ export default function Login() {
     }
   }, [location.search, navigate]);
 
-    useEffect(() => {
-      if (loading) return;
-      if (!user) return;
+  useEffect(() => {
+    if (loading) return;
+    if (!user) return;
 
-      // Roles-based delegation
-      if (user.is_active === false) {
-        navigate("/banned", { replace: true });
-        return;
-      }
+    // Roles-based delegation
+    if (user.is_active === false) {
+      navigate("/banned", { replace: true });
+      return;
+    }
 
-      if (user.role === "admin") {
-        navigate("/admin", { replace: true });
-        return;
-      }
+    if (user.role === "admin") {
+      navigate("/admin", { replace: true });
+      return;
+    }
 
-      navigate("/dashboard", { replace: true });
-    }, [loading, user, navigate]);
-
+    navigate("/dashboard", { replace: true });
+  }, [loading, user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,9 +75,8 @@ export default function Login() {
       const { data } = await axiosClient.post("/login", { email, password });
       localStorage.setItem("token", data.token);
       localStorage.setItem("justLoggedIn", "true");
-      axiosClient.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${data.token}`;
+      axiosClient.defaults.headers.common["Authorization"] =
+        `Bearer ${data.token}`;
 
       // Simpan email
       if (rememberMe) {
@@ -495,9 +493,7 @@ export default function Login() {
             <div className="mb-6 animate-slideDown">
               <div className="flex items-center gap-2">
                 <img src={icon2} alt="Synapse Logo" className="w-8 h-8" />
-                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                  Synapse
-                </span>
+                <span className="text-xl font-bold text-black">Synapse</span>
               </div>
             </div>
 
