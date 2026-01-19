@@ -81,14 +81,14 @@ const quickHelpCards = [
     icon: PlayCircleIcon,
     title: "Video Tutorials",
     description: "Step-by-step video tutorials",
-    link: "/tutorials",
+    link: "#",
   },
   {
     id: 4,
     icon: UserGroupIcon,
     title: "Community",
     description: "Join the Synapse community",
-    link: "/community",
+    link: "#",
   },
 ];
 
