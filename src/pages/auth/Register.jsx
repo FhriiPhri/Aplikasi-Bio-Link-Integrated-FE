@@ -4,7 +4,7 @@ import axiosClient from "../../utils/axiosClient";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import registerImage from "../../assets/img5.png";
 import icon2 from "../../assets/icon2.png";
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { Eye, EyeOff, Lock, ArrowLeft } from "lucide-react";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -98,17 +98,75 @@ export default function Register() {
         .animate-scaleIn { animation: scaleIn 0.4s ease-out; }
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
+        
+        /* Mobile Responsive Fixes */
+        @media (max-width: 768px) {
+          .mobile-stack {
+            flex-direction: column;
+            height: auto;
+            min-height: 100vh;
+            overflow-y: auto;
+          }
+          .mobile-full-width {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          .mobile-padding {
+            padding: 1.5rem 1rem !important;
+          }
+          .mobile-center {
+            text-align: center !important;
+          }
+          .mobile-mt-2 {
+            margin-top: 0.5rem !important;
+          }
+          .mobile-mb-3 {
+            margin-bottom: 0.75rem !important;
+          }
+          .mobile-text-sm {
+            font-size: 0.875rem !important;
+          }
+          .mobile-text-base {
+            font-size: 1rem !important;
+          }
+          .mobile-text-lg {
+            font-size: 1.125rem !important;
+          }
+          .mobile-text-xl {
+            font-size: 1.25rem !important;
+          }
+          .mobile-text-2xl {
+            font-size: 1.5rem !important;
+          }
+          .mobile-text-3xl {
+            font-size: 1.875rem !important;
+          }
+          .mobile-h-10 {
+            height: 2.5rem !important;
+          }
+          .mobile-h-11 {
+            height: 2.75rem !important;
+          }
+          .mobile-py-2 {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+          }
+          .mobile-py-2\.5 {
+            padding-top: 0.625rem !important;
+            padding-bottom: 0.625rem !important;
+          }
+        }
       `}</style>
 
-      {/* Success Modal */}
+      {/* Success Modal - Responsive */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 shadow-2xl animate-scaleIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-sm mx-auto shadow-2xl animate-scaleIn">
             <div className="flex flex-col items-center text-center">
               {/* Success Icon */}
-              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4">
                 <svg
-                  className="w-8 h-8 text-white"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -127,10 +185,10 @@ export default function Register() {
               </div>
 
               {/* Success Message */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 mobile-text-lg">
                 Registration Successful!
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 mb-6 mobile-text-sm">
                 Your account has been created successfully. You can now login to
                 your account.
               </p>
@@ -138,7 +196,7 @@ export default function Register() {
               {/* Button */}
               <button
                 onClick={() => navigate("/login", { replace: true })}
-                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200"
+                className="btn w-full h-11 sm:h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 text-sm sm:text-base"
               >
                 Go to Login
               </button>
@@ -147,40 +205,59 @@ export default function Register() {
         </div>
       )}
 
-      <div className="h-screen w-screen overflow-hidden flex flex-row-reverse bg-white">
+      <div className="h-screen w-screen overflow-hidden flex flex-col lg:flex-row-reverse bg-white mobile-stack">
+        {/* Mobile Back Button - Only on mobile */}
+        <div className="lg:hidden w-full px-4 py-3 border-b border-gray-100 bg-white">
+          <button
+            onClick={goToLandingPage}
+            className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm font-medium">Back to Home</span>
+          </button>
+        </div>
+
         {/* LEFT: FORM */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center px-6 md:px-12 lg:px-20 py-6 relative z-10 animate-fadeIn overflow-y-auto">
+        <div className="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20 py-6 lg:py-0 relative z-10 animate-fadeIn overflow-y-auto mobile-full-width mobile-padding">
           <div className="max-w-md w-full">
             {/* Brand Logo */}
-            <div className="mb-6 animate-slideDown">
-              <div className="flex items-center gap-2">
-                <img src={icon2} alt="Synapse Logo" className="w-8 h-8" />
-                <span className="text-xl font-bold text-black">Synapse</span>
+            <div className="mb-6 animate-slideDown mobile-center">
+              <div className="flex items-center gap-2 justify-center lg:justify-start">
+                <img
+                  src={icon2}
+                  alt="Synapse Logo"
+                  className="w-7 h-7 sm:w-8 sm:h-8"
+                />
+                <span className="text-lg sm:text-xl font-bold text-black mobile-text-lg">
+                  Synapse
+                </span>
               </div>
             </div>
 
             {/* Welcome Text */}
-            <div className="mb-6 animate-slideUp">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+            <div className="mb-6 animate-slideUp mobile-center lg:text-left">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 mobile-text-2xl">
                 Create Account
               </h1>
-              <p className="text-gray-600">Sign up to get started</p>
+              <p className="text-sm sm:text-base text-gray-600 mobile-text-sm">
+                Sign up to get started
+              </p>
             </div>
 
             {/* Form */}
             <form
               onSubmit={handleSubmit}
-              className="space-y-4 animate-slideUp delay-100"
+              className="space-y-3 sm:space-y-4 animate-slideUp delay-100"
             >
               {/* Full Name */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 mobile-text-sm">
                   Full Name
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                     <svg
-                      className="w-5 h-5 text-gray-500"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -200,7 +277,7 @@ export default function Register() {
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
+                    className="input w-full pl-10 sm:pl-11 pr-4 py-2 sm:py-2.5 h-11 sm:h-12 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
                     required
                   />
                 </div>
@@ -208,13 +285,13 @@ export default function Register() {
 
               {/* Username */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 mobile-text-sm">
                   Username
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                     <svg
-                      className="w-5 h-5 text-gray-500"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -234,7 +311,7 @@ export default function Register() {
                     placeholder="johndoe"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
+                    className="input w-full pl-10 sm:pl-11 pr-4 py-2 sm:py-2.5 h-11 sm:h-12 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
                     required
                   />
                 </div>
@@ -242,13 +319,13 @@ export default function Register() {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 mobile-text-sm">
                   Email
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                     <svg
-                      className="w-5 h-5 text-gray-500"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -268,7 +345,7 @@ export default function Register() {
                     placeholder="yourname@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
+                    className="input w-full pl-10 sm:pl-11 pr-4 py-2 sm:py-2.5 h-11 sm:h-12 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
                     required
                   />
                 </div>
@@ -276,14 +353,14 @@ export default function Register() {
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 mobile-text-sm">
                   Password
                 </label>
 
                 <div className="relative">
                   {/* Icon kiri */}
                   <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-                    <Lock size={20} />
+                    <Lock size={18} className="sm:w-5 sm:h-5" />
                   </div>
 
                   {/* Input */}
@@ -292,7 +369,7 @@ export default function Register() {
                     placeholder="Create a strong password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="input w-full pl-11 pr-11 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
+                    className="input w-full pl-10 sm:pl-11 pr-10 sm:pr-11 h-11 sm:h-12 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
                     required
                   />
 
@@ -302,7 +379,11 @@ export default function Register() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? (
+                      <EyeOff size={18} className="sm:w-5 sm:h-5" />
+                    ) : (
+                      <Eye size={18} className="sm:w-5 sm:h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -311,7 +392,7 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01]"
+                className="btn w-full h-11 sm:h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01] text-sm sm:text-base"
               >
                 {isLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
@@ -322,9 +403,11 @@ export default function Register() {
             </form>
 
             {/* Divider */}
-            <div className="flex items-center my-5 animate-slideUp delay-200">
+            <div className="flex items-center my-4 sm:my-5 animate-slideUp delay-200">
               <div className="flex-1 border-t border-gray-300"></div>
-              <span className="px-3 text-xs text-gray-500 font-medium">or</span>
+              <span className="px-3 text-xs text-gray-500 font-medium mobile-text-xs">
+                or
+              </span>
               <div className="flex-1 border-t border-gray-300"></div>
             </div>
 
@@ -332,9 +415,9 @@ export default function Register() {
             <button
               type="button"
               onClick={handleGoogleSignup}
-              className="btn w-full h-12 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-lg font-medium text-gray-700 shadow-sm hover:shadow-md transition-all duration-200 animate-slideUp delay-200"
+              className="btn w-full h-11 sm:h-12 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-lg font-medium text-gray-700 shadow-sm hover:shadow-md transition-all duration-200 animate-slideUp delay-200 text-sm sm:text-base"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -356,7 +439,7 @@ export default function Register() {
             </button>
 
             {/* Terms */}
-            <p className="mt-4 text-xs text-center text-gray-500">
+            <p className="mt-4 text-xs text-center text-gray-500 mobile-text-xs px-2">
               By signing up, you agree to our{" "}
               <a
                 href="#"
@@ -374,7 +457,7 @@ export default function Register() {
             </p>
 
             {/* Login Link */}
-            <p className="text-center mt-4 text-sm text-gray-600">
+            <p className="text-center mt-4 text-sm text-gray-600 mobile-text-sm">
               Already have an account?{" "}
               <Link
                 to="/login"
@@ -384,8 +467,8 @@ export default function Register() {
               </Link>
             </p>
 
-            {/* Back to Home */}
-            <div className="mt-5 pt-5 border-t border-gray-200">
+            {/* Back to Home - Desktop only */}
+            <div className="mt-5 pt-5 border-t border-gray-200 hidden lg:block">
               <button
                 onClick={goToLandingPage}
                 className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors py-1 group"
@@ -409,7 +492,7 @@ export default function Register() {
           </div>
         </div>
 
-        {/* RIGHT: IMAGE */}
+        {/* RIGHT: IMAGE - Hidden on mobile, shown on desktop */}
         <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-indigo-50 to-blue-50 items-center justify-center animate-slideLeft">
           {/* Home Button */}
           <div className="absolute top-8 left-8 z-20 animate-slideDown">
