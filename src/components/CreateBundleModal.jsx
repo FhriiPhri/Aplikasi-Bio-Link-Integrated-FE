@@ -19,7 +19,7 @@ function CreateBundleModal({ onClose }) {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch("https://api.synapze.my.id/api/themes", {
+      const response = await fetch("/api/themes", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -54,7 +54,7 @@ function CreateBundleModal({ onClose }) {
       setSubmitting(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch("https://api.synapze.my.id/api/user/bundles", {
+      const response = await fetch("/api/user/bundles", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

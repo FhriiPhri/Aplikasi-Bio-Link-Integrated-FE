@@ -189,7 +189,7 @@ export default function AdminDashboard() {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch("https://api.synapze.my.id/api/admin/users", {
+      const response = await fetch("http://localhost:8000/api/admin/users", {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

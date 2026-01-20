@@ -108,7 +108,7 @@ export default function Login() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://api.synapze.my.id/api/auth/google/redirect";
+    window.location.href = "http://localhost:8000/api/auth/google/redirect";
   };
 
   const goToLandingPage = () => {

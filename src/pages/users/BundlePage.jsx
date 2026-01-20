@@ -29,7 +29,7 @@ function BundlesPage() {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch("https://api.synapze.my.id/api/user/bundles", {
+      const response = await fetch("/api/user/bundles", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
