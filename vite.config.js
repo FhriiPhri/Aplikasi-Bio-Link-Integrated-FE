@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://127.0.0.1:8000', // ganti sesuai port Laravel
+      '/api': 'https://api.synapze.my.id', // ganti sesuai port Laravel
     },
   },
 });
