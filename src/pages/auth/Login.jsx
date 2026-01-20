@@ -108,7 +108,9 @@ export default function Login() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8000/api/auth/google/redirect";
+    const baseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
+
+    window.location.href = `${baseUrl}/api/auth/google/redirect`;
   };
 
   const goToLandingPage = () => {
