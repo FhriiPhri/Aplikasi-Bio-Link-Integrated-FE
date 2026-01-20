@@ -18,6 +18,7 @@ import LandingPage from "./pages/LandingPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Profile from "./pages/Profile";
 import SupportPage from "./pages/users/SupportPage";
+import SettingsPage from "./pages/users/SettingsPage";
 import PremiumPackPage from "./pages/users/PremiumPackPage";
 import BannedPage from "./pages/BannedPage";
 import AdminAppealsPage from "./pages/admins/Banding";
@@ -62,6 +63,14 @@ export default function App() {
             element={
               <UserRoute>
                 <SupportPage />
+              </UserRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <UserRoute>
+                <SettingsPage />
               </UserRoute>
             }
           />
