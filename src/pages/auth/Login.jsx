@@ -108,11 +108,10 @@ export default function Login() {
   };
 
   const handleGoogleLogin = () => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
-
-    window.location.href = `${baseUrl}/api/auth/google/redirect`;
+    // Langsung gabungin URL dari env dengan endpoint redirect
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google/redirect`;
   };
-
+  
   const goToLandingPage = () => {
     navigate("/");
   };
