@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = axios.create({
+const axiosClient = axios.create({
   // Vite bakal otomatis milih env yang sesuai saat build
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true, // Penting untuk session/cookie
