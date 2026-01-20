@@ -176,20 +176,48 @@ export default function Sidebar({
         {/* Menu untuk desktop collapsed */}
         {!isMobile && internalCollapsed ? (
           <nav className="flex flex-col gap-2 pt-4">
-            <SidebarItemCollapsed
-              icon={<Home size={22} />}
-              label="Dashboard"
-              to="/dashboard"
-              onClick={() => handleMenuItemClick("/dashboard")}
-            />
-            {/* NON ADMIN ONLY */}
-            {!isAdmin && (
+            {/* ADMIN COLLAPSED MENU */}
+            {isAdmin ? (
               <>
                 <SidebarItemCollapsed
-                  icon={<ClipboardList size={22} />}
-                  label="Check-ins"
-                  to="/checkins"
-                  onClick={() => handleMenuItemClick("/checkins")}
+                  icon={<Home size={22} />}
+                  label="Dashboard"
+                  to="/admin"
+                  onClick={() => handleMenuItemClick("/admin")}
+                />
+                <SidebarItemCollapsed
+                  icon={<Package size={22} />}
+                  label="Manage Bundles"
+                  to="/admin/bundles"
+                  onClick={() => handleMenuItemClick("/admin/bundles")}
+                />
+                <SidebarItemCollapsed
+                  icon={<UserCircle size={22} />}
+                  label="Appeals"
+                  to="/banding"
+                  onClick={() => handleMenuItemClick("/banding")}
+                />
+              </>
+            ) : (
+              /* USER COLLAPSED MENU */
+              <>
+                <SidebarItemCollapsed
+                  icon={<Home size={22} />}
+                  label="Dashboard"
+                  to="/dashboard"
+                  onClick={() => handleMenuItemClick("/dashboard")}
+                />
+                <SidebarItemCollapsed
+                  icon={<Home size={22} />}
+                  label="My Page"
+                  to="/bundles-page"
+                  onClick={() => handleMenuItemClick("/bundles-page")}
+                />
+                <SidebarItemCollapsed
+                  icon={<Star size={22} />}
+                  label="Premium Pack"
+                  to="/premium-pack"
+                  onClick={() => handleMenuItemClick("/premium-pack")}
                 />
                 <SidebarItemCollapsed
                   icon={<Bell size={22} />}
@@ -199,18 +227,15 @@ export default function Sidebar({
                 />
               </>
             )}
-            <SidebarItemCollapsed
-              icon={<UserCircle size={22} />}
-              label="Appeals"
-              to="/banding"
-              onClick={() => handleMenuItemClick("/banding")}
-            />
+            
+            {/* SHARED - Profile (both admin & user) */}
             <SidebarItemCollapsed
               icon={<UserCircle size={22} />}
               label="Profile"
               to="/profile"
               onClick={() => handleMenuItemClick("/profile")}
             />
+
             <div className="mt-6 pt-6 border-t border-gray-200">
               <SidebarItemCollapsed
                 icon={<ChevronRight size={22} />}
@@ -222,24 +247,58 @@ export default function Sidebar({
         ) : (
           /* Menu lengkap untuk desktop expanded atau mobile */
           <nav className="flex flex-col gap-1.5 text-gray-700">
-            {/* Main Navigation */}
-            <SidebarItem
-              icon={<Home size={20} />}
-              label="Dashboard"
-              to="/dashboard"
-              onClick={() => handleMenuItemClick("/dashboard")}
-            />
-            <SidebarItem
-              icon={<Package size={20} />}
-              label="Manage Bundles"
-              to="/admin/bundles"
-              onClick={() => handleMenuItemClick("/admin/bundles")}
-            />
-
-            {/* NON ADMIN ONLY */}
-            {!isAdmin && (
+            {/* ============================================ */}
+            {/* ADMIN MENU */}
+            {/* ============================================ */}
+            {isAdmin ? (
               <>
-                {/* Reporting Section */}
+                {/* Admin Main Navigation */}
+                <SidebarItem
+                  icon={<Home size={20} />}
+                  label="Dashboard"
+                  to="/admin"
+                  onClick={() => handleMenuItemClick("/admin")}
+                />
+                <SidebarItem
+                  icon={<Package size={20} />}
+                  label="Manage Bundles"
+                  to="/admin/bundles"
+                  onClick={() => handleMenuItemClick("/admin/bundles")}
+                />
+
+                {/* Admin Support Section */}
+                <div className="mt-6 mb-2">
+                  <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Support
+                  </p>
+                </div>
+                <SidebarItem
+                  icon={<UserCircle size={20} />}
+                  label="Appeals"
+                  to="/banding"
+                  onClick={() => handleMenuItemClick("/banding")}
+                />
+                <SidebarItem
+                  icon={<Settings size={20} />}
+                  label="Settings"
+                  to="/settings"
+                  onClick={() => handleMenuItemClick("/settings")}
+                />
+              </>
+            ) : (
+              /* ============================================ */
+              /* USER MENU */
+              /* ============================================ */
+              <>
+                {/* User Main Navigation */}
+                <SidebarItem
+                  icon={<Home size={20} />}
+                  label="Dashboard"
+                  to="/dashboard"
+                  onClick={() => handleMenuItemClick("/dashboard")}
+                />
+
+                {/* Main Menu Section */}
                 <div className="mt-6 mb-2">
                   <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Main Menu
@@ -248,7 +307,7 @@ export default function Sidebar({
                 <SidebarItem
                   icon={<Home size={20} />}
                   label="My Page"
-                  to="/bundle-page"
+                  to="/bundles-page"
                   onClick={() => handleMenuItemClick("/bundles-page")}
                 />
                 <SidebarItem
@@ -310,12 +369,14 @@ export default function Sidebar({
               </>
             )}
 
-            <SidebarItem
-              icon={<UserCircle size={20} />}
-              label="Appeals"
-              to="/banding"
-              onClick={() => handleMenuItemClick("/banding")}
-            />
+            {/* ============================================ */}
+            {/* SHARED MENU (both admin & user) */}
+            {/* ============================================ */}
+            <div className="mt-6 mb-2">
+              <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Account
+              </p>
+            </div>
             <SidebarItem
               icon={<UserCircle size={20} />}
               label="Profile"
