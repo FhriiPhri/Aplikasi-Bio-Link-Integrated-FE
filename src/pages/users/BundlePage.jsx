@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, ExternalLink, Trash2, Edit, Link2 } from "lucide-react";
+import { Plus, ExternalLink, Trash2, Edit2, Link2, Search, LayoutGrid, List } from "lucide-react";
 import CreateBundleModal from "../../components/CreateBundleModal";
 import ConfirmDangerModal from "../../components/ConfirmDangerModal";
 import Layout from "../../components/layouts/Layout";
@@ -19,6 +19,8 @@ function BundlesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedBundleId, setSelectedBundleId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
 
   useEffect(() => {
     fetchBundles();
@@ -73,13 +75,21 @@ function BundlesPage() {
     window.location.href = `/bundles/${bundleId}/edit`;
   };
 
+  const filteredBundles = bundles.filter((bundle) =>
+    bundle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    bundle.slug.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-3 border-gray-200 border-t-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600 font-medium">Loading bundles...</p>
+            <div className="relative">
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-100 border-t-blue-600 mx-auto"></div>
+              <div className="absolute inset-0 rounded-full bg-blue-50 blur-xl opacity-50"></div>
+            </div>
+            <p className="mt-6 text-gray-700 font-semibold text-lg">Loading your bundles...</p>
           </div>
         </div>
       </Layout>
@@ -89,11 +99,11 @@ function BundlesPage() {
   if (error) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen bg-gray-50">
-          <div className="text-center bg-white rounded-xl shadow-sm border border-red-100 p-8 max-w-md">
-            <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+          <div className="text-center bg-white rounded-2xl shadow-xl border border-red-100 p-10 max-w-md mx-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-50 to-red-100 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm">
               <svg
-                className="w-6 h-6 text-red-600"
+                className="w-8 h-8 text-red-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -106,13 +116,13 @@ function BundlesPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Error Loading Bundles
+            <h3 className="text-xl font-bold text-gray-900 mb-3">
+              Oops! Something went wrong
             </h3>
-            <p className="text-gray-600 mb-6">{error}</p>
+            <p className="text-gray-600 mb-8 leading-relaxed">{error}</p>
             <button
               onClick={fetchBundles}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="w-full px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40"
             >
               Try Again
             </button>
@@ -125,122 +135,223 @@ function BundlesPage() {
   return (
     <Layout>
       <style jsx>{`
-        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
         .bundles-page {
           font-family: "Inter", sans-serif;
-          background-color: #f9fafb;
+          background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 50%, #f0f4ff 100%);
           min-height: 100vh;
         }
 
         .bundle-card {
-          transition: all 0.2s ease;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           background: white;
+          border: 1px solid #e5e7eb;
         }
 
         .bundle-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.1);
+          transform: translateY(-4px);
+          box-shadow: 0 20px 40px -12px rgba(59, 130, 246, 0.15);
+          border-color: #dbeafe;
         }
 
-        .social-badge {
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.3px;
+        .bundle-list-card {
+          transition: all 0.2s ease;
+          background: white;
+          border: 1px solid #e5e7eb;
         }
 
-        .action-button {
-          transition: all 0.15s ease;
+        .bundle-list-card:hover {
+          background: #fafbfc;
+          border-color: #dbeafe;
+          box-shadow: 0 4px 12px -4px rgba(59, 130, 246, 0.1);
         }
 
-        .action-button:hover {
-          transform: scale(1.02);
+        .social-icon {
+          transition: all 0.2s ease;
         }
 
-        .action-button:active {
-          transform: scale(0.98);
+        .social-icon:hover {
+          transform: scale(1.15);
         }
 
-        .stats-badge {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .action-btn {
+          transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+          transform: translateY(-1px);
+        }
+
+        .action-btn:active {
+          transform: translateY(0);
+        }
+
+        .search-input:focus {
+          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .view-toggle-btn {
+          transition: all 0.2s ease;
+        }
+
+        .view-toggle-btn.active {
+          background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+          color: white;
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-slide-up {
+          animation: slideUp 0.4s ease-out forwards;
         }
       `}</style>
 
       <div className="bundles-page">
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-1">
-                My Bundles
-              </h1>
-              <p className="text-gray-600">
-                Manage and organize your link collections
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="stats-badge text-white px-4 py-2 rounded-lg shadow-sm">
-                <span className="text-sm font-semibold">
-                  {bundles.length} Bundle{bundles.length !== 1 ? "s" : ""}
-                </span>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+          {/* Header Section */}
+          <div className="mb-8 md:mb-10">
+            <div className="flex flex-col gap-4 md:gap-6 mb-6 md:mb-8">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <Link2 className="text-white" size={20} />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+                      My Bundles
+                    </h1>
+                    <p className="text-gray-600 text-xs sm:text-sm mt-1">
+                      Manage and organize your link collections
+                    </p>
+                  </div>
+                </div>
               </div>
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
-              >
-                <Plus size={20} />
-                Create Bundle
-              </button>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 sm:px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/30">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-xs sm:text-sm font-medium opacity-90">Total</span>
+                    <span className="text-xl sm:text-2xl font-bold">{bundles.length}</span>
+                    <span className="text-xs sm:text-sm font-medium opacity-90">
+                      {bundles.length !== 1 ? "Bundles" : "Bundle"}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  className="flex items-center justify-center gap-2 sm:gap-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 font-semibold text-sm sm:text-base"
+                >
+                  <Plus size={20} strokeWidth={2.5} />
+                  <span>Create Bundle</span>
+                </button>
+              </div>
             </div>
+
+            {/* Search and View Toggle */}
+            {bundles.length > 0 && (
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Search bundles..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-input w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-blue-400 transition-all text-sm sm:text-base text-gray-700 placeholder-gray-400"
+                  />
+                </div>
+                <div className="flex gap-2 bg-white border border-gray-200 rounded-xl p-1.5 self-center sm:self-auto">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`view-toggle-btn flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm ${
+                      viewMode === "grid" ? "active" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <LayoutGrid size={16} className="sm:w-[18px] sm:h-[18px]" />
+                    <span className="hidden xs:inline">Grid</span>
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`view-toggle-btn flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm ${
+                      viewMode === "list" ? "active" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <List size={16} className="sm:w-[18px] sm:h-[18px]" />
+                    <span className="hidden xs:inline">List</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Empty State */}
           {bundles.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-xl border border-gray-200 shadow-sm">
-              <div className="max-w-md mx-auto">
-                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Link2 className="text-gray-400" size={32} />
+            <div className="text-center py-16 sm:py-20 md:py-24 bg-white rounded-2xl sm:rounded-3xl border-2 border-dashed border-gray-200 shadow-sm">
+              <div className="max-w-md mx-auto px-4">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
+                  <Link2 className="text-blue-600" size={32} strokeWidth={2} />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">
                   No bundles yet
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-6 sm:mb-8 leading-relaxed text-base sm:text-lg">
                   Create your first bundle to start organizing and sharing your
-                  links
+                  links with the world
                 </p>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm"
+                  className="inline-flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 text-base sm:text-lg"
                 >
-                  <Plus size={20} />
+                  <Plus size={20} strokeWidth={2.5} />
                   Create Your First Bundle
                 </button>
               </div>
             </div>
-          ) : (
-            /* Bundles Grid */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {bundles.map((bundle) => (
+          ) : filteredBundles.length === 0 ? (
+            <div className="text-center py-16 sm:py-20 bg-white rounded-2xl border border-gray-200 shadow-sm">
+              <Search className="text-gray-300 mx-auto mb-4" size={40} />
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
+                No bundles found
+              </h3>
+              <p className="text-gray-600 text-sm sm:text-base">
+                Try adjusting your search query
+              </p>
+            </div>
+          ) : viewMode === "grid" ? (
+            /* Grid View */
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+              {filteredBundles.map((bundle, index) => (
                 <div
                   key={bundle.id}
-                  className="bundle-card rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+                  className="bundle-card rounded-xl sm:rounded-2xl overflow-hidden animate-slide-up"
+                  style={{ animationDelay: `${index * 50}ms` }}
                 >
                   {/* Card Header */}
-                  <div className="p-5 border-b border-gray-100">
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-lg font-semibold text-gray-900 leading-tight">
+                  <div className="p-4 sm:p-5 md:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-b border-blue-100">
+                    <div className="flex items-start justify-between mb-3 sm:mb-4">
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight flex-1 pr-2">
                         {bundle.name}
                       </h3>
                     </div>
 
-                    <div className="inline-flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 px-2.5 py-1 rounded-md font-medium">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                      {bundle.theme?.name || "Default Theme"}
+                    <div className="inline-flex items-center gap-2 text-xs text-blue-700 bg-white px-2.5 sm:px-3 py-1.5 rounded-lg font-semibold border border-blue-100 shadow-sm">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                      <span className="truncate">{bundle.theme?.name || "Default Theme"}</span>
                     </div>
                   </div>
 
                   {/* Card Body */}
-                  <div className="p-5 space-y-4">
+                  <div className="p-4 sm:p-5 md:p-6 space-y-4 sm:space-y-5">
                     {/* Social Platforms */}
                     {(bundle.instagram_url ||
                       bundle.github_url ||
@@ -248,87 +359,273 @@ function BundlesPage() {
                       bundle.youtube_url ||
                       bundle.facebook_url ||
                       bundle.x_url) && (
-                      <div className="flex gap-2 flex-wrap">
-                        {bundle.instagram_url && (
-                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md">
-                            <FaInstagram size={14} />
-                            Instagram
-                          </span>
-                        )}
-
-                        {bundle.github_url && (
-                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-gray-800 text-white rounded-md">
-                            <FaGithub size={14} />
-                            GitHub
-                          </span>
-                        )}
-
-                        {bundle.tiktok_url && (
-                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-black text-white rounded-md">
-                            <FaTiktok size={14} />
-                            TikTok
-                          </span>
-                        )}
-
-                        {bundle.youtube_url && (
-                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-red-600 text-white rounded-md">
-                            <FaYoutube size={14} />
-                            YouTube
-                          </span>
-                        )}
-
-                        {bundle.facebook_url && (
-                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-blue-600 text-white rounded-md">
-                            <FaFacebook size={14} />
-                            Facebook
-                          </span>
-                        )}
-
-                        {bundle.x_url && (
-                          <span className="social-badge flex items-center gap-1.5 px-2.5 py-1 bg-gray-900 text-white rounded-md">
-                            <FaXTwitter size={14} />X
-                          </span>
-                        )}
+                      <div>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 sm:mb-3">
+                          Connected Platforms
+                        </p>
+                        <div className="flex gap-2 flex-wrap">
+                          {bundle.instagram_url && (
+                            <div className="social-icon p-2 sm:p-2.5 bg-gradient-to-br from-blue-500 to-pink-500 rounded-lg sm:rounded-xl text-white shadow-md">
+                              <FaInstagram size={16} className="sm:w-[18px] sm:h-[18px]" />
+                            </div>
+                          )}
+                          {bundle.github_url && (
+                            <div className="social-icon p-2 sm:p-2.5 bg-gray-900 rounded-lg sm:rounded-xl text-white shadow-md">
+                              <FaGithub size={16} className="sm:w-[18px] sm:h-[18px]" />
+                            </div>
+                          )}
+                          {bundle.tiktok_url && (
+                            <div className="social-icon p-2 sm:p-2.5 bg-black rounded-lg sm:rounded-xl text-white shadow-md">
+                              <FaTiktok size={16} className="sm:w-[18px] sm:h-[18px]" />
+                            </div>
+                          )}
+                          {bundle.youtube_url && (
+                            <div className="social-icon p-2 sm:p-2.5 bg-red-600 rounded-lg sm:rounded-xl text-white shadow-md">
+                              <FaYoutube size={16} className="sm:w-[18px] sm:h-[18px]" />
+                            </div>
+                          )}
+                          {bundle.facebook_url && (
+                            <div className="social-icon p-2 sm:p-2.5 bg-blue-600 rounded-lg sm:rounded-xl text-white shadow-md">
+                              <FaFacebook size={16} className="sm:w-[18px] sm:h-[18px]" />
+                            </div>
+                          )}
+                          {bundle.x_url && (
+                            <div className="social-icon p-2 sm:p-2.5 bg-gray-900 rounded-lg sm:rounded-xl text-white shadow-md">
+                              <FaXTwitter size={16} className="sm:w-[18px] sm:h-[18px]" />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
 
                     {/* Slug */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 font-mono">
-                      <Link2 size={14} className="text-gray-400" />
-                      <span>/{bundle.slug}</span>
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Public Link
+                      </p>
+                      <div className="flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm text-gray-700 bg-gray-50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-gray-200 font-mono font-medium overflow-hidden">
+                        <Link2 size={14} className="text-blue-600 flex-shrink-0 sm:w-4 sm:h-4" />
+                        <span className="text-blue-600 truncate">/{bundle.slug}</span>
+                      </div>
                     </div>
                   </div>
 
                   {/* Card Actions */}
-                  <div className="p-4 bg-gray-50 border-t border-gray-200 flex gap-2">
+                  <div className="p-3 sm:p-4 bg-gray-50 border-t border-gray-200 flex gap-2">
                     <a
                       href={`/${bundle.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="action-button flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all font-medium text-sm"
+                      className="action-btn flex-1 flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-lg sm:rounded-xl hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 transition-all font-semibold text-xs sm:text-sm shadow-sm"
                     >
-                      <ExternalLink size={16} />
-                      View
+                      <ExternalLink size={14} className="sm:w-4 sm:h-4" />
+                      <span className="hidden xs:inline">View</span>
                     </a>
                     <button
                       onClick={() =>
                         (window.location.href = `/bundles/${bundle.id}/edit`)
                       }
-                      className="action-button flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-medium text-sm"
+                      className="action-btn flex-1 flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg sm:rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-xs sm:text-sm shadow-md shadow-blue-500/30"
                     >
-                      <Edit size={16} />
-                      Edit
+                      <Edit2 size={14} className="sm:w-4 sm:h-4" />
+                      <span className="hidden xs:inline">Edit</span>
                     </button>
                     <button
                       onClick={() => {
                         setSelectedBundleId(bundle.id);
                         setDeleteModalOpen(true);
                       }}
-                      className="action-button px-4 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all border border-red-200"
+                      className="action-btn px-3 sm:px-4 py-2.5 sm:py-3 bg-red-50 text-red-600 rounded-lg sm:rounded-xl hover:bg-red-100 transition-all border-2 border-red-200 hover:border-red-300 shadow-sm"
                       title="Delete bundle"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={14} className="sm:w-4 sm:h-4" />
                     </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* List View */
+            <div className="space-y-4">
+              {filteredBundles.map((bundle, index) => (
+                <div
+                  key={bundle.id}
+                  className="bundle-list-card rounded-xl p-5 md:p-6 lg:p-7 animate-slide-up"
+                  style={{ animationDelay: `${index * 30}ms` }}
+                >
+                  <div className="flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-6">
+                    {/* Bundle Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-4 lg:gap-5">
+                        <div className="w-14 h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl lg:rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/30">
+                          <Link2 className="text-white" size={24} />
+                        </div>
+                        <div className="flex-1 min-w-0 py-1">
+                          <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-2 lg:mb-3 truncate">
+                            {bundle.name}
+                          </h3>
+                          <div className="flex flex-wrap items-center gap-3 text-sm">
+                            <span className="inline-flex items-center gap-2 text-blue-600 font-mono font-medium bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+                              <Link2 size={14} className="flex-shrink-0" />
+                              <span className="truncate">/{bundle.slug}</span>
+                            </span>
+                            <span className="inline-flex items-center gap-2 text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg text-sm font-semibold border border-gray-200">
+                              <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                              <span className="truncate">{bundle.theme?.name || "Default"}</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Social Icons - Desktop */}
+                    {(bundle.instagram_url ||
+                      bundle.github_url ||
+                      bundle.tiktok_url ||
+                      bundle.youtube_url ||
+                      bundle.facebook_url ||
+                      bundle.x_url) && (
+                      <div className="hidden lg:flex items-center gap-2.5 px-4 py-3 bg-gray-50 rounded-xl border border-gray-200">
+                        {bundle.instagram_url && (
+                          <div className="social-icon p-2.5 bg-gradient-to-br from-blue-500 to-pink-500 rounded-lg text-white shadow-md">
+                            <FaInstagram size={18} />
+                          </div>
+                        )}
+                        {bundle.github_url && (
+                          <div className="social-icon p-2.5 bg-gray-900 rounded-lg text-white shadow-md">
+                            <FaGithub size={18} />
+                          </div>
+                        )}
+                        {bundle.tiktok_url && (
+                          <div className="social-icon p-2.5 bg-black rounded-lg text-white shadow-md">
+                            <FaTiktok size={18} />
+                          </div>
+                        )}
+                        {bundle.youtube_url && (
+                          <div className="social-icon p-2.5 bg-red-600 rounded-lg text-white shadow-md">
+                            <FaYoutube size={18} />
+                          </div>
+                        )}
+                        {bundle.facebook_url && (
+                          <div className="social-icon p-2.5 bg-blue-600 rounded-lg text-white shadow-md">
+                            <FaFacebook size={18} />
+                          </div>
+                        )}
+                        {bundle.x_url && (
+                          <div className="social-icon p-2.5 bg-gray-900 rounded-lg text-white shadow-md">
+                            <FaXTwitter size={18} />
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Actions - Desktop */}
+                    <div className="hidden lg:flex gap-3">
+                      <a
+                        href={`/${bundle.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="action-btn flex items-center gap-2 px-5 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 transition-all font-semibold text-sm shadow-sm"
+                      >
+                        <ExternalLink size={18} />
+                        View
+                      </a>
+                      <button
+                        onClick={() =>
+                          (window.location.href = `/bundles/${bundle.id}/edit`)
+                        }
+                        className="action-btn flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-sm shadow-lg shadow-blue-500/30"
+                      >
+                        <Edit2 size={18} />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedBundleId(bundle.id);
+                          setDeleteModalOpen(true);
+                        }}
+                        className="action-btn px-5 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all border-2 border-red-200 shadow-sm"
+                        title="Delete bundle"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+
+                    {/* Mobile Actions & Social */}
+                    <div className="flex lg:hidden flex-col gap-3 pt-3 border-t border-gray-200">
+                      {/* Social Icons - Mobile */}
+                      {(bundle.instagram_url ||
+                        bundle.github_url ||
+                        bundle.tiktok_url ||
+                        bundle.youtube_url ||
+                        bundle.facebook_url ||
+                        bundle.x_url) && (
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {bundle.instagram_url && (
+                            <div className="social-icon p-2 bg-gradient-to-br from-blue-500 to-pink-500 rounded-lg text-white">
+                              <FaInstagram size={16} />
+                            </div>
+                          )}
+                          {bundle.github_url && (
+                            <div className="social-icon p-2 bg-gray-900 rounded-lg text-white">
+                              <FaGithub size={16} />
+                            </div>
+                          )}
+                          {bundle.tiktok_url && (
+                            <div className="social-icon p-2 bg-black rounded-lg text-white">
+                              <FaTiktok size={16} />
+                            </div>
+                          )}
+                          {bundle.youtube_url && (
+                            <div className="social-icon p-2 bg-red-600 rounded-lg text-white">
+                              <FaYoutube size={16} />
+                            </div>
+                          )}
+                          {bundle.facebook_url && (
+                            <div className="social-icon p-2 bg-blue-600 rounded-lg text-white">
+                              <FaFacebook size={16} />
+                            </div>
+                          )}
+                          {bundle.x_url && (
+                            <div className="social-icon p-2 bg-gray-900 rounded-lg text-white">
+                              <FaXTwitter size={16} />
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Actions - Mobile */}
+                      <div className="flex gap-2">
+                        <a
+                          href={`/${bundle.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="action-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 transition-all font-semibold text-sm"
+                        >
+                          <ExternalLink size={16} />
+                          View
+                        </a>
+                        <button
+                          onClick={() =>
+                            (window.location.href = `/bundles/${bundle.id}/edit`)
+                          }
+                          className="action-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-sm shadow-md shadow-blue-500/30"
+                        >
+                          <Edit2 size={16} />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedBundleId(bundle.id);
+                            setDeleteModalOpen(true);
+                          }}
+                          className="action-btn px-4 py-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all border-2 border-red-200"
+                          title="Delete bundle"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -352,8 +649,6 @@ function BundlesPage() {
             warningItems={[
               "Bundle data and links",
               "Analytics and stats",
-              "Public access to this bundle",
-              "Public access to this bundle",
               "Public access to this bundle",
             ]}
             confirmText="Delete Bundle"
