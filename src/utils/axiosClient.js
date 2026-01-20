@@ -1,8 +1,9 @@
 import axios from "axios";
 
-const axiosClient = axios.create({
-  baseURL: "http://localhost:8000/api",
-  withCredentials: true,
+const api = axios.create({
+  // Vite bakal otomatis milih env yang sesuai saat build
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true, // Penting untuk session/cookie
 });
 
 // Request interceptor (udah OK)
