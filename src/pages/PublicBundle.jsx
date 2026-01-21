@@ -294,7 +294,6 @@ function PublicBundlePage() {
               </div>
             )}
           </div>
-
           {/* Custom Links */}
           <div className="space-y-4">
             {links.length === 0 ? (
@@ -317,18 +316,22 @@ function PublicBundlePage() {
               ))
             )}
           </div>
-
           {/* Footer */}
           <div className="text-center mt-12 pt-8 border-t border-base-300">
             <p className="text-base-content/50 text-sm">
               Powered by{" "}
-              <span className="font-semibold text-primary">Synapze</span>
+              <a
+                href="https://synapze.my.id"
+                className="font-semibold text-primary hover:underline transition-all"
+              >
+                Synapze
+              </a>
             </p>
-          </div>
+          </div>{" "}
         </div>
       </div>
     </div>
   );
 }
 
-export default PublicBundlePage
+export default PublicBundlePage;
