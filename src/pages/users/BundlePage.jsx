@@ -40,7 +40,8 @@ function BundlesPage() {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch("/api/user/bundles", {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${API_BASE}/user/bundles`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -62,19 +63,24 @@ function BundlesPage() {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
-
       const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-      fetch(`${API_BASE}/user/bundles`, {
+      if (!token) throw new Error("User not authenticated");
+
+      const response = await fetch(`${API_BASE}/user/bundles/${id}`, {
+        method: "DELETE", // penting
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       });
 
-      if (!response.ok) throw new Error("Failed to delete bundle");
+      if (!response.ok) {
+        const text = await response.text(); // biar debug gampang
+        throw new Error(`Failed to delete bundle: ${text}`);
+      }
 
-      fetchBundles();
+      fetchBundles(); // refresh daftar bundle
     } catch (err) {
       console.error(err);
     }
