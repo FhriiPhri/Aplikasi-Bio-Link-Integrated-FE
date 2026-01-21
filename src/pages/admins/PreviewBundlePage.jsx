@@ -467,7 +467,7 @@ const BundlePreviewPage = () => {
                   {/* Action Buttons */}
                   <div className="mt-6 flex items-center justify-center gap-3">
                     <a
-                      href={`${process.env.VITE_API_BASE_URL}/${bundle.slug}`}
+                      href={`${process.env.REACT_APP_BASE_URL}/${bundle.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-6 py-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all border border-blue-200 flex items-center gap-2 font-medium"
