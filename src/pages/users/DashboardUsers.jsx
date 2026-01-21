@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { 
-  Link2, 
-  MousePointerClick, 
-  Package, 
-  Eye, 
+import {
+  Link2,
+  MousePointerClick,
+  Package,
+  Eye,
   TrendingUp,
   ExternalLink,
   Activity,
@@ -12,7 +12,7 @@ import {
   Sparkles,
   HelpCircle,
   BookOpen,
-  MessageCircle
+  MessageCircle,
 } from "lucide-react";
 import Layout from "../../components/layouts/Layout";
 
@@ -36,7 +36,9 @@ function DashboardPage() {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch("/api/user/bundles", {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+      const response = await fetch(`${API_BASE}/user/bundles`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -52,14 +54,15 @@ function DashboardPage() {
         totalBundles: bundles.length,
         totalLinks: bundles.reduce((acc, b) => acc + (b.links?.length || 0), 0),
         totalClicks: bundles.reduce((acc, b) => acc + (b.clicks || 0), 0),
-        activeBundles: bundles.filter(b => b.is_active).length,
+        activeBundles: bundles.filter((b) => b.is_active).length,
       });
 
       setRecentBundles(bundles.slice(0, 5));
 
-      const sorted = [...bundles].sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
+      const sorted = [...bundles].sort(
+        (a, b) => (b.clicks || 0) - (a.clicks || 0),
+      );
       setTopBundles(sorted.slice(0, 5));
-
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
     } finally {
@@ -73,7 +76,9 @@ function DashboardPage() {
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-100 border-t-blue-600 mx-auto"></div>
-            <p className="mt-6 text-gray-700 font-semibold text-lg">Loading dashboard...</p>
+            <p className="mt-6 text-gray-700 font-semibold text-lg">
+              Loading dashboard...
+            </p>
           </div>
         </div>
       </Layout>
@@ -147,7 +152,8 @@ function DashboardPage() {
         }
 
         @keyframes float {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0px);
           }
           50% {
@@ -180,7 +186,10 @@ function DashboardPage() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8 animate-slide-up" style={{ animationDelay: '100ms' }}>
+          <div
+            className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8 animate-slide-up"
+            style={{ animationDelay: "100ms" }}
+          >
             {/* Total Bundles */}
             <div className="stat-card rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6">
               <div className="flex items-start justify-between mb-3 sm:mb-4">
@@ -194,7 +203,9 @@ function DashboardPage() {
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
                 {stats.totalBundles}
               </h3>
-              <p className="text-xs sm:text-sm text-gray-600 font-medium">Total Bundles</p>
+              <p className="text-xs sm:text-sm text-gray-600 font-medium">
+                Total Bundles
+              </p>
             </div>
 
             {/* Total Links */}
@@ -210,7 +221,9 @@ function DashboardPage() {
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
                 {stats.totalLinks}
               </h3>
-              <p className="text-xs sm:text-sm text-gray-600 font-medium">Total Links</p>
+              <p className="text-xs sm:text-sm text-gray-600 font-medium">
+                Total Links
+              </p>
             </div>
 
             {/* Total Clicks */}
@@ -226,7 +239,9 @@ function DashboardPage() {
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
                 {stats.totalClicks.toLocaleString()}
               </h3>
-              <p className="text-xs sm:text-sm text-gray-600 font-medium">Total Clicks</p>
+              <p className="text-xs sm:text-sm text-gray-600 font-medium">
+                Total Clicks
+              </p>
             </div>
 
             {/* Active Bundles */}
@@ -242,7 +257,9 @@ function DashboardPage() {
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
                 {stats.activeBundles}
               </h3>
-              <p className="text-xs sm:text-sm text-gray-600 font-medium">Active Bundles</p>
+              <p className="text-xs sm:text-sm text-gray-600 font-medium">
+                Active Bundles
+              </p>
             </div>
           </div>
 
@@ -250,9 +267,11 @@ function DashboardPage() {
             {/* Left Column - 2/3 width */}
             <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               {/* Need Help Section */}
-              <div className="support-card rounded-xl sm:rounded-2xl p-6 sm:p-8 text-white animate-slide-up cursor-pointer" 
-                   style={{ animationDelay: '200ms' }}
-                   onClick={() => window.location.href = '/support'}>
+              <div
+                className="support-card rounded-xl sm:rounded-2xl p-6 sm:p-8 text-white animate-slide-up cursor-pointer"
+                style={{ animationDelay: "200ms" }}
+                onClick={() => (window.location.href = "/support")}
+              >
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
                   <div className="flex-shrink-0 animate-float">
                     <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center">
@@ -265,7 +284,8 @@ function DashboardPage() {
                       <Sparkles size={18} className="animate-pulse" />
                     </h2>
                     <p className="text-blue-100 mb-3 sm:mb-4 leading-relaxed text-sm sm:text-base">
-                      Get assistance with your bundles, explore documentation, watch tutorials, or contact our support team 24/7.
+                      Get assistance with your bundles, explore documentation,
+                      watch tutorials, or contact our support team 24/7.
                     </p>
                     <div className="flex items-center gap-2 text-sm font-semibold">
                       <span>Visit Support Center</span>
@@ -276,50 +296,74 @@ function DashboardPage() {
               </div>
 
               {/* Help Resources Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 animate-slide-up" style={{ animationDelay: '250ms' }}>
+              <div
+                className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 animate-slide-up"
+                style={{ animationDelay: "250ms" }}
+              >
                 <button
-                  onClick={() => window.location.href = '/support?tab=documentation'}
+                  onClick={() =>
+                    (window.location.href = "/support?tab=documentation")
+                  }
                   className="help-card bg-white rounded-xl p-4 sm:p-5 text-left"
                 >
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
                     <BookOpen className="text-blue-600" size={20} />
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">Documentation</h3>
-                  <p className="text-xs text-gray-600">Complete guides & tutorials</p>
+                  <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">
+                    Documentation
+                  </h3>
+                  <p className="text-xs text-gray-600">
+                    Complete guides & tutorials
+                  </p>
                 </button>
 
                 <button
-                  onClick={() => window.location.href = '/support?tab=faq'}
+                  onClick={() => (window.location.href = "/support?tab=faq")}
                   className="help-card bg-white rounded-xl p-4 sm:p-5 text-left"
                 >
                   <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mb-3">
                     <HelpCircle className="text-indigo-600" size={20} />
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">FAQs</h3>
-                  <p className="text-xs text-gray-600">Common questions answered</p>
+                  <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">
+                    FAQs
+                  </h3>
+                  <p className="text-xs text-gray-600">
+                    Common questions answered
+                  </p>
                 </button>
 
                 <button
-                  onClick={() => window.location.href = '/support?tab=contact'}
+                  onClick={() =>
+                    (window.location.href = "/support?tab=contact")
+                  }
                   className="help-card bg-white rounded-xl p-4 sm:p-5 text-left"
                 >
                   <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
                     <MessageCircle className="text-purple-600" size={20} />
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">Contact Us</h3>
-                  <p className="text-xs text-gray-600">Get personalized support</p>
+                  <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">
+                    Contact Us
+                  </h3>
+                  <p className="text-xs text-gray-600">
+                    Get personalized support
+                  </p>
                 </button>
               </div>
 
               {/* Top Performing Bundles */}
-              <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-200 animate-slide-up" style={{ animationDelay: '300ms' }}>
+              <div
+                className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-200 animate-slide-up"
+                style={{ animationDelay: "300ms" }}
+              >
                 <div className="flex items-center justify-between mb-4 sm:mb-5">
                   <div className="flex items-center gap-2">
                     <TrendingUp className="text-blue-600" size={18} />
-                    <h2 className="text-base sm:text-lg font-bold text-gray-900">Top Performing</h2>
+                    <h2 className="text-base sm:text-lg font-bold text-gray-900">
+                      Top Performing
+                    </h2>
                   </div>
                   <button
-                    onClick={() => window.location.href = '/bundles'}
+                    onClick={() => (window.location.href = "/bundles")}
                     className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 transition-colors"
                   >
                     <span className="hidden xs:inline">View All</span>
@@ -330,10 +374,16 @@ function DashboardPage() {
                 {topBundles.length === 0 ? (
                   <div className="text-center py-8 sm:py-12">
                     <Package className="text-gray-300 mx-auto mb-3" size={40} />
-                    <p className="text-gray-600 font-medium mb-2 text-sm sm:text-base">No bundles yet</p>
-                    <p className="text-xs sm:text-sm text-gray-500 mb-4">Create your first bundle to see performance</p>
+                    <p className="text-gray-600 font-medium mb-2 text-sm sm:text-base">
+                      No bundles yet
+                    </p>
+                    <p className="text-xs sm:text-sm text-gray-500 mb-4">
+                      Create your first bundle to see performance
+                    </p>
                     <button
-                      onClick={() => window.location.href = '/bundles?action=create'}
+                      onClick={() =>
+                        (window.location.href = "/bundles?action=create")
+                      }
                       className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-xs sm:text-sm"
                     >
                       <Package size={16} />
@@ -346,18 +396,29 @@ function DashboardPage() {
                       <div
                         key={bundle.id}
                         className="activity-item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-gray-200 cursor-pointer"
-                        onClick={() => window.location.href = `/bundles/${bundle.id}/edit`}
+                        onClick={() =>
+                          (window.location.href = `/bundles/${bundle.id}/edit`)
+                        }
                       >
                         <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <span className="text-white font-bold text-xs sm:text-sm">#{index + 1}</span>
+                          <span className="text-white font-bold text-xs sm:text-sm">
+                            #{index + 1}
+                          </span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-900 truncate text-sm sm:text-base">{bundle.name}</h3>
-                          <p className="text-xs text-gray-600 font-mono truncate">/{bundle.slug}</p>
+                          <h3 className="font-semibold text-gray-900 truncate text-sm sm:text-base">
+                            {bundle.name}
+                          </h3>
+                          <p className="text-xs text-gray-600 font-mono truncate">
+                            /{bundle.slug}
+                          </p>
                         </div>
                         <div className="text-right">
                           <div className="flex items-center gap-1 sm:gap-1.5 text-blue-600 font-bold text-sm sm:text-base">
-                            <MousePointerClick size={14} className="sm:w-4 sm:h-4" />
+                            <MousePointerClick
+                              size={14}
+                              className="sm:w-4 sm:h-4"
+                            />
                             <span>{(bundle.clicks || 0).toLocaleString()}</span>
                           </div>
                           <p className="text-xs text-gray-500 mt-0.5">clicks</p>
@@ -372,16 +433,23 @@ function DashboardPage() {
             {/* Right Column - 1/3 width */}
             <div className="space-y-4 sm:space-y-6">
               {/* Recent Activity */}
-              <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-200 animate-slide-up" style={{ animationDelay: '400ms' }}>
+              <div
+                className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-200 animate-slide-up"
+                style={{ animationDelay: "400ms" }}
+              >
                 <div className="flex items-center gap-2 mb-4 sm:mb-5">
                   <Activity className="text-blue-600" size={18} />
-                  <h2 className="text-base sm:text-lg font-bold text-gray-900">Recent Bundles</h2>
+                  <h2 className="text-base sm:text-lg font-bold text-gray-900">
+                    Recent Bundles
+                  </h2>
                 </div>
 
                 {recentBundles.length === 0 ? (
                   <div className="text-center py-6 sm:py-8">
                     <Package className="text-gray-300 mx-auto mb-2" size={36} />
-                    <p className="text-xs sm:text-sm text-gray-600">No recent activity</p>
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      No recent activity
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-2 sm:space-y-3">
@@ -389,7 +457,9 @@ function DashboardPage() {
                       <div
                         key={bundle.id}
                         className="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer"
-                        onClick={() => window.location.href = `/bundles/${bundle.id}/edit`}
+                        onClick={() =>
+                          (window.location.href = `/bundles/${bundle.id}/edit`)
+                        }
                       >
                         <div className="flex items-start gap-2 sm:gap-3">
                           <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -411,30 +481,45 @@ function DashboardPage() {
               </div>
 
               {/* Performance Summary */}
-              <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl sm:rounded-2xl p-5 sm:p-6 text-white animate-slide-up" style={{ animationDelay: '500ms' }}>
+              <div
+                className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl sm:rounded-2xl p-5 sm:p-6 text-white animate-slide-up"
+                style={{ animationDelay: "500ms" }}
+              >
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
                     <BarChart3 className="text-white" size={18} />
                   </div>
-                  <h2 className="text-base sm:text-lg font-bold">Performance</h2>
+                  <h2 className="text-base sm:text-lg font-bold">
+                    Performance
+                  </h2>
                 </div>
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs sm:text-sm font-medium opacity-90">Click Rate</span>
+                      <span className="text-xs sm:text-sm font-medium opacity-90">
+                        Click Rate
+                      </span>
                       <span className="text-xs sm:text-sm font-bold">
-                        {stats.totalLinks > 0 
-                          ? Math.round((stats.totalClicks / stats.totalLinks) * 100) 
-                          : 0}%
+                        {stats.totalLinks > 0
+                          ? Math.round(
+                              (stats.totalClicks / stats.totalLinks) * 100,
+                            )
+                          : 0}
+                        %
                       </span>
                     </div>
                     <div className="w-full bg-white/20 rounded-full h-2">
-                      <div 
+                      <div
                         className="bg-white rounded-full h-2 transition-all duration-1000"
-                        style={{ 
-                          width: `${stats.totalLinks > 0 
-                            ? Math.min((stats.totalClicks / stats.totalLinks) * 100, 100) 
-                            : 0}%` 
+                        style={{
+                          width: `${
+                            stats.totalLinks > 0
+                              ? Math.min(
+                                  (stats.totalClicks / stats.totalLinks) * 100,
+                                  100,
+                                )
+                              : 0
+                          }%`,
                         }}
                       ></div>
                     </div>
@@ -442,20 +527,30 @@ function DashboardPage() {
 
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs sm:text-sm font-medium opacity-90">Active Bundles</span>
+                      <span className="text-xs sm:text-sm font-medium opacity-90">
+                        Active Bundles
+                      </span>
                       <span className="text-xs sm:text-sm font-bold">
-                        {stats.totalBundles > 0 
-                          ? Math.round((stats.activeBundles / stats.totalBundles) * 100) 
-                          : 0}%
+                        {stats.totalBundles > 0
+                          ? Math.round(
+                              (stats.activeBundles / stats.totalBundles) * 100,
+                            )
+                          : 0}
+                        %
                       </span>
                     </div>
                     <div className="w-full bg-white/20 rounded-full h-2">
-                      <div 
+                      <div
                         className="bg-white rounded-full h-2 transition-all duration-1000"
-                        style={{ 
-                          width: `${stats.totalBundles > 0 
-                            ? Math.round((stats.activeBundles / stats.totalBundles) * 100) 
-                            : 0}%` 
+                        style={{
+                          width: `${
+                            stats.totalBundles > 0
+                              ? Math.round(
+                                  (stats.activeBundles / stats.totalBundles) *
+                                    100,
+                                )
+                              : 0
+                          }%`,
                         }}
                       ></div>
                     </div>
@@ -463,8 +558,8 @@ function DashboardPage() {
 
                   <div className="pt-3 border-t border-white/20">
                     <p className="text-xs opacity-90 leading-relaxed">
-                      {stats.totalBundles > 0 
-                        ? "Great job! Keep creating and sharing your bundles." 
+                      {stats.totalBundles > 0
+                        ? "Great job! Keep creating and sharing your bundles."
                         : "Start creating bundles to see your performance metrics."}
                     </p>
                   </div>
