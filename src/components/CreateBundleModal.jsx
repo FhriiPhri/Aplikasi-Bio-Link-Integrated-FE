@@ -17,7 +17,9 @@ function CreateBundleModal({ onClose }) {
   const fetchThemes = async () => {
     try {
       setLoading(true);
+
       const token = localStorage.getItem("token");
+      if (!token) throw new Error("Token not found");
 
       const response = await fetch("/api/themes", {
         headers: {
@@ -26,12 +28,14 @@ function CreateBundleModal({ onClose }) {
         },
       });
 
-      if (!response.ok) throw new Error("Failed to fetch themes");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch themes: ${response.status}`);
+      }
 
       const result = await response.json();
-      setThemes(result.data);
+      setThemes(result.data || []);
     } catch (err) {
-      alert("Error loading themes: " + err.message);
+      alert("Error loading themes: " + (err.message || err));
     } finally {
       setLoading(false);
     }
@@ -139,7 +143,9 @@ function CreateBundleModal({ onClose }) {
             background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
             border-radius: 38px;
             padding: 10px;
-            box-shadow: 0 0 0 2px #4a4a4a, 0 20px 50px rgba(0, 0, 0, 0.4),
+            box-shadow:
+              0 0 0 2px #4a4a4a,
+              0 20px 50px rgba(0, 0, 0, 0.4),
               inset 0 1px 3px rgba(255, 255, 255, 0.1);
             position: relative;
           }
@@ -154,7 +160,8 @@ function CreateBundleModal({ onClose }) {
             background: #0a0a0a;
             border-radius: 0 0 14px 14px;
             z-index: 10;
-            box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+            box-shadow:
+              inset 0 -2px 4px rgba(0, 0, 0, 0.5),
               0 2px 8px rgba(0, 0, 0, 0.3);
           }
 
@@ -179,7 +186,8 @@ function CreateBundleModal({ onClose }) {
             background: radial-gradient(circle, #1a2a3a 30%, #0a0a0a 70%);
             border: 1.5px solid #2a2a2a;
             border-radius: 50%;
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5),
+            box-shadow:
+              inset 0 1px 2px rgba(0, 0, 0, 0.5),
               0 1px 2px rgba(255, 255, 255, 0.1);
           }
 
