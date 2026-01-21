@@ -189,7 +189,8 @@ export default function AdminDashboard() {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:8000/api/admin/users", {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${API_BASE}/admin/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -235,8 +236,9 @@ export default function AdminDashboard() {
       setProcessingUserId(userId);
       const token = localStorage.getItem("token");
 
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
       const response = await fetch(
-        `http://localhost:8000/api/admin/users/${userId}/deactivate`,
+        `${API_BASE}/admin/users/${userId}/deactivate`,
         {
           method: "POST",
           headers: {
@@ -246,7 +248,7 @@ export default function AdminDashboard() {
           body: JSON.stringify({
             ban_message: banMessage,
           }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -271,15 +273,16 @@ export default function AdminDashboard() {
       setProcessingUserId(userId);
       const token = localStorage.getItem("token");
 
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
       const response = await fetch(
-        `http://localhost:8000/api/admin/users/${userId}/activate`,
+        `${API_BASE}/admin/users/${userId}/activate`,
         {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -635,7 +638,7 @@ export default function AdminDashboard() {
         new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         }),
-        `Data Pengguna Synapse Bio-Link ( ${formattedDate} ).xlsx`
+        `Data Pengguna Synapse Bio-Link ( ${formattedDate} ).xlsx`,
       );
 
       console.log("✅ Data berhasil diekspor dengan border lengkap!");
@@ -789,7 +792,7 @@ export default function AdminDashboard() {
                     selectedUser.avatar
                       ? `http://localhost:8000/storage/${selectedUser.avatar}`
                       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                          selectedUser.name || "User"
+                          selectedUser.name || "User",
                         )}&background=6366f1&color=fff&bold=true`
                   }
                   alt={selectedUser.name}
@@ -896,10 +899,10 @@ export default function AdminDashboard() {
                         stat.color === "green"
                           ? "text-green-600"
                           : stat.color === "red"
-                          ? "text-red-600"
-                          : stat.color === "blue"
-                          ? "text-blue-600"
-                          : "text-gray-900"
+                            ? "text-red-600"
+                            : stat.color === "blue"
+                              ? "text-blue-600"
+                              : "text-gray-900"
                       }`}
                     >
                       {stat.value}
@@ -957,7 +960,7 @@ export default function AdminDashboard() {
                           showConfirmActionModal(
                             "ban",
                             selectedUser.id,
-                            selectedUser.name
+                            selectedUser.name,
                           );
                         }}
                         className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
@@ -972,7 +975,7 @@ export default function AdminDashboard() {
                           showConfirmActionModal(
                             "activate",
                             selectedUser.id,
-                            selectedUser.name
+                            selectedUser.name,
                           );
                         }}
                         className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
@@ -1360,7 +1363,7 @@ export default function AdminDashboard() {
                               u.avatar
                                 ? `http://localhost:8000/storage/${u.avatar}`
                                 : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                    u.name || "User"
+                                    u.name || "User",
                                   )}&background=6366f1&color=fff&bold=true`
                             }
                             alt={u.name}
@@ -1458,7 +1461,7 @@ export default function AdminDashboard() {
                                     showConfirmActionModal(
                                       "activate",
                                       u.id,
-                                      u.name
+                                      u.name,
                                     )
                                   }
                                   disabled={processingUserId === u.id}
