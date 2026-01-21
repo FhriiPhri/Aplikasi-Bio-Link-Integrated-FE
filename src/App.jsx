@@ -8,7 +8,6 @@ import AdminDashboard from "./pages/admins/DashboardAdmin";
 import AdminBundlesPage from "./pages/admins/AdminBundlesPage";
 import BundlePreviewPage from "./pages/admins/PreviewBundlePage";
 
-
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
@@ -24,7 +23,8 @@ import BannedPage from "./pages/BannedPage";
 import AdminAppealsPage from "./pages/admins/Banding";
 import ThemeTest from "./pages/ThemeTest";
 import BundlePage from "./pages/users/BundlePage";
-import BundleEditorPage from './pages/users/BundleEditorPage';
+import BundleEditorPage from "./pages/users/BundleEditorPage";
+import PublicBundlePage from "./pages/PublicBundle";
 
 // Route
 export default function App() {
@@ -38,6 +38,9 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/google/callback" element={<GoogleCallback />} />
+
+          {/* Public Bundle View - Important: ini harus di atas protected routes */}
+          <Route path="/:slug" element={<PublicBundlePage />} />
 
           {/* Banned Page */}
           <Route

@@ -14,6 +14,8 @@ import {
   Upload,
   Image as ImageIcon,
   Palette,
+  Share2,
+  Copy,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../components/layouts/Layout";
@@ -49,6 +51,19 @@ function BundleEditorPage() {
     setTimeout(() => {
       setShowToast(false);
     }, 3000);
+  };
+
+  // Copy link to clipboard
+  const copyLinkToClipboard = () => {
+    const publicUrl = `${window.location.origin}/${bundle?.slug}`;
+    navigator.clipboard
+      .writeText(publicUrl)
+      .then(() => {
+        showNotification("Link copied to clipboard!", "success");
+      })
+      .catch(() => {
+        showNotification("Failed to copy link", "error");
+      });
   };
 
   // Form states
@@ -835,6 +850,14 @@ function BundleEditorPage() {
               </div>
               <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                 <button
+                  onClick={copyLinkToClipboard}
+                  className="hidden sm:flex items-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors text-sm mobile-button"
+                  title="Copy public link"
+                >
+                  <Share2 size={16} />
+                  <span className="hidden md:inline">Share</span>
+                </button>
+                <button
                   onClick={() => setShowPreview(!showPreview)}
                   className="hidden lg:flex items-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors text-sm mobile-button"
                 >
@@ -843,7 +866,7 @@ function BundleEditorPage() {
                     {showPreview ? "Hide" : "Show"} Preview
                   </span>
                   <span className="md:hidden">Preview</span>
-                </button>
+                </button>{" "}
                 <button
                   onClick={handleBundleUpdate}
                   disabled={saving}
@@ -1182,10 +1205,38 @@ function BundleEditorPage() {
 
             {/* Center - Bundle Editor */}
             <div className="xl:col-span-6 space-y-4 sm:space-y-6">
+              {/* Share Link Section */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl shadow-sm border border-blue-200 p-4 sm:p-6 mobile-section">
+                <div className="flex items-center gap-2 mb-3">
+                  <Share2 size={18} className="text-blue-600 sm:w-5 sm:h-5" />
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                    Share Your Bundle
+                  </h2>
+                </div>
+                <p className="text-xs sm:text-sm text-gray-600 mb-3">
+                  Share this link with your audience
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={`${window.location.origin}/${bundle?.slug}`}
+                    readOnly
+                    className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 bg-white border border-gray-300 rounded-lg text-sm sm:text-base font-mono text-gray-700"
+                  />
+                  <button
+                    onClick={copyLinkToClipboard}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors"
+                  >
+                    <Copy size={16} />
+                    <span className="hidden sm:inline">Copy</span>
+                  </button>
+                </div>
+              </div>
+
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mobile-section">
                 <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">
                   Bundle Information
-                </h2>
+                </h2>{" "}
                 <div className="space-y-3 sm:space-y-4">
                   {/* Profile Image Upload */}
                   <div>
