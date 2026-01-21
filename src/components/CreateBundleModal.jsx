@@ -21,12 +21,15 @@ function CreateBundleModal({ onClose }) {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token not found");
 
-      const response = await fetch("/api/themes", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/themes`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // optional kalau API butuh auth
+            Accept: "application/json",
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to fetch themes: ${response.status}`);
