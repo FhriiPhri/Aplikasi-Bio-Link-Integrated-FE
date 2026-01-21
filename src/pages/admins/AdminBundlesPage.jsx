@@ -1,17 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Eye, Trash2, Users, ExternalLink, Package, TrendingUp, BarChart3, Grid3x3, List, Link2, X, AlertTriangle, CheckCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import {
+  Search,
+  Eye,
+  Trash2,
+  Users,
+  ExternalLink,
+  Package,
+  TrendingUp,
+  BarChart3,
+  Grid3x3,
+  List,
+  Link2,
+  X,
+  AlertTriangle,
+  CheckCircle,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Layout from "../../components/layouts/Layout";
 
 const AdminBundlesPage = () => {
   const navigate = useNavigate();
   const [bundles, setBundles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [users, setUsers] = useState([]);
-  const [viewMode, setViewMode] = useState('grid');
+  const [viewMode, setViewMode] = useState("grid");
   const [deleteModal, setDeleteModal] = useState({ show: false, bundle: null });
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -32,18 +47,19 @@ const AdminBundlesPage = () => {
   const fetchBundles = async (page = 1) => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const url = `http://localhost:8000/api/admin/bundles?page=${page}`;
+      const token = localStorage.getItem("token");
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+      const url = `${API_BASE}/admin/bundles?page=${page}`;
 
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
       });
 
       const data = await response.json();
-      
+
       setBundles(data.data?.data || []);
       setPagination({
         current_page: data.data?.current_page,
@@ -52,8 +68,8 @@ const AdminBundlesPage = () => {
         per_page: data.data?.per_page,
       });
     } catch (error) {
-      console.error('Error fetching bundles:', error);
-      showNotification('Failed to fetch bundles', 'error');
+      console.error("Error fetching bundles:", error);
+      showNotification("Failed to fetch bundles", "error");
     } finally {
       setLoading(false);
     }
@@ -62,17 +78,17 @@ const AdminBundlesPage = () => {
   // Fetch users for stats
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8000/api/admin/users', {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:8000/api/admin/users", {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
       });
       const data = await response.json();
       setUsers(data.users || []);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error("Error fetching users:", error);
     }
   };
 
@@ -98,27 +114,30 @@ const AdminBundlesPage = () => {
 
     try {
       setDeleting(true);
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api/admin/bundles/${bundleId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8000/api/admin/bundles/${bundleId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
         },
-      });
+      );
 
       const data = await response.json();
-      
+
       if (data.success) {
         closeDeleteModal();
-        showNotification('Bundle deleted successfully!', 'success');
+        showNotification("Bundle deleted successfully!", "success");
         await fetchBundles(currentPage);
       } else {
-        showNotification('Failed to delete bundle', 'error');
+        showNotification("Failed to delete bundle", "error");
       }
     } catch (error) {
-      console.error('Error deleting bundle:', error);
-      showNotification('Error: ' + error.message, 'error');
+      console.error("Error deleting bundle:", error);
+      showNotification("Error: " + error.message, "error");
     } finally {
       setDeleting(false);
     }
@@ -130,15 +149,17 @@ const AdminBundlesPage = () => {
   }, [currentPage]);
 
   // Filter bundles
-  const filteredBundles = bundles.filter(bundle => 
-    bundle.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    bundle.slug?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    bundle.user?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredBundles = bundles.filter(
+    (bundle) =>
+      bundle.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bundle.slug?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bundle.user?.name?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // Calculate stats
   const totalLinks = bundles.reduce((sum, b) => sum + (b.links_count || 0), 0);
-  const avgLinksPerBundle = bundles.length > 0 ? (totalLinks / bundles.length).toFixed(1) : 0;
+  const avgLinksPerBundle =
+    bundles.length > 0 ? (totalLinks / bundles.length).toFixed(1) : 0;
 
   return (
     <Layout>
@@ -259,29 +280,33 @@ const AdminBundlesPage = () => {
                   <Package className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Bundle Management</h1>
-                  <p className="text-sm sm:text-base text-gray-600 mt-1">Monitor dan kelola semua user bundles</p>
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+                    Bundle Management
+                  </h1>
+                  <p className="text-sm sm:text-base text-gray-600 mt-1">
+                    Monitor dan kelola semua user bundles
+                  </p>
                 </div>
               </div>
 
               {/* View Toggle */}
               <div className="flex items-center gap-2 bg-white rounded-xl p-1 shadow-sm border border-gray-200 w-full sm:w-auto justify-center">
                 <button
-                  onClick={() => setViewMode('grid')}
+                  onClick={() => setViewMode("grid")}
                   className={`flex-1 sm:flex-none p-2 rounded-lg transition-all ${
-                    viewMode === 'grid'
-                      ? 'bg-blue-500 text-white shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-100'
+                    viewMode === "grid"
+                      ? "bg-blue-500 text-white shadow-sm"
+                      : "text-gray-600 hover:bg-gray-100"
                   }`}
                 >
                   <Grid3x3 className="w-5 h-5 mx-auto" />
                 </button>
                 <button
-                  onClick={() => setViewMode('table')}
+                  onClick={() => setViewMode("table")}
                   className={`flex-1 sm:flex-none p-2 rounded-lg transition-all ${
-                    viewMode === 'table'
-                      ? 'bg-blue-500 text-white shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-100'
+                    viewMode === "table"
+                      ? "bg-blue-500 text-white shadow-sm"
+                      : "text-gray-600 hover:bg-gray-100"
                   }`}
                 >
                   <List className="w-5 h-5 mx-auto" />
@@ -298,8 +323,12 @@ const AdminBundlesPage = () => {
                   </div>
                   <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500" />
                 </div>
-                <div className="text-xl sm:text-2xl font-bold text-gray-900">{pagination?.total || bundles.length}</div>
-                <div className="text-xs sm:text-sm text-gray-600 mt-1">Total Bundles</div>
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">
+                  {pagination?.total || bundles.length}
+                </div>
+                <div className="text-xs sm:text-sm text-gray-600 mt-1">
+                  Total Bundles
+                </div>
               </div>
 
               <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
@@ -309,8 +338,12 @@ const AdminBundlesPage = () => {
                   </div>
                   <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500" />
                 </div>
-                <div className="text-xl sm:text-2xl font-bold text-gray-900">{users.length}</div>
-                <div className="text-xs sm:text-sm text-gray-600 mt-1">Active Users</div>
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">
+                  {users.length}
+                </div>
+                <div className="text-xs sm:text-sm text-gray-600 mt-1">
+                  Active Users
+                </div>
               </div>
 
               <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
@@ -320,8 +353,12 @@ const AdminBundlesPage = () => {
                   </div>
                   <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500" />
                 </div>
-                <div className="text-xl sm:text-2xl font-bold text-gray-900">{totalLinks}</div>
-                <div className="text-xs sm:text-sm text-gray-600 mt-1">Total Links</div>
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">
+                  {totalLinks}
+                </div>
+                <div className="text-xs sm:text-sm text-gray-600 mt-1">
+                  Total Links
+                </div>
               </div>
 
               <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
@@ -331,8 +368,12 @@ const AdminBundlesPage = () => {
                   </div>
                   <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500" />
                 </div>
-                <div className="text-xl sm:text-2xl font-bold text-gray-900">{avgLinksPerBundle}</div>
-                <div className="text-xs sm:text-sm text-gray-600 mt-1">Avg Links/Bundle</div>
+                <div className="text-xl sm:text-2xl font-bold text-gray-900">
+                  {avgLinksPerBundle}
+                </div>
+                <div className="text-xs sm:text-sm text-gray-600 mt-1">
+                  Avg Links/Bundle
+                </div>
               </div>
             </div>
           </div>
@@ -353,7 +394,7 @@ const AdminBundlesPage = () => {
 
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => setSearchQuery("")}
                   className="px-4 sm:px-6 py-2.5 sm:py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all border border-red-200 font-medium text-sm sm:text-base"
                 >
                   Clear
@@ -364,8 +405,15 @@ const AdminBundlesPage = () => {
             {searchQuery && (
               <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
                 <span className="text-xs sm:text-sm text-gray-600">
-                  Showing <span className="font-semibold text-gray-900">{filteredBundles.length}</span> of{' '}
-                  <span className="font-semibold text-gray-900">{bundles.length}</span> bundles
+                  Showing{" "}
+                  <span className="font-semibold text-gray-900">
+                    {filteredBundles.length}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-semibold text-gray-900">
+                    {bundles.length}
+                  </span>{" "}
+                  bundles
                 </span>
               </div>
             )}
@@ -384,10 +432,14 @@ const AdminBundlesPage = () => {
               <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-10 h-10 text-gray-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No bundles found</h3>
-              <p className="text-gray-600">Try adjusting your search criteria</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                No bundles found
+              </h3>
+              <p className="text-gray-600">
+                Try adjusting your search criteria
+              </p>
             </div>
-          ) : viewMode === 'grid' ? (
+          ) : viewMode === "grid" ? (
             /* Grid View */
             <div className="grid gap-3 sm:gap-4">
               {filteredBundles.map((bundle) => (
@@ -419,29 +471,42 @@ const AdminBundlesPage = () => {
 
                         <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 mb-2 sm:mb-3">
                           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                            <div className="text-sm font-medium text-gray-900 truncate">{bundle.user?.name}</div>
-                            <span className="text-gray-400 hidden sm:inline">•</span>
-                            <div className="text-xs text-gray-500 truncate">{bundle.user?.email}</div>
+                            <div className="text-sm font-medium text-gray-900 truncate">
+                              {bundle.user?.name}
+                            </div>
+                            <span className="text-gray-400 hidden sm:inline">
+                              •
+                            </span>
+                            <div className="text-xs text-gray-500 truncate">
+                              {bundle.user?.email}
+                            </div>
                           </div>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                          <span className="text-blue-600 font-medium">{bundle.links_count} links</span>
-                          
+                          <span className="text-blue-600 font-medium">
+                            {bundle.links_count} links
+                          </span>
+
                           {bundle.theme && (
                             <>
                               <span className="text-gray-400">•</span>
-                              <span className="text-blue-600 font-medium truncate">{bundle.theme.name}</span>
+                              <span className="text-blue-600 font-medium truncate">
+                                {bundle.theme.name}
+                              </span>
                             </>
                           )}
 
                           <span className="text-gray-400">•</span>
                           <span className="text-gray-500 text-xs">
-                            {new Date(bundle.created_at).toLocaleDateString('id-ID', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric'
-                            })}
+                            {new Date(bundle.created_at).toLocaleDateString(
+                              "id-ID",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )}
                           </span>
                         </div>
                       </div>
@@ -485,17 +550,32 @@ const AdminBundlesPage = () => {
                 <table className="w-full min-w-[640px]">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
-                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Bundle</th>
-                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User</th>
-                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Links</th>
-                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Theme</th>
-                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created</th>
-                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Bundle
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        User
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Links
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Theme
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Created
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 sm:py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {filteredBundles.map((bundle) => (
-                      <tr key={bundle.id} className="hover:bg-gray-50 transition-colors">
+                      <tr
+                        key={bundle.id}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
                         <td className="px-4 sm:px-6 py-3 sm:py-4">
                           <div className="flex items-center gap-2 sm:gap-3">
                             {bundle.profile_image_url ? (
@@ -510,34 +590,49 @@ const AdminBundlesPage = () => {
                               </div>
                             )}
                             <div className="min-w-0">
-                              <div className="font-semibold text-gray-900 text-sm truncate">{bundle.title}</div>
-                              <div className="text-xs text-gray-500 font-mono truncate">/{bundle.slug}</div>
+                              <div className="font-semibold text-gray-900 text-sm truncate">
+                                {bundle.title}
+                              </div>
+                              <div className="text-xs text-gray-500 font-mono truncate">
+                                /{bundle.slug}
+                              </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-4 sm:px-6 py-3 sm:py-4">
                           <div className="min-w-0">
-                            <div className="text-sm font-medium text-gray-900 truncate">{bundle.user?.name}</div>
-                            <div className="text-xs text-gray-500 truncate">{bundle.user?.email}</div>
+                            <div className="text-sm font-medium text-gray-900 truncate">
+                              {bundle.user?.name}
+                            </div>
+                            <div className="text-xs text-gray-500 truncate">
+                              {bundle.user?.email}
+                            </div>
                           </div>
                         </td>
                         <td className="px-4 sm:px-6 py-3 sm:py-4">
-                          <span className="text-sm font-semibold text-blue-600">{bundle.links_count}</span>
+                          <span className="text-sm font-semibold text-blue-600">
+                            {bundle.links_count}
+                          </span>
                         </td>
                         <td className="px-4 sm:px-6 py-3 sm:py-4">
                           {bundle.theme ? (
-                            <span className="text-sm text-blue-600 font-medium truncate block">{bundle.theme.name}</span>
+                            <span className="text-sm text-blue-600 font-medium truncate block">
+                              {bundle.theme.name}
+                            </span>
                           ) : (
                             <span className="text-sm text-gray-400">-</span>
                           )}
                         </td>
                         <td className="px-4 sm:px-6 py-3 sm:py-4">
                           <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
-                            {new Date(bundle.created_at).toLocaleDateString('id-ID', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric'
-                            })}
+                            {new Date(bundle.created_at).toLocaleDateString(
+                              "id-ID",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )}
                           </span>
                         </td>
                         <td className="px-4 sm:px-6 py-3 sm:py-4">
@@ -579,14 +674,29 @@ const AdminBundlesPage = () => {
           {pagination && pagination.last_page > 1 && (
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-between bg-white rounded-2xl p-4 shadow-sm border border-gray-200 gap-4">
               <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
-                Showing <span className="font-semibold text-gray-900">{((currentPage - 1) * pagination.per_page) + 1}</span> to{' '}
-                <span className="font-semibold text-gray-900">{Math.min(currentPage * pagination.per_page, pagination.total)}</span> of{' '}
-                <span className="font-semibold text-gray-900">{pagination.total}</span> results
+                Showing{" "}
+                <span className="font-semibold text-gray-900">
+                  {(currentPage - 1) * pagination.per_page + 1}
+                </span>{" "}
+                to{" "}
+                <span className="font-semibold text-gray-900">
+                  {Math.min(
+                    currentPage * pagination.per_page,
+                    pagination.total,
+                  )}
+                </span>{" "}
+                of{" "}
+                <span className="font-semibold text-gray-900">
+                  {pagination.total}
+                </span>{" "}
+                results
               </div>
 
               <div className="flex items-center gap-2 w-full sm:w-auto justify-center">
                 <button
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                  }
                   disabled={currentPage === 1}
                   className="px-3 sm:px-4 py-2 bg-gray-50 text-gray-700 rounded-xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all border border-gray-200 font-medium text-xs sm:text-sm"
                 >
@@ -595,36 +705,43 @@ const AdminBundlesPage = () => {
                 </button>
 
                 <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.min(5, pagination.last_page) }, (_, i) => {
-                    let pageNum;
-                    if (pagination.last_page <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= pagination.last_page - 2) {
-                      pageNum = pagination.last_page - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
-                    }
+                  {Array.from(
+                    { length: Math.min(5, pagination.last_page) },
+                    (_, i) => {
+                      let pageNum;
+                      if (pagination.last_page <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= pagination.last_page - 2) {
+                        pageNum = pagination.last_page - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
 
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl font-medium transition-all text-sm ${
-                          currentPage === pageNum
-                            ? 'bg-blue-500 text-white shadow-md shadow-blue-500/30'
-                            : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl font-medium transition-all text-sm ${
+                            currentPage === pageNum
+                              ? "bg-blue-500 text-white shadow-md shadow-blue-500/30"
+                              : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    },
+                  )}
                 </div>
 
                 <button
-                  onClick={() => setCurrentPage(prev => Math.min(pagination.last_page, prev + 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) =>
+                      Math.min(pagination.last_page, prev + 1),
+                    )
+                  }
                   disabled={currentPage === pagination.last_page}
                   className="px-3 sm:px-4 py-2 bg-gray-50 text-gray-700 rounded-xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all border border-gray-200 font-medium text-xs sm:text-sm"
                 >
@@ -645,9 +762,15 @@ const AdminBundlesPage = () => {
                 <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1">Delete Bundle?</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1">
+                  Delete Bundle?
+                </h3>
                 <p className="text-gray-600 text-xs sm:text-sm">
-                  Yakin mau hapus bundle "<span className="font-semibold text-gray-900 break-words">{deleteModal.bundle?.title}</span>"? Aksi ini tidak bisa dibatalkan!
+                  Yakin mau hapus bundle "
+                  <span className="font-semibold text-gray-900 break-words">
+                    {deleteModal.bundle?.title}
+                  </span>
+                  "? Aksi ini tidak bisa dibatalkan!
                 </p>
               </div>
               <button
