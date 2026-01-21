@@ -20,8 +20,7 @@ function PublicBundlePage() {
       setLoading(true);
       setError(null);
 
-      const API_BASE =
-        import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
       console.log("Fetching bundle with slug:", slug);
 
@@ -332,4 +331,4 @@ function PublicBundlePage() {
   );
 }
 
-export default PublicBundlePage;
+export default PublicBundlePage
