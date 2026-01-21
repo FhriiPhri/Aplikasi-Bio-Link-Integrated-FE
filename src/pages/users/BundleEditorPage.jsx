@@ -88,7 +88,9 @@ function BundleEditorPage() {
       setLoadingThemes(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch("/api/themes", {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+      const response = await fetch(`${API_BASE}/themes`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -219,7 +221,9 @@ function BundleEditorPage() {
 
       formData.append("_method", "PUT");
 
-      const response = await fetch(`/api/user/bundles/${bundleId}`, {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+      const response = await fetch(`${API_BASE}/user/bundles/${bundleId}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -287,8 +291,9 @@ function BundleEditorPage() {
 
     try {
       const token = localStorage.getItem("token");
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-      const response = await fetch("/api/user/links", {
+      const response = await fetch(`${API_BASE}/user/links`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -328,8 +333,9 @@ function BundleEditorPage() {
 
     try {
       const token = localStorage.getItem("token");
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-      const response = await fetch(`/api/user/links/${linkId}`, {
+      const response = await fetch(`${API_BASE}/user/links/${linkId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -355,7 +361,9 @@ function BundleEditorPage() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`/api/user/links/${linkId}`, {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+      const response = await fetch(`${API_BASE}/user/links/${linkId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -446,7 +454,9 @@ function BundleEditorPage() {
           background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
           border-radius: 38px;
           padding: 10px;
-          box-shadow: 0 0 0 2px #4a4a4a, 0 20px 50px rgba(0, 0, 0, 0.4),
+          box-shadow:
+            0 0 0 2px #4a4a4a,
+            0 20px 50px rgba(0, 0, 0, 0.4),
             inset 0 1px 3px rgba(255, 255, 255, 0.1);
           position: relative;
         }
@@ -461,7 +471,8 @@ function BundleEditorPage() {
           background: #0a0a0a;
           border-radius: 0 0 14px 14px;
           z-index: 10;
-          box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+          box-shadow:
+            inset 0 -2px 4px rgba(0, 0, 0, 0.5),
             0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
@@ -486,7 +497,8 @@ function BundleEditorPage() {
           background: radial-gradient(circle, #1a2a3a 30%, #0a0a0a 70%);
           border: 1.5px solid #2a2a2a;
           border-radius: 50%;
-          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5),
+          box-shadow:
+            inset 0 1px 2px rgba(0, 0, 0, 0.5),
             0 1px 2px rgba(255, 255, 255, 0.1);
         }
 
