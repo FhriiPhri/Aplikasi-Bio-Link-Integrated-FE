@@ -54,26 +54,25 @@ export default function BannedPage() {
       setLoadingTracking(true);
 
       const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
       const response = await fetch(`${API_BASE}/user/appeals`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
+          Accept: "application/json",
         },
       });
-      const data = response.data.data || [];
-      setAppealHistory(data);
 
-      // Get latest appeal
-      if (data.length > 0) {
-        setLatestAppeal(data[0]);
-      } else {
-        setLatestAppeal(null);
+      if (!response.ok) {
+        throw new Error("Gagal fetch appeal history");
       }
+
+      const result = await response.json();
+      const data = result.data || [];
+
+      setAppealHistory(data);
+      setLatestAppeal(data.length > 0 ? data[0] : null);
     } catch (error) {
-      console.error(
-        "Gagal mengambil riwayat banding:",
-        error.response?.data || error.message,
-      );
+      console.error("Gagal mengambil riwayat banding:", error.message);
     } finally {
       setLoadingTracking(false);
     }
@@ -101,6 +100,7 @@ export default function BannedPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!formData.appeal_reason.trim()) {
       alert("Harap isi alasan banding terlebih dahulu");
       return;
@@ -109,12 +109,6 @@ export default function BannedPage() {
     setIsSubmitting(true);
 
     try {
-      const payload = {
-        message: formData.appeal_reason,
-        appeal_reason: formData.appeal_reason,
-        appeal_evidence: formData.appeal_evidence || null,
-      };
-
       const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
       const response = await fetch(`${API_BASE}/user/appeals`, {
@@ -122,23 +116,25 @@ export default function BannedPage() {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
+        body: JSON.stringify({
+          message: formData.appeal_reason,
+          appeal_reason: formData.appeal_reason,
+          appeal_evidence: formData.appeal_evidence || null,
+        }),
       });
 
-      if (response.data.success || response.status === 200) {
-        setSubmissionSuccess(true);
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Gagal mengajukan banding");
       }
+
+      setSubmissionSuccess(true);
+      setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
-      console.error("Error response:", error.response);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.errors?.message?.[0] ||
-        error.response?.data?.error ||
-        "Gagal mengajukan banding. Silakan coba lagi.";
-      alert(errorMessage);
+      alert(error.message);
     } finally {
       setIsSubmitting(false);
     }
