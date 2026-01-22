@@ -97,6 +97,8 @@ export default function AdminAppealsPage() {
       if (response.ok) {
         setAppeals(data.data || []);
 
+        const data = await response.json();
+
         // Calculate stats
         const total = data.data?.length || 0;
         const pending =
