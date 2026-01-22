@@ -318,9 +318,9 @@ export default function Sidebar({
                 />
                 <SidebarItem
                   icon={<BarChart2 size={20} />}
-                  label="Analystic History"
-                  to="/career"
-                  onClick={() => handleMenuItemClick("/career")}
+                  label="Analytics"
+                  to="/analytics"
+                  onClick={() => handleMenuItemClick("/analytics")}
                 />
 
                 {/* Communication */}

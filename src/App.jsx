@@ -7,6 +7,7 @@ import GoogleCallback from "./pages/auth/GoogleCallback";
 import AdminDashboard from "./pages/admins/DashboardAdmin";
 import AdminBundlesPage from "./pages/admins/AdminBundlesPage";
 import BundlePreviewPage from "./pages/admins/PreviewBundlePage";
+import AnalyticsPage from "./pages/users/AnalyticsPage";
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import UserRoute from "./components/routes/UserRoute";
@@ -55,6 +56,14 @@ export default function App() {
             element={
               <UserRoute>
                 <Dashboard />
+              </UserRoute>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <UserRoute>
+                <AnalyticsPage />
               </UserRoute>
             }
           />
