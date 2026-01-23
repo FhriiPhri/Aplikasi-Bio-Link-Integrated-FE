@@ -32,6 +32,7 @@ const AdminBundlesPage = () => {
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("success");
   const [deleting, setDeleting] = useState(false);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
   // Show toast notification
   const showNotification = (message, type = "success") => {
@@ -48,7 +49,6 @@ const AdminBundlesPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const API_BASE = import.meta.env.VITE_API_BASE_URL;
       const url = `${API_BASE}/admin/bundles?page=${page}`;
 
       const response = await fetch(url, {
@@ -57,6 +57,8 @@ const AdminBundlesPage = () => {
           Accept: "application/json",
         },
       });
+
+      const data = await response.json();
 
       setBundles(data.data?.data || []);
       setPagination({
@@ -77,7 +79,7 @@ const AdminBundlesPage = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/api/admin/users", {
+      const response = await fetch(`${API_BASE}/api/admin/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -114,7 +116,7 @@ const AdminBundlesPage = () => {
       setDeleting(true);
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8000/api/admin/bundles/${bundleId}`,
+        `${API_BASE}/api/admin/bundles/${bundleId}`,
         {
           method: "DELETE",
           headers: {
@@ -643,7 +645,7 @@ const AdminBundlesPage = () => {
                               <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
                             <a
-                              href={`http://localhost:3000/${bundle.slug}`}
+                              href={`${API_BASE}/${bundle.slug}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="p-1.5 sm:p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-all"
