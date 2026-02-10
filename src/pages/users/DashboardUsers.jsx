@@ -374,13 +374,6 @@ function DashboardPage() {
                       Top Performing
                     </h2>
                   </div>
-                  <button
-                    onClick={() => (window.location.href = "/bundles")}
-                    className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 transition-colors"
-                  >
-                    <span className="hidden xs:inline">View All</span>
-                    <ExternalLink size={14} />
-                  </button>
                 </div>
 
                 {topBundles.length === 0 ? (
