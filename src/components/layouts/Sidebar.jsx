@@ -323,18 +323,7 @@ export default function Sidebar({
                   onClick={() => handleMenuItemClick("/analytics")}
                 />
 
-                {/* Communication */}
-                <div className="mt-6 mb-2">
-                  <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Communication
-                  </p>
-                </div>
-                <SidebarItem
-                  icon={<Bell size={20} />}
-                  label="Notifications"
-                  to="/notifications"
-                  onClick={() => handleMenuItemClick("/notifications")}
-                />
+      
 
                 {/* Help & Settings */}
                 <div className="mt-6 mb-2">
@@ -342,18 +331,6 @@ export default function Sidebar({
                     Support
                   </p>
                 </div>
-                <SidebarItem
-                  icon={<FileText size={20} />}
-                  label="Documentation"
-                  to="/docs"
-                  onClick={() => handleMenuItemClick("/docs")}
-                />
-                <SidebarItem
-                  icon={<BookOpen size={20} />}
-                  label="Knowledge Base"
-                  to="/knowledge"
-                  onClick={() => handleMenuItemClick("/knowledge")}
-                />
                 <SidebarItem
                   icon={<LifeBuoy size={20} />}
                   label="Support"
