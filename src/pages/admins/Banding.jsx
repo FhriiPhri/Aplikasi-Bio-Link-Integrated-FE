@@ -49,15 +49,6 @@ export default function AdminAppealsPage() {
   });
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
-  const STORAGE_BASE = import.meta.env.VITE_API_BASE_URL;
-
-  // Helper function
-  const getAvatarUrl = (avatar, name = "User") => {
-    if (!avatar) {
-      return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&bold=true`;
-    }
-    return `${STORAGE_BASE}/storage/avatars/${avatar}`;
-  };
 
   // Refs for click outside
   const filterRef = useRef(null);
@@ -451,11 +442,17 @@ export default function AdminAppealsPage() {
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 mb-8 border border-indigo-100">
                 <div className="flex items-start gap-6">
                   <img
-                    src={resolveAvatar(appeal.user?.avatar, appeal.user?.name)}
-                    alt={appeal.user?.name}
+                    src={resolveAvatar(
+                      selectedAppeal.user?.avatar,
+                      selectedAppeal.user?.name,
+                    )}
+                    alt={selectedAppeal.user?.name}
                     className="w-10 h-10 rounded-xl object-cover"
                     onError={(e) => {
-                      e.target.src = resolveAvatar(null, appeal.user?.name);
+                      e.currentTarget.src = resolveAvatar(
+                        null,
+                        selectedAppeal.user?.name,
+                      );
                     }}
                   />
                   <div className="flex-1">
@@ -1055,7 +1052,7 @@ export default function AdminAppealsPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <img
-                              src={getAvatarUrl(
+                              src={resolveAvatar(
                                 appeal.user?.avatar,
                                 appeal.user?.name,
                               )}
@@ -1063,9 +1060,10 @@ export default function AdminAppealsPage() {
                               className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-pointer"
                               onClick={() => handleViewDetail(appeal)}
                               onError={(e) => {
-                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                  appeal.user?.name || "User",
-                                )}&background=6366f1&color=fff&bold=true`;
+                                e.currentTarget.src = resolveAvatar(
+                                  null,
+                                  appeal.user?.name,
+                                );
                               }}
                             />
                             <div>
