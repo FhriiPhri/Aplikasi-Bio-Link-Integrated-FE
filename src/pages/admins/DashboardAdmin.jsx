@@ -790,12 +790,14 @@ export default function AdminDashboard() {
               <div className="flex items-start gap-6 mb-8 p-4 bg-gradient-to-r from-indigo-50 to-white rounded-xl animate-fadeInDelay">
                 <img
                   src={
-                    selectedUser.avatar
-                      ? `${API_BASE}/storage/${selectedUser.avatar}`
+                    u.avatar
+                      ? `${API_BASE}/storage/${u.avatar}`
                       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                          selectedUser.name || "User",
+                          u.name || "User",
                         )}&background=6366f1&color=fff&bold=true`
                   }
+                  alt={u.name}
+                  className="w-10 h-10 rounded-full object-cover"
                 />
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
@@ -1362,12 +1364,14 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-3">
                           <img
                             src={
-                              selectedUser.avatar
-                                ? `${API_BASE}/storage/${selectedUser.avatar}`
+                              u.avatar
+                                ? `${API_BASE}/storage/${u.avatar}`
                                 : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                    selectedUser.name || "User",
+                                    u.name || "User",
                                   )}&background=6366f1&color=fff&bold=true`
                             }
+                            alt={u.name}
+                            className="w-10 h-10 rounded-full object-cover"
                           />
                           <div>
                             <p className="font-semibold text-gray-900">
