@@ -790,11 +790,10 @@ export default function AdminDashboard() {
               <div className="flex items-start gap-6 mb-8 p-4 bg-gradient-to-r from-indigo-50 to-white rounded-xl animate-fadeInDelay">
                 <img
                   src={
-                    selectedUser.avatar
-                      ? `${API_BASE}/storage/${selectedUser.avatar}`
-                      : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                          selectedUser.name || "User",
-                        )}&background=6366f1&color=fff&bold=true`
+                    selectedUser.avatar_url ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      selectedUser.name || "User",
+                    )}&background=6366f1&color=fff&bold=true`
                   }
                   alt={selectedUser.name}
                   className="w-10 h-10 rounded-full object-cover"
@@ -1365,15 +1364,15 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-3">
                           <img
                             src={
-                              u.avatar
-                                ? `${API_BASE}/storage/${u.avatar}`
-                                : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                    u.name || "User",
-                                  )}&background=6366f1&color=fff&bold=true`
+                              u.avatar_url ||
+                              `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                u.name || "User",
+                              )}&background=6366f1&color=fff&bold=true`
                             }
                             alt={u.name}
                             className="w-10 h-10 rounded-full object-cover"
                           />
+
                           <div>
                             <p className="font-semibold text-gray-900">
                               {u.name}
