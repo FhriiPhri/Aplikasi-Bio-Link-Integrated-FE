@@ -1085,7 +1085,7 @@ function BundleEditorPage() {
 
                           {/* Custom Links */}
                           <div className="space-y-2 px-2">
-                            {links.slice(0, 3).map((link) => (
+                            {links.map((link) => (
                               <a
                                 key={link.id}
                                 href={link.url}
@@ -1096,11 +1096,6 @@ function BundleEditorPage() {
                                 {link.name}
                               </a>
                             ))}
-                            {links.length > 3 && (
-                              <p className="text-xs text-base-content/40 italic pt-1">
-                                +{links.length - 3} more links
-                              </p>
-                            )}
                             {links.length === 0 && !bundleForm.description && (
                               <p className="text-base-content/40 py-6 text-xs">
                                 Your links will appear here
@@ -1746,7 +1741,7 @@ function BundleEditorPage() {
 
                             {/* Custom Links */}
                             <div className="space-y-1.5 sm:space-y-2 px-2">
-                              {links.slice(0, 3).map((link) => (
+                              {links.map((link) => (
                                 <a
                                   key={link.id}
                                   href={link.url}
@@ -1757,11 +1752,6 @@ function BundleEditorPage() {
                                   {link.name}
                                 </a>
                               ))}
-                              {links.length > 3 && (
-                                <p className="text-[10px] sm:text-xs text-base-content/40 italic pt-1">
-                                  +{links.length - 3} more links
-                                </p>
-                              )}
                               {links.length === 0 &&
                                 !bundleForm.description && (
                                   <p className="text-base-content/40 py-4 sm:py-6 text-[10px] sm:text-xs">

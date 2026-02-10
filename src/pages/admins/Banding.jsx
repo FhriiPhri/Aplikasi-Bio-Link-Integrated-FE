@@ -48,6 +48,15 @@ export default function AdminAppealsPage() {
   });
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
+  const STORAGE_BASE = "http://localhost:8000"; 
+
+  // Helper function 
+  const getAvatarUrl = (avatar, name = "User") => {
+    if (!avatar) {
+      return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&bold=true`;
+    }
+    return `${STORAGE_BASE}/storage/avatars/${avatar}`;
+  };
 
   // Refs for click outside
   const filterRef = useRef(null);
@@ -95,10 +104,9 @@ export default function AdminAppealsPage() {
       });
 
       if (response.ok) {
-        // FIX: You were missing this line below
         const data = await response.json();
+        
 
-        // Now 'data' is defined and can be used
         setAppeals(data.data || []);
 
         // Calculate stats
@@ -118,6 +126,7 @@ export default function AdminAppealsPage() {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchAppeals();
   }, []);
@@ -128,7 +137,7 @@ export default function AdminAppealsPage() {
       const matchesSearch =
         appeal.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         appeal.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        appeal.appeal_reason?.toLowerCase().includes(searchTerm.toLowerCase());
+        appeal.message?.toLowerCase().includes(searchTerm.toLowerCase()); 
 
       const matchesStatus =
         statusFilter === "all" || appeal.status === statusFilter;
@@ -442,15 +451,14 @@ export default function AdminAppealsPage() {
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 mb-8 border border-indigo-100">
                 <div className="flex items-start gap-6">
                   <img
-                    src={
-                      selectedAppeal.user?.avatar
-                        ? `${API_BASE}/storage/${selectedAppeal.user.avatar}`
-                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            selectedAppeal.user?.name || "User",
-                          )}&background=6366f1&color=fff&bold=true`
-                    }
+                    src={getAvatarUrl(selectedAppeal.user?.avatar, selectedAppeal.user?.name)}
                     alt={selectedAppeal.user?.name}
                     className="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-lg"
+                    onError={(e) => {
+                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        selectedAppeal.user?.name || "User",
+                      )}&background=6366f1&color=fff&bold=true`;
+                    }}
                   />
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -1049,16 +1057,15 @@ export default function AdminAppealsPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <img
-                              src={
-                                appeal.user?.avatar
-                                  ? `${API_BASE}/storage/${appeal.user.avatar}`
-                                  : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                      appeal.user?.name || "User",
-                                    )}&background=6366f1&color=fff&bold=true`
-                              }
+                              src={getAvatarUrl(appeal.user?.avatar, appeal.user?.name)}
                               alt={appeal.user?.name}
                               className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-pointer"
                               onClick={() => handleViewDetail(appeal)}
+                              onError={(e) => {
+                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                  appeal.user?.name || "User",
+                                )}&background=6366f1&color=fff&bold=true`;
+                              }}
                             />
                             <div>
                               <p
@@ -1076,7 +1083,7 @@ export default function AdminAppealsPage() {
 
                         <td className="px-6 py-4">
                           <p className="text-sm text-gray-900 line-clamp-2">
-                            {appeal.appeal_reason || "Tidak ada alasan"}
+                            {appeal.message || "Tidak ada alasan"}
                           </p>
                           {appeal.appeal_evidence && (
                             <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
@@ -1181,7 +1188,7 @@ export default function AdminAppealsPage() {
       </div>
 
       {/* Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from {
             opacity: 0;
